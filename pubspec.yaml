@@ -44,7 +44,6 @@ dependencies:
   http: ^0.13.5
   geolocator: ^9.0.2
   flutter_google_places: ^0.3.0
-  geocoder: ^0.2.1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -55,6 +54,13 @@ dependencies:
   firebase_storage: ^11.0.10
   random_string: ^2.3.1
   cached_network_image: ^3.2.3
+  dropdown_button2: ^1.9.2
+  jiffy: ^5.0.0
+  shimmer_animation: ^2.1.0+1
+  flutter_animated_button: ^2.0.2
+  flutter_animation_progress_bar: ^2.3.1
+  map_launcher: ^2.4.0
+  flutter_onboarding_slider: ^1.0.8
 
 dev_dependencies:
   flutter_test:

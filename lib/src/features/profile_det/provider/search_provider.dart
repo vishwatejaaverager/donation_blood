@@ -19,7 +19,6 @@ class SearchProvider with ChangeNotifier {
 
   configUserLoaction(Location loc) {
     _userLocation = loc;
-    
   }
 
   configSelectedPlace(String s) {

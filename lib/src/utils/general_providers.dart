@@ -1,4 +1,5 @@
 
+import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -11,6 +12,9 @@ import '../features/shared/presentation/bottom_nav/provider/bottom_nav_provider.
 List<SingleChildWidget> generalProviders = [
   ChangeNotifierProvider<LoginProvider>(
     create: (_) => LoginProvider(),
+  ),
+  ChangeNotifierProvider<RequestProvider>(
+    create: (_) => RequestProvider(),
   ),
   ChangeNotifierProvider<SearchProvider>(
     create: (_) => SearchProvider(),

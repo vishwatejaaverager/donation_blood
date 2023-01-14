@@ -1,7 +1,11 @@
+import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/on_boarding_screen.dart';
+import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/bottom_nav_screen.dart';
+import 'package:donation_blood/src/features/shared/presentation/create_req/screens/create_request_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
+import '../../bottom_nav/screens/donate_blood/screens/donate_blood_details_sreen.dart';
 import '../features/authentication/presentation/login_screen/login_screen.dart';
 import '../features/authentication/presentation/otp_screen.dart';
 import '../features/profile_det/screens/location_search_screen.dart';
@@ -25,7 +29,19 @@ class AppRouter {
       return pageTransition(const LocationSeachScreen());
     } else if (route.name == BottomNavScreen.id.path) {
       return pageTransition(const BottomNavScreen());
-    } else {
+    } else if (route.name == CreateReqScreen.id.path) {
+      return pageTransition(const CreateReqScreen());
+    } else if (route.name == BloodDonateReqScreen.id.path) {
+      BloodDonationModel bloodDonationModel =
+          route.arguments as BloodDonationModel;
+      return pageTransition(BloodDonateReqScreen(
+        bloodDonationModel: bloodDonationModel,
+      ));
+    } 
+    else if (route.name == DonateOnBoardingScreen.id.path) {
+      return pageTransition(const DonateOnBoardingScreen());
+    }
+    else {
       return MaterialPageRoute(
         builder: (_) => const Scaffold(
           body: Center(

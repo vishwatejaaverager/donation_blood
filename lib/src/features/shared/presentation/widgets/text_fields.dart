@@ -50,6 +50,57 @@ class DetailedTextFiled extends StatelessWidget {
   }
 }
 
+class ReqTextFiled extends StatelessWidget {
+  final String sideHeading, hintText;
+  final TextEditingController controller;
+  final Widget icon;
+  final bool isDisabled;
+  const ReqTextFiled({
+    required this.sideHeading,
+    this.hintText = '',
+    required this.controller,
+    required this.icon,
+    this.isDisabled = true,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(sideHeading),
+        Card(
+          child: Container(
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              // border: Border.all(color: Colors.black)
+            ),
+            child: TextFormField(
+              controller: controller,
+              decoration: InputDecoration(
+                  enabled: isDisabled,
+                  hintText: hintText,
+                  hintStyle: const TextStyle(
+                    fontSize: 16,
+                  ),
+                  icon: Card(
+                    child: Container(
+                        height: 50,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: icon),
+                  ),
+                  border: InputBorder.none),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
 class EmptyTextField extends StatelessWidget {
   final Widget text;
   final Widget? widget;

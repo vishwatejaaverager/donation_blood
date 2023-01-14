@@ -1,5 +1,8 @@
-
+import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
+import 'package:donation_blood/src/features/shared/presentation/create_req/screens/create_request_screen.dart';
+import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../../../../bottom_nav/screens/home/componets/home_header.dart';
 import '../../../../../../../../bottom_nav/screens/home/componets/home_view_count.dart';
@@ -18,6 +21,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -32,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     clipper: WaveClipper(),
                     child: Container(
                       color: Colors.red,
-                      height: size.height / 2,
+                      height: size.height / 3,
                     ),
                   ),
                 ),
@@ -42,14 +52,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     clipper: WaveClipper(),
                     child: Container(
                       color: Colors.red,
-                      height: size.height / 2.2,
+                      height: size.height / 3,
                     ),
                   ),
                 ),
                 const HomeHeader(),
-                Positioned(
-                    top: size.height / 6,
-                    child: const Padding(
+                const Positioned(
+                    top: 100,
+                    child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: HomeCountView(
                           count: "157",
@@ -57,22 +67,22 @@ class _HomeScreenState extends State<HomeScreen> {
                           text1: "New blood request",
                           text2: "Hyderabad",
                         ))),
-                Positioned(
+                const Positioned(
                     right: 0,
-                    top: size.height / 6,
-                    child: const Padding(
+                    top: 100,
+                    child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: HomeCountView(
                           count: "50",
                           image: "assets/home/group.png",
-                          text1: "People have",
-                          text2: "Shown Interest",
+                          text1: "Registered",
+                          text2: "",
                         )))
               ],
             ),
-            sbh(24),
             Padding(
-              padding: const EdgeInsets.all(36.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -113,6 +123,60 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             sbh(8),
                             const Text("BLOOD BANKS")
+                          ],
+                        )),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigation.instance.navigateTo(CreateReqScreen.id.path,);
+                    },
+                    child: Card(
+                      elevation: 10,
+                      child: Container(
+                          height: 150,
+                          width: 150,
+                          decoration: BoxDecoration(
+                              color: AppColors.whiteColor,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/home/req.png",
+                                scale: 8,
+                              ),
+                              sbh(8),
+                              const Text("Create Request")
+                            ],
+                          )),
+                    ),
+                  ),
+                  Card(
+                    elevation: 10,
+                    child: Container(
+                        height: 150,
+                        width: 150,
+                        decoration: BoxDecoration(
+                            color: AppColors.whiteColor,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/home/req.png",
+                              scale: 8,
+                            ),
+                            sbh(8),
+                            const Text("Blood Requests")
                           ],
                         )),
                   ),

@@ -7,8 +7,10 @@ enum AppRoutes {
   profileScreen("profile_screen"),
   notificationScreen("notification_screen"),
   editProfileScreen("profile_edit_screen"),
-  locationSearchScreen("location_search_screen");
-
+  locationSearchScreen("location_search_screen"),
+  createReqScreen("create_req_screen"),
+  bloodDonateReqScreen("blood_donate_req_screen"),
+  donateOnBoardingScreen("donate_onboarding_screen");
 
   const AppRoutes(this.path);
 
