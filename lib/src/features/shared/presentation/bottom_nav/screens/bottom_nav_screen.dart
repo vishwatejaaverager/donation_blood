@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/screens/profile_screen.dart';
-import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/search/screens/search_screen.dart';
+import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/donars/screens/donars_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -50,7 +50,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   Widget build(BuildContext context) {
     final bottomPages = [
       const HomeScreen(),
-      const SearchScreen(),
+      const DonarsScreen(),
       const DonateBloodScreen(),
       const ProfileScreen(),
       const NotificationScreen()

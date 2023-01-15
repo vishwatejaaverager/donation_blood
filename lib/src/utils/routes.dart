@@ -3,7 +3,7 @@ enum AppRoutes {
   otpScreen("otp_screen"),
   bottomScreen("bottom_screen"),
   homeScreen("home_screen"),
-  searchScreen("search_screen"),
+  donarsScreen("search_screen"),
   profileScreen("profile_screen"),
   notificationScreen("notification_screen"),
   editProfileScreen("profile_edit_screen"),
