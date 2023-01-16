@@ -13,11 +13,7 @@ class DonateOnBoardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: OnBoardingSlider(
-        
-          onFinish: (){
-
-
-          },
+          onFinish: () {},
           finishButtonText: "Continue",
           totalPage: 4,
           headerBackgroundColor: Colors.white,
@@ -89,15 +85,15 @@ class OnboardingWidget extends StatelessWidget {
 
   final Function() onpress1, onpress2;
   final String opt;
-  const OnboardingWidget({
-    Key? key,
-    required this.image,
-    required this.quest,
-    required this.onpress1,
-    required this.onpress2,
-    required this.opt,
-    this.toShowOpt = true
-  }) : super(key: key);
+  const OnboardingWidget(
+      {Key? key,
+      required this.image,
+      required this.quest,
+      required this.onpress1,
+      required this.onpress2,
+      required this.opt,
+      this.toShowOpt = true})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -119,44 +115,42 @@ class OnboardingWidget extends StatelessWidget {
           ),
           sbh(24),
           Visibility(
-            visible: toShowOpt,
-            child:  Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                onTap: onpress1,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  decoration: BoxDecoration(
-                      color: opt == 'Yes'
-                          ? Colors.redAccent
-                          : Colors.redAccent.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(24)),
-                  child: const Text(
-                    "Yes",
-                    style: TextStyle(fontSize: 20),
+              visible: toShowOpt,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: onpress1,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 8),
+                      decoration: BoxDecoration(
+                          color: opt == 'Yes'
+                              ? Colors.redAccent
+                              : Colors.redAccent.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(24)),
+                      child: const Text(
+                        "Yes",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              sbw(24),
-              InkWell(
-                onTap: onpress2,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  decoration: BoxDecoration(
-                      color: opt == 'No'
-                          ? Colors.redAccent
-                          : Colors.redAccent.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(24)),
-                  child: const Text("No", style: TextStyle(fontSize: 20)),
-                ),
-              )
-            ],
-          ))
-          
-         
+                  sbw(24),
+                  InkWell(
+                    onTap: onpress2,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 8),
+                      decoration: BoxDecoration(
+                          color: opt == 'No'
+                              ? Colors.redAccent
+                              : Colors.redAccent.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(24)),
+                      child: const Text("No", style: TextStyle(fontSize: 20)),
+                    ),
+                  )
+                ],
+              ))
         ],
       ),
     );

@@ -1,12 +1,17 @@
 import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/donate_blood_details_sreen.dart';
+import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
+import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../src/utils/colors.dart';
 import '../../../../src/utils/navigation.dart';
+import 'filtered_request_screens/all_req_screen.dart';
+import 'filtered_request_screens/blood_type_screen.dart';
+import 'filtered_request_screens/emergency_screen.dart';
 
 class DonateBloodScreen extends StatefulWidget {
   const DonateBloodScreen({super.key});
@@ -15,19 +20,29 @@ class DonateBloodScreen extends StatefulWidget {
   State<DonateBloodScreen> createState() => _DonateBloodScreenState();
 }
 
-class _DonateBloodScreenState extends State<DonateBloodScreen> {
+class _DonateBloodScreenState extends State<DonateBloodScreen>
+    with SingleTickerProviderStateMixin {
   late RequestProvider requestProvider;
+  late TabController _tabController;
+  late UserProfile userProfile;
   @override
   void initState() {
     requestProvider = Provider.of<RequestProvider>(context, listen: false);
-    getAllRequests(requestProvider);
+    userProfile =
+        Provider.of<ProfileProvider>(context, listen: false).userProfile!;
+    _tabController = TabController(vsync: this, length: 3);
+    //
+    // getAllRequests(requestProvider, userProfile);
+    requestProvider.getAllReuests(userProfile);
+
     super.initState();
   }
 
-  getAllRequests(RequestProvider requestProvider) async {
-    await requestProvider.getAllReuests();
-    //requestProvider.storeEmergencyRequests();
-  }
+  // getAllRequests(
+  //     RequestProvider requestProvider, UserProfile userProfile) async {
+  //   await requestProvider.getAllReuests(userProfile);
+  //   //requestProvider.storeEmergencyRequests();
+  // }
 
   @override
   void didChangeDependencies() {
@@ -37,7 +52,7 @@ class _DonateBloodScreenState extends State<DonateBloodScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    //final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         // appBar: AppBar(
@@ -47,58 +62,74 @@ class _DonateBloodScreenState extends State<DonateBloodScreen> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Stack(
-            //   children: [
-            //     Opacity(
-            //       opacity: 0.3,
-            //       child: ClipPath(
-            //         clipper: WaveClipper(),
-            //         child: Container(
-            //           color: Colors.red,
-            //           height: size.height / 8,
-            //         ),
-            //       ),
-            //     ),
-            // Opacity(
-            //   opacity: 0.5,
-            //   child: ClipPath(
-            //     clipper: WaveClipper(),
-            //     child: Container(
-            //       color: Colors.red,
-            //       height: size.height / 7,
-            //     ),
-            //   ),
-            // ),
-            //   ],
-            // ),
             const Padding(
-              padding: EdgeInsets.only(left: 8.0, top: 16.0),
+              padding: EdgeInsets.only(left: 16.0, top: 16.0),
               child: Text(
                 "Requests",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
-            Consumer<RequestProvider>(builder: ((_, __, ___) {
-              return Expanded(
-                child: ListView.builder(
-                    itemCount: __.isLoading ? 40 : __.allRequests.length,
-                    shrinkWrap: true,
-                    itemBuilder: ((context, index) {
-                      BloodDonationModel requestData =
-                          BloodDonationModel.fromMap(
-                              __.allRequests[index].data());
-                      return __.isLoading
-                          ? const CircularProgressIndicator()
-                          : RequestBloodCard(bloodDonationModel: requestData);
-                    })),
-              );
-            }))
+
+            FrequencyTabs(
+                tabs: const [
+                  SizedBox(child: Center(child: Text("My Type"))),
+                  SizedBox(child: Center(child: Text("Emergency"))),
+                  SizedBox(child: Center(child: Text("All")))
+                ],
+                controller: _tabController,
+                tags: const []),
+
+            Expanded(
+                child: TabBarView(
+              controller: _tabController,
+              children: const [
+                BloodTypeScreen(),
+                EmergencyScreen(),
+                AllRequestsScreeen(),
+              ],
+            ))
 
             //RequestBloodCard()
           ],
         ),
       ),
     );
+  }
+}
+
+class FrequencyTabs extends StatelessWidget {
+  final TabController controller;
+  final List tags;
+  final List<Widget> tabs;
+  const FrequencyTabs(
+      {super.key,
+      required this.controller,
+      required this.tags,
+      required this.tabs});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        //margin: const EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.all(2),
+        height: 50,
+        width: size.width,
+        // decoration: BoxDecoration(
+        //     color: Colors.white, borderRadius: BorderRadius.circular(12)),
+        child: Align(
+          alignment: Alignment.bottomLeft,
+          child: TabBar(
+              controller: controller,
+              // indicator: BoxDecoration(
+              //     color: Colors.red.withOpacity(0.8),
+              //     borderRadius: BorderRadius.circular(12),
+              //     border: Border.all(color: Colors.redAccent.withOpacity(0.5))),
+              isScrollable: true,
+              indicatorWeight: 3.5,
+              indicatorSize: TabBarIndicatorSize.label,
+              labelColor: Colors.black,
+              tabs: tabs),
+        ));
   }
 }
 

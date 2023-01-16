@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
@@ -27,10 +28,12 @@ class RequestProvider with ChangeNotifier {
     _selectedOpt = s;
     notifyListeners();
   }
+
   setSelectedOpt1(String s) {
     _selectedOpt1 = s;
     notifyListeners();
   }
+
   setSelectedOpt2(String s) {
     _selectedOpt2 = s;
     notifyListeners();
@@ -40,29 +43,61 @@ class RequestProvider with ChangeNotifier {
   List<QueryDocumentSnapshot<Map<String, dynamic>>> _allRequests = [];
   List<QueryDocumentSnapshot<Map<String, dynamic>>> get allRequests =>
       _allRequests;
-  getAllReuests() async {
+  getAllReuests(UserProfile userProfile) async {
     _isLoading = true;
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      notifyListeners();
+    });
     // String id = _preferences.getUserId();
 
-    _streams.requestQuery.get().then((value) {
-      _allRequests = value.docs;
+    if (_allRequests.isEmpty) {
+      var allReq = await _streams.requestQuery.get();
+      _allRequests = allReq.docs;
       log(_allRequests.length.toString());
-      storeEmergencyRequests(_allRequests);
-    });
-    _isLoading = false;
+      for (var i = 0; i < _allRequests.length; i++) {
+        log("message");
+        storeBloodType(_allRequests, userProfile, i);
+        storeEmergencyRequests(_allRequests, i);
+      }
+      
+   }
+   _isLoading = false;
+
     log(_isLoading.toString());
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       notifyListeners();
     });
   }
 
-  storeEmergencyRequests(List req) {
-    for (var element in req) {
-      if (element['isEmergency']) {
-        log("message");
-      }
+  //##################### store emergency and  blood type #################
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> _allEmergency = [];
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> get allEmergency =>
+      _allEmergency;
+
+  storeEmergencyRequests(List req, int index) {
+    //for (var element in req) {
+    if (req[index]['isEmergency']) {
+      _allEmergency.add(req[index]);
     }
-    notifyListeners();
+    // }
+
+    // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    //   notifyListeners();
+    // });
+  }
+
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> _sameType = [];
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> get sameType => _sameType;
+
+  storeBloodType(List req, UserProfile userProfile, int index) {
+    //for (var element in req) {
+    if (req[index]['bloodGroup'] == userProfile.bloodGroup) {
+      _sameType.add(req[index]);
+    }
+    //  }
+    // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    //   notifyListeners();
+    // });
   }
 
 //########################## launch maps ###################################

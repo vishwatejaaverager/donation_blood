@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/screens/profile_screen.dart';
-import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/search/screens/search_screen.dart';
+import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/donars/screens/donars_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -50,10 +50,11 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   Widget build(BuildContext context) {
     final bottomPages = [
       const HomeScreen(),
-      const SearchScreen(),
+      const DonarsScreen(),
       const DonateBloodScreen(),
+      const NotificationScreen(),
       const ProfileScreen(),
-      const NotificationScreen()
+      
     ];
     return Consumer<BottomNavProvider>(builder: ((_, __, ___) {
       return Scaffold(
@@ -91,20 +92,21 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                     scale: __.pageId == 2 ? 20 : 25,
                     color: __.pageId == 2 ? Colors.red : Colors.grey,
                   )),
-              BottomNavigationBarItem(
+                  BottomNavigationBarItem(
                   label: "",
                   icon: Image.asset(
-                    'assets/bottom_nav/user.png',
+                    'assets/bottom_nav/notification.png',
                     scale: __.pageId == 3 ? 20 : 25,
                     color: __.pageId == 3 ? Colors.red : Colors.grey,
                   )),
               BottomNavigationBarItem(
                   label: "",
                   icon: Image.asset(
-                    'assets/bottom_nav/notification.png',
+                    'assets/bottom_nav/user.png',
                     scale: __.pageId == 4 ? 20 : 25,
                     color: __.pageId == 4 ? Colors.red : Colors.grey,
                   )),
+              
             ]),
       );
     }));

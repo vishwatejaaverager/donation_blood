@@ -73,15 +73,20 @@ class BloodDonationModel {
 
   factory BloodDonationModel.fromMap(Map<String, dynamic> map) {
     return BloodDonationModel(
-      patientName: map['patientName'] != null ? map['patientName'] as String : null,
+      patientName:
+          map['patientName'] != null ? map['patientName'] as String : null,
       number: map['number'] != null ? map['number'] as String : null,
-      bloodGroup: map['bloodGroup'] != null ? map['bloodGroup'] as String : null,
-      donationStat: map['donationStat'] != null ? map['donationStat'] as String : null,
+      bloodGroup:
+          map['bloodGroup'] != null ? map['bloodGroup'] as String : null,
+      donationStat:
+          map['donationStat'] != null ? map['donationStat'] as String : null,
       units: map['units'] != null ? map['units'] as String : null,
-      donatedUnits: map['donatedUnits'] != null ? map['donatedUnits'] as String : null,
+      donatedUnits:
+          map['donatedUnits'] != null ? map['donatedUnits'] as String : null,
       deadLine: map['deadLine'] != null ? map['deadLine'] as String : null,
       location: map['location'] != null ? map['location'] as String : null,
-      isEmergency: map['isEmergency'] != null ? map['isEmergency'] as bool : null,
+      isEmergency:
+          map['isEmergency'] != null ? map['isEmergency'] as bool : null,
       lat: map['lat'] != null ? map['lat'] as num : null,
       long: map['long'] != null ? map['long'] as num : null,
     );
@@ -100,33 +105,32 @@ class BloodDonationModel {
   @override
   bool operator ==(covariant BloodDonationModel other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.patientName == patientName &&
-      other.number == number &&
-      other.bloodGroup == bloodGroup &&
-      other.donationStat == donationStat &&
-      other.units == units &&
-      other.donatedUnits == donatedUnits &&
-      other.deadLine == deadLine &&
-      other.location == location &&
-      other.isEmergency == isEmergency &&
-      other.lat == lat &&
-      other.long == long;
+
+    return other.patientName == patientName &&
+        other.number == number &&
+        other.bloodGroup == bloodGroup &&
+        other.donationStat == donationStat &&
+        other.units == units &&
+        other.donatedUnits == donatedUnits &&
+        other.deadLine == deadLine &&
+        other.location == location &&
+        other.isEmergency == isEmergency &&
+        other.lat == lat &&
+        other.long == long;
   }
 
   @override
   int get hashCode {
     return patientName.hashCode ^
-      number.hashCode ^
-      bloodGroup.hashCode ^
-      donationStat.hashCode ^
-      units.hashCode ^
-      donatedUnits.hashCode ^
-      deadLine.hashCode ^
-      location.hashCode ^
-      isEmergency.hashCode ^
-      lat.hashCode ^
-      long.hashCode;
+        number.hashCode ^
+        bloodGroup.hashCode ^
+        donationStat.hashCode ^
+        units.hashCode ^
+        donatedUnits.hashCode ^
+        deadLine.hashCode ^
+        location.hashCode ^
+        isEmergency.hashCode ^
+        lat.hashCode ^
+        long.hashCode;
   }
 }
