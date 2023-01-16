@@ -103,7 +103,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Row(
+                  Consumer(builder: ((context, value, child) {
+                    return Row(
                     children: [
                       Expanded(
                           child: InkWell(
@@ -112,10 +113,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     .navigateTo(LocationSeachScreen.id.path);
                               },
                               child: EmptyTextField(
-                                text: Text(
-                                  __.description,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                                text: SizedBox(
+                                  width: size.width/1.4,
+                                  child: Text(
+                                    __.description,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ))),
                       Container(
@@ -127,7 +131,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         child: const Icon(Icons.gps_fixed),
                       )
                     ],
-                  ),
+                  );
+                  })),
                   // EmptyTextField(
                   //     text: __.dropDownValue,
                   //     widget: InkWell(
@@ -143,7 +148,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   //             __.setDropDownValue(value!);
                   //           })),
                   //     )),
-                  const Padding(
+                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
                     child: Text(
@@ -323,6 +328,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             Provider.of<SearchProvider>(context, listen: false)
                                 .userLocation!;
                         UserProfile userProfile = UserProfile(
+                          userId: userId,
                             name: _nameController.text,
                             age: _ageController.text,
                             gender: __.dropDownValue,

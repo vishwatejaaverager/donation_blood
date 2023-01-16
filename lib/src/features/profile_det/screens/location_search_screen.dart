@@ -1,7 +1,5 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:geolocator/geolocator.dart';
 
 import '../../../utils/routes.dart';
 import '../../../utils/utils.dart';
@@ -60,9 +58,7 @@ class _LocationSeachScreenState extends State<LocationSeachScreen> {
               ),
               sbh(12),
               InkWell(
-                onTap: () {
-                 
-                },
+                onTap: () {},
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -100,7 +96,8 @@ class _LocationSeachScreenState extends State<LocationSeachScreen> {
                             Provider.of<ProfileProvider>(context, listen: false)
                                 .setDescription(
                                     __.placesData[index]['description']);
-                            __.getCoOrdinates(a);
+
+                            __.getCoOrdinates(a, context);
                           },
                           leading: const Icon(Icons.gps_fixed),
                           title: Text(

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../domain/models/user_profile_model.dart';
+import '../../components/donars_card.dart';
 import '../../provider/donar_provider.dart';
-import 'my_type_donars_screen.dart';
 
 class NearbyDonarsScreen extends StatelessWidget {
   const NearbyDonarsScreen({super.key});
@@ -18,7 +18,10 @@ class NearbyDonarsScreen extends StatelessWidget {
             if (!__.isLoading) {
               UserProfile requestData =
                   UserProfile.fromMap(__.nearby[index].data());
-              return DonarCardWidget(userProfile: requestData,donarProvider: __,);
+              return DonarCardWidget(
+                userProfile: requestData,
+                donarProvider: __,
+              );
             } else {
               return const CircularProgressIndicator();
             }

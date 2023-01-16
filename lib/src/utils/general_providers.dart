@@ -1,6 +1,7 @@
 
 import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/donars/provider/donar_provider.dart';
+import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/notification/provider/responses_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -24,4 +25,5 @@ List<SingleChildWidget> generalProviders = [
   ChangeNotifierProvider<ProfileProvider>(create: (_) => ProfileProvider()),
   ChangeNotifierProvider<ConnectivityRepo>(create: (_) => ConnectivityRepo()),
   ChangeNotifierProvider<DonarProvider>(create: (_) => DonarProvider()),
+   ChangeNotifierProvider<ResponseProvider>(create: (_) => ResponseProvider()),
 ];

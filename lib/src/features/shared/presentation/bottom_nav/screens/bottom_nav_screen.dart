@@ -52,8 +52,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       const HomeScreen(),
       const DonarsScreen(),
       const DonateBloodScreen(),
+      const NotificationScreen(),
       const ProfileScreen(),
-      const NotificationScreen()
+      
     ];
     return Consumer<BottomNavProvider>(builder: ((_, __, ___) {
       return Scaffold(
@@ -91,20 +92,21 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                     scale: __.pageId == 2 ? 20 : 25,
                     color: __.pageId == 2 ? Colors.red : Colors.grey,
                   )),
-              BottomNavigationBarItem(
+                  BottomNavigationBarItem(
                   label: "",
                   icon: Image.asset(
-                    'assets/bottom_nav/user.png',
+                    'assets/bottom_nav/notification.png',
                     scale: __.pageId == 3 ? 20 : 25,
                     color: __.pageId == 3 ? Colors.red : Colors.grey,
                   )),
               BottomNavigationBarItem(
                   label: "",
                   icon: Image.asset(
-                    'assets/bottom_nav/notification.png',
+                    'assets/bottom_nav/user.png',
                     scale: __.pageId == 4 ? 20 : 25,
                     color: __.pageId == 4 ? Colors.red : Colors.grey,
                   )),
+              
             ]),
       );
     }));

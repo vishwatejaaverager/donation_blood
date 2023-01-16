@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/donars/provider/donar_provider.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:provider/provider.dart';
 
 import '../../../utils/navigation.dart';
 
@@ -26,7 +28,7 @@ class SearchProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  getCoOrdinates(String p) async {
+  getCoOrdinates(String p, BuildContext context) async {
     try {
       final places =
           GoogleMapsPlaces(apiKey: 'AIzaSyBzm0NvCH2RFsttbwBBMTujYtidyYK97pY');
@@ -35,6 +37,8 @@ class SearchProvider with ChangeNotifier {
         _userLocation = value.result.geometry!.location;
         log("${_userLocation!.lat}latitude");
         log("${_userLocation!.lng} longitude");
+        Provider.of<DonarProvider>(context, listen: false)
+            .setHospitalLocation(_userLocation!);
 
         Navigation.instance.pushBack();
       });

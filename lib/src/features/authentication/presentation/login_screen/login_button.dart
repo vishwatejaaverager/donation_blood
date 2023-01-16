@@ -5,9 +5,11 @@ import '../../../../utils/utils.dart';
 
 class LoginButton extends StatelessWidget {
   final Function() onPressed;
+  final Widget? icons;
   final String text;
   const LoginButton({
     Key? key,
+    this.icons,
     required this.onPressed,
     required this.text,
   }) : super(key: key);
@@ -32,14 +34,14 @@ class LoginButton extends StatelessWidget {
                 Text(
                   text,
                   style: const TextStyle(
-                      color: AppColors.whiteColor,
-                      fontWeight: FontWeight.bold),
+                      color: AppColors.whiteColor, fontWeight: FontWeight.bold),
                 ),
-                const Icon(
-                  Icons.arrow_right_rounded,
-                  color: AppColors.whiteColor,
-                  size: 32,
-                )
+                icons ??
+                    const Icon(
+                      Icons.arrow_right_rounded,
+                      color: AppColors.whiteColor,
+                      size: 32,
+                    )
               ],
             ),
           )),
