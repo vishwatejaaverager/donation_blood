@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/requests_provider.dart';
+import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
 import 'package:donation_blood/src/utils/routes.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +16,20 @@ class DonateOnBoardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: OnBoardingSlider(
-          onFinish: () {},
+          onFinish: () {
+            String userId = Provider.of<ProfileProvider>(context, listen: false)
+                .userProfile!
+                .userId!;
+            RequestProvider reqProv =
+                Provider.of<RequestProvider>(context, listen: false);
+            if (reqProv.selectedOpt == 'Yes' &&
+                reqProv.selectedOpt1 == 'Yes' &&
+                reqProv.selectedOpt2 == 'No') {
+              reqProv.addInterestedDonars(userId);
+            } else {
+              appToast("Sorry You Are Not Elgible :(");
+            }
+          },
           finishButtonText: "Continue",
           totalPage: 4,
           headerBackgroundColor: Colors.white,
@@ -68,7 +84,7 @@ class DonateOnBoardingScreen extends StatelessWidget {
                 opt: '',
                 quest: __.selectedOpt == 'Yes' &&
                         __.selectedOpt1 == 'Yes' &&
-                        __.selectedOpt2 == 'Yes'
+                        __.selectedOpt2 == 'No'
                     ? "Received a transfusion in the past 3 months !?"
                     : "Sorry You Are Not Elgible :( dont be dissapointed you can share this to your friends  :)",
               );

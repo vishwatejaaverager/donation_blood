@@ -184,17 +184,26 @@ class ProfileProvider with ChangeNotifier {
           context: Navigation.instance.navigationKey.currentState!.context,
           title: "Creating Request :)");
       await _streams.requestQuery.doc().set(bloodDonation.toMap());
+      
+
       await _streams.userQuery
           .doc(id)
-          .collection("requests")
+          .collection(Streams.requestByUser)
           .doc()
           .set(bloodDonation.toMap());
+      
       Navigation.instance.pushBack();
       Navigation.instance.pushBack();
       appToast("Succesfully Request Added Hold Tight :)");
     } catch (e) {
       log(e.toString());
     }
+  }
+
+// if emergency we will send notification to requested blood type users as well as waatti message 
+
+  sendRequesToSameTypeBlood(){
+    
   }
 
   //############ store userInfo ####################

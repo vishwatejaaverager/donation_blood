@@ -39,6 +39,36 @@ class RequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  addInterestedDonars(String userID) async {
+    await _streams.requestQuery
+        .where('userId', isEqualTo: userID)
+        .get()
+        .then((value) {
+      String docId = value.docs.single.id;
+      log(docId);
+      _streams.requestQuery.doc(docId).update({
+        'intrestedDonars': FieldValue.arrayUnion([userID])
+      });
+    });
+
+    await _streams.userQuery
+        .doc(userID)
+        .collection(Streams.requestByUser)
+        .where('userId', isEqualTo: userID)
+        .get()
+        .then((value) {
+      String docId = value.docs.single.id;
+      log(docId);
+      _streams.userQuery
+          .doc(userID)
+          .collection(Streams.requestByUser)
+          .doc(docId)
+          .update({
+        'intrestedDonars': FieldValue.arrayUnion([userID])
+      });
+    });
+  }
+
 //######################## all requests loading #################################
   List<QueryDocumentSnapshot<Map<String, dynamic>>> _allRequests = [];
   List<QueryDocumentSnapshot<Map<String, dynamic>>> get allRequests =>
@@ -59,9 +89,8 @@ class RequestProvider with ChangeNotifier {
         storeBloodType(_allRequests, userProfile, i);
         storeEmergencyRequests(_allRequests, i);
       }
-      
-   }
-   _isLoading = false;
+    }
+    _isLoading = false;
 
     log(_isLoading.toString());
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {

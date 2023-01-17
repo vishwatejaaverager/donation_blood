@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
-    // TODO: implement initState
+
     super.initState();
   }
 
@@ -137,7 +137,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigation.instance.navigateTo(CreateReqScreen.id.path,);
+                      Navigation.instance.navigateTo(
+                        CreateReqScreen.id.path,
+                      );
                     },
                     child: Card(
                       elevation: 10,

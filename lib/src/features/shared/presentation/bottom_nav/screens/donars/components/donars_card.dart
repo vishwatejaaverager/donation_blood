@@ -37,6 +37,7 @@ class DonarCardWidget extends StatelessWidget {
       child: ListTile(
         onTap: () {
           showModalBottomSheet(
+              isScrollControlled: true,
               context: context,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
@@ -71,7 +72,7 @@ class DonarCardWidget extends StatelessWidget {
   }
 }
 
-class DonarsBottomSheet extends StatelessWidget {
+class DonarsBottomSheet extends StatefulWidget {
   const DonarsBottomSheet({
     Key? key,
     required this.userProfile,
@@ -82,155 +83,212 @@ class DonarsBottomSheet extends StatelessWidget {
   final DonarProvider donarProvider;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListTile(
-          leading: CacheImage(image: userProfile.profileImage!),
-          title: Text(userProfile.name!),
-          subtitle: Text(donarProvider.calcDistFromUser(
-                      fetchedUser: userProfile, context) ==
-                  "0.0"
-              ? "0.10 km"
-              : "${donarProvider.calcDistFromUser(fetchedUser: userProfile, context)} Km's"),
-        ),
-        Consumer<ProfileProvider>(builder: ((context, __, child) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-                child: Text(
-                  "Required by",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Card(
-                        elevation: 6,
-                        child: Image.asset(
-                          "assets/home/calendar.png",
-                          scale: 20,
-                        )),
-                    sbw(4),
-                    InkWell(
-                      onTap: () async {
-                        final picker = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2025),
-                        );
-                        if (picker != null) {
-                          String formattedDate =
-                              Jiffy(picker).format('MMM do ');
-                          __.setReqDate(formattedDate);
-                        }
-                      },
-                      child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(__.reqDate)),
-                    ),
+  State<DonarsBottomSheet> createState() => _DonarsBottomSheetState();
+}
 
-                    //    Text(value.unitDrop + " Units"),
-                  ],
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-                child: Text(
-                  "Search Hospital",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              Row(
+class _DonarsBottomSheetState extends State<DonarsBottomSheet> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController noteController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: CacheImage(image: widget.userProfile.profileImage!),
+              title: Text(widget.userProfile.name!),
+              subtitle: Text(widget.donarProvider.calcDistFromUser(
+                          fetchedUser: widget.userProfile, context) ==
+                      "0.0"
+                  ? "0.10 km"
+                  : "${widget.donarProvider.calcDistFromUser(fetchedUser: widget.userProfile, context)} Km's"),
+            ),
+            Consumer<ProfileProvider>(builder: ((context, __, child) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                      child: InkWell(
-                          onTap: () {
-                            Navigation.instance
-                                .navigateTo(LocationSeachScreen.id.path);
-                          },
-                          child: EmptyTextField(
-                            text: SizedBox(
-                              width: size.width / 1.4,
-                              child: Text(
-                                __.description,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ))),
-                  Container(
-                    margin: const EdgeInsets.only(right: 16),
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: Colors.grey)),
-                    child: const Icon(Icons.gps_fixed),
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      "Emergency Request",
-                      style: TextStyle(color: Colors.grey),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 4),
+                    child: ReqTextFiled(
+                      controller: nameController,
+                      sideHeading: "Patient Name",
+                      icon: const Icon(Icons.person),
                     ),
                   ),
-                  Checkbox(
-                      splashRadius: 24,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4)),
-                      value: __.isEmergency,
-                      onChanged: ((value) {
-                        __.setIsEmergency(value!);
-                      })),
-                ],
-              ),
-              LoginButton(
-                onPressed: () {
-                  log(userProfile.userId.toString());
-                  UserProfile actualUserProfile =
-                      Provider.of<ProfileProvider>(context, listen: false)
-                          .userProfile!;
-                  BloodRequestModel bloodRequestModel = BloodRequestModel(
-                      name: actualUserProfile.name,
-                      image: actualUserProfile.profileImage,
-                      phone: actualUserProfile.phone,
-                      userFrom: actualUserProfile.userId,
-                      userTo: userProfile.userId,
-                      reqStat: '',
-                      location: __.description,
-                      deadLine: __.reqDate,
-                      distance: donarProvider.calcDistFromUser(context,
-                          isUser: false, hospLoc: donarProvider.hospLoc),
-                      isEmergency: __.isEmergency,
-                      bloodGroup: userProfile.bloodGroup);
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+                    child: Text(
+                      "Required by",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Card(
+                            elevation: 6,
+                            child: Image.asset(
+                              "assets/home/calendar.png",
+                              scale: 20,
+                            )),
+                        sbw(4),
+                        InkWell(
+                          onTap: () async {
+                            final picker = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2025),
+                            );
+                            if (picker != null) {
+                              String formattedDate =
+                                  Jiffy(picker).format('MMM do ');
+                              __.setReqDate(formattedDate);
+                            }
+                          },
+                          child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(__.reqDate)),
+                        ),
 
-                  donarProvider.createBloodRequest(bloodRequestModel);
-                },
-                text: "Request",
-                icons: Image.asset(
-                  "assets/home/blood_help.png",
-                  scale: 20,
-                ),
-              )
-            ],
-          );
-        }))
-      ],
+                        //    Text(value.unitDrop + " Units"),
+                      ],
+                    ),
+                  ),
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+                    child: Text(
+                      "Search Hospital",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: InkWell(
+                              onTap: () {
+                                Navigation.instance
+                                    .navigateTo(LocationSeachScreen.id.path);
+                              },
+                              child: EmptyTextField(
+                                text: SizedBox(
+                                  width: size.width / 1.4,
+                                  child: Text(
+                                    __.description,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ))),
+                      Container(
+                        margin: const EdgeInsets.only(right: 16),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: Colors.grey)),
+                        child: const Icon(Icons.gps_fixed),
+                      )
+                    ],
+                  ),
+                  sbh(4),
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+                    child: Text(
+                      "Want to say some thing !?",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: TextFormField(
+                      maxLines: 3,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: " Add a note  to donar ",
+                        hintStyle: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: Text(
+                          "Emergency Request",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                      Checkbox(
+                          splashRadius: 24,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4)),
+                          value: __.isEmergency,
+                          onChanged: ((value) {
+                            __.setIsEmergency(value!);
+                          })),
+                    ],
+                  ),
+                  LoginButton(
+                    onPressed: () {
+                      log(widget.userProfile.userId.toString());
+                      UserProfile actualUserProfile =
+                          Provider.of<ProfileProvider>(context, listen: false)
+                              .userProfile!;
+                      BloodRequestModel bloodRequestModel = BloodRequestModel(
+                          name: actualUserProfile.name,
+                          image: actualUserProfile.profileImage,
+                          phone: actualUserProfile.phone,
+                          userFrom: actualUserProfile.userId,
+                          userTo: widget.userProfile.userId,
+                          reqStat: '',
+                          patientName: nameController.text,
+                          location: __.description,
+                          deadLine: __.reqDate,
+                          note: noteController.text.isEmpty
+                              ? "Please do help me"
+                              : noteController.text,
+                          distance: widget.donarProvider.calcDistFromUser(
+                              context,
+                              isUser: false,
+                              hospLoc: widget.donarProvider.hospLoc),
+                          isEmergency: __.isEmergency,
+                          bloodGroup: widget.userProfile.bloodGroup);
+
+                      widget.donarProvider
+                          .createBloodRequest(bloodRequestModel);
+                    },
+                    text: "Request",
+                    icons: Image.asset(
+                      "assets/home/blood_help.png",
+                      scale: 20,
+                    ),
+                  )
+                ],
+              );
+            }))
+          ],
+        ),
+      ),
     );
   }
 }

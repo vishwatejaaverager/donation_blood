@@ -1,34 +1,31 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/donate_blood_screen.dart';
+import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../../domain/models/blood_req_model.dart';
-import 'blood_response_screen.dart';
+import '../../components/request_blood_card.dart';
 
-class BloodUserResScreen extends StatelessWidget {
+class UserBloodRequestsScreen extends StatelessWidget {
   final Stream<QuerySnapshot<Map<String, dynamic>>> bloodReqByUsers;
-
-  const BloodUserResScreen({super.key, required this.bloodReqByUsers});
+  const UserBloodRequestsScreen({super.key, required this.bloodReqByUsers});
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: bloodReqByUsers,
-        builder: ((context,
-            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+        builder: ((context, snapshot) {
           if (snapshot.hasData) {
-            log("snap has data");
-            //log(snapshot.data!.docs[0]['name']);
-            log(snapshot.data!.docs.length.toString());
             return ListView.builder(
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: ((context, index) {
-                  
-                  BloodRequestModel requestData = BloodRequestModel.fromMap(
+                  BloodDonationModel requestData = BloodDonationModel.fromMap(
                       snapshot.data!.docs[index].data());
 
-                  return SeekerReqCard(bloodReq: requestData);
+                  return RequestBloodCard(
+                    bloodDonationModel: requestData,
+                    showHosp: false,
+                    isDetail: true,
+                  );
                 }));
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
