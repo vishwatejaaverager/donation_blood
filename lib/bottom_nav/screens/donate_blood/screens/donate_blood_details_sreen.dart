@@ -150,7 +150,7 @@ class BloodDonateReqScreen extends StatelessWidget {
                 ),
               ),
             ),
-            //TODO make responsive
+            
             Row(
               children: [
                 Checkbox(
@@ -171,7 +171,7 @@ class BloodDonateReqScreen extends StatelessWidget {
               child: AnimatedButton(
                 onPress: () async {
                   Navigation.instance
-                      .navigateTo(DonateOnBoardingScreen.id.path);
+                      .navigateTo(DonateOnBoardingScreen.id.path,args: bloodDonationModel);
                 },
                 height: 50,
                 //width: 100,

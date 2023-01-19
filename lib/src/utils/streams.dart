@@ -4,7 +4,9 @@ class Streams {
   static const requests = 'yourRequests';
   static const seekersRequest = 'seekersRequest';
   static const user = 'users';
+  static const otherDonarsIntrest = 'otherDonarsShownIntrest';
   static const requestByUser = 'requestsByUser';
+  static const userInterests = 'userInterestsDonate';
   static const bloodRequest = 'blood_requests';
 
   final userQuery = FirebaseFirestore.instance.collection(user);

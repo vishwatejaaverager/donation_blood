@@ -1,21 +1,23 @@
+import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/requests_provider.dart';
+import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/request_response_screens/donation_detail_res_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../src/features/shared/domain/models/blood_donation_model.dart';
 import '../../../../src/utils/navigation.dart';
 import '../../../../src/utils/utils.dart';
 import '../screens/donate_blood_details_sreen.dart';
 
-
-
-
 class RequestBloodCard extends StatelessWidget {
   final BloodDonationModel bloodDonationModel;
   final bool showHosp;
   final bool isDetail;
+  final String? id;
   const RequestBloodCard({
     required this.bloodDonationModel,
     this.showHosp = true,
     this.isDetail = false,
+    this.id,
     Key? key,
   }) : super(key: key);
 
@@ -68,6 +70,11 @@ class RequestBloodCard extends StatelessWidget {
               InkWell(
                 onTap: () {
                   if (isDetail) {
+                    Navigation.instance.navigateTo(BloodDetailResScreen.id.path,
+                        args: {
+                          'bloodDonationInfo' : bloodDonationModel,
+                          'id' : id
+                        });
                   } else {
                     Navigation.instance.navigateTo(BloodDonateReqScreen.id.path,
                         args: bloodDonationModel);

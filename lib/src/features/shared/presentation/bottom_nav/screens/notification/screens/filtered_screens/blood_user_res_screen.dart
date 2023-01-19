@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:donation_blood/bottom_nav/screens/donate_blood/components/req_res_card.dart';
+import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
+import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
+import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/notification/provider/responses_provider.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../../domain/models/blood_req_model.dart';
-import 'blood_response_screen.dart';
+import 'package:provider/provider.dart';
 
 class BloodUserResScreen extends StatelessWidget {
   final Stream<QuerySnapshot<Map<String, dynamic>>> bloodReqByUsers;
@@ -24,11 +26,29 @@ class BloodUserResScreen extends StatelessWidget {
             return ListView.builder(
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: ((context, index) {
-                  
-                  BloodRequestModel requestData = BloodRequestModel.fromMap(
-                      snapshot.data!.docs[index].data());
+                  InterestedDonarsModel requestData =
+                      InterestedDonarsModel.fromMap(
+                          snapshot.data!.docs[index].data());
+                  Provider.of<ResponseProvider>(context, listen: false)
+                      .getUserResFromFirebase(requestData.userTo!);
+          
 
-                  return SeekerReqCard(bloodReq: requestData);
+                  return Consumer<ResponseProvider>(builder: ((_, __, ___) {
+                    if (!__.isLoading) {
+                      BloodDonationModel reqData = BloodDonationModel.fromMap(
+                          __.userToDonate[index].data());
+                      log(reqData.toMap().toString());
+
+                      return ReqResCard(
+                        bloodDonationModel: reqData,
+                        isWaitRes: true,
+                        donarStat: requestData,
+                        index: index,
+                      );
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  }));
                 }));
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();

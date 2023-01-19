@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
 import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,34 +40,52 @@ class RequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  addInterestedDonars(String userID) async {
-    await _streams.requestQuery
-        .where('userId', isEqualTo: userID)
-        .get()
-        .then((value) {
-      String docId = value.docs.single.id;
-      log(docId);
-      _streams.requestQuery.doc(docId).update({
-        'intrestedDonars': FieldValue.arrayUnion([userID])
+  addInterestedDonars(InterestedDonarsModel donarsModel) async {
+    try {
+      // await _streams.requestQuery
+      //     .where('userId', isEqualTo: donarsModel.userTo)
+      //     .get()
+      //     .then((value) {
+      //   String docId = value.docs.single.id;
+      //   log(docId);
+      //   _streams.requestQuery.doc(docId).update({
+      //     'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
+      //   });
+      // });
+      await _streams.requestQuery.doc(donarsModel.donationId).update({
+        'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
       });
-    });
 
-    await _streams.userQuery
-        .doc(userID)
-        .collection(Streams.requestByUser)
-        .where('userId', isEqualTo: userID)
-        .get()
-        .then((value) {
-      String docId = value.docs.single.id;
-      log(docId);
+      // await _streams.userQuery
+      //     .doc(donarsModel.userTo)
+      //     .collection(Streams.requestByUser)
+      //     .where('userId', isEqualTo: donarsModel.userTo)
+      //     .get()
+      //     .then((value) {
+      //   String docId = value.docs.single.id;
+      //   log(docId);
       _streams.userQuery
-          .doc(userID)
+          .doc(donarsModel.userTo)
           .collection(Streams.requestByUser)
-          .doc(docId)
+          .doc(donarsModel.donationId)
           .update({
-        'intrestedDonars': FieldValue.arrayUnion([userID])
+        'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
       });
-    });
+      _streams.userQuery
+          .doc(donarsModel.userTo)
+          .collection(Streams.requestByUser)
+          .doc(donarsModel.donationId)
+          .collection(Streams.otherDonarsIntrest)
+          .doc()
+          .set(donarsModel.toMap());
+      _streams.userQuery
+          .doc(donarsModel.userFrom)
+          .collection(Streams.userInterests)
+          .doc(donarsModel.donationId)
+          .set(donarsModel.toMap());
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
 //######################## all requests loading #################################
@@ -140,5 +159,34 @@ class RequestProvider with ChangeNotifier {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+// ################ load intrested donars #####################
+
+  final List<Map<String, dynamic>> _intrestedDonars = [];
+  List<Map<String, dynamic>> get intrestedDonars => _intrestedDonars;
+
+  bool _isDonarsLoading = true;
+  bool get isDonarLoading => _isDonarsLoading;
+
+  getIntrestedDonars(InterestedDonarsModel donars) async {
+    // log("came");
+   
+    // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    //   notifyListeners();
+    // });
+    //if (_intrestedDonars.isEmpty) {
+    // for (var i = 0; i < donars.length; i    {
+    await _streams.userQuery.doc(donars.userFrom).get().then((value) {
+      var a = value.data();
+      _intrestedDonars.add(a!);
+    });
+    //}
+    // }
+    _isDonarsLoading = false;
+    // log(isDonarLoading.toString());
+   // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      notifyListeners();
+    //});
   }
 }

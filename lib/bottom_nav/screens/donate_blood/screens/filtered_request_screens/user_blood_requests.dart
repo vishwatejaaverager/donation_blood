@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/donate_blood_screen.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +19,11 @@ class UserBloodRequestsScreen extends StatelessWidget {
                 itemBuilder: ((context, index) {
                   BloodDonationModel requestData = BloodDonationModel.fromMap(
                       snapshot.data!.docs[index].data());
+                  // if (requestData.intrestedDonars!.isNotEmpty) {
+                  //   Provider.of<RequestProvider>(context, listen: false)
+                  //       .getIntrestedDonars(InterestedDonarsModel.fromMap(
+                  //           requestData.intrestedDonars![index]));
+                  // }
 
                   return RequestBloodCard(
                     bloodDonationModel: requestData,

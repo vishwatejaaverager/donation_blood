@@ -268,8 +268,13 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                       Provider.of<ProfileProvider>(context,
                                               listen: false)
                                           .userProfile!;
+                                  String a = DateTime.now()
+                                      .microsecondsSinceEpoch
+                                      .toString();
                                   BloodDonationModel bloodDonationModel =
                                       BloodDonationModel(
+                                        donationId: a,
+                                          name: userProfile.name,
                                           image: userProfile.profileImage,
                                           userId: userProfile.userId,
                                           patientName: _nameController.text,

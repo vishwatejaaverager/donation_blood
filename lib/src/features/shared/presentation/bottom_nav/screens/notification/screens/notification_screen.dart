@@ -35,11 +35,10 @@ class _NotificationScreenState extends State<NotificationScreen>
         .userId;
     responseProvider = Provider.of<ResponseProvider>(context, listen: false);
     responseProvider.getAllSeekersRequest(userId!);
-    log(userId!);
+    log("${userId!}notification screen");
     _bloodReqByUsers = _streams.userQuery
         .doc(userId)
-        .collection(Streams.requestByUser)
-        .where('donationStat', isEqualTo: 'in process')
+        .collection(Streams.userInterests)
         .snapshots();
 
     super.initState();

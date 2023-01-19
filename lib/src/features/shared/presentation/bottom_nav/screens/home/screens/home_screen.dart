@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
 import 'package:donation_blood/src/features/shared/presentation/create_req/screens/create_request_screen.dart';
 import 'package:donation_blood/src/utils/navigation.dart';
@@ -86,25 +88,30 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Card(
-                    elevation: 10,
-                    child: Container(
-                        height: 150,
-                        width: 150,
-                        decoration: BoxDecoration(
-                            color: AppColors.whiteColor,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/home/find1.png",
-                              scale: 8,
-                            ),
-                            sbh(8),
-                            const Text("FIND A DONAR")
-                          ],
-                        )),
+                  InkWell(
+                    onTap: () {
+                      
+                    },
+                    child: Card(
+                      elevation: 10,
+                      child: Container(
+                          height: 150,
+                          width: 150,
+                          decoration: BoxDecoration(
+                              color: AppColors.whiteColor,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/home/find1.png",
+                                scale: 8,
+                              ),
+                              sbh(8),
+                              const Text("FIND A DONAR")
+                            ],
+                          )),
+                    ),
                   ),
                   Card(
                     elevation: 10,
