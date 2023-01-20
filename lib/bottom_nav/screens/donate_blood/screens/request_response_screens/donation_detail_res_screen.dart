@@ -5,7 +5,9 @@ import 'package:donation_blood/src/features/shared/domain/models/blood_donation_
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../../src/features/profile_det/provider/profile_provider.dart';
 import '../../../../../src/utils/routes.dart';
 
 class BloodDetailResScreen extends StatefulWidget {
@@ -23,15 +25,22 @@ class _BloodDetailResScreenState extends State<BloodDetailResScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final Streams _streams = Streams();
-  late Stream<QuerySnapshot<Map<String, dynamic>>> _donarsResToBlood;
+  //late Stream<QuerySnapshot<Map<String, dynamic>>> _donarsResToBlood;
+  late Stream<QuerySnapshot<Map<String, dynamic>>> bloodReqByUsers;
   @override
   void initState() {
     _tabController = TabController(vsync: this, length: 2);
-    _donarsResToBlood = _streams.userQuery
-        .doc(widget.bloodDonationModel.userId!)
+    // _donarsResToBlood = _streams.userQuery
+    //     .doc(widget.bloodDonationModel.userId!)
+    //     .collection(Streams.requestByUser)
+    //     .doc(widget.bloodDonationModel.donationId)
+    //     .collection(Streams.otherDonarsIntrest)
+    //     .snapshots();
+   var   userProfile =
+        Provider.of<ProfileProvider>(context, listen: false).userProfile!;
+    bloodReqByUsers = _streams.userQuery
+        .doc(userProfile.userId!)
         .collection(Streams.requestByUser)
-        .doc(widget.bloodDonationModel.donationId)
-        .collection(Streams.otherDonarsIntrest)
         .snapshots();
 
     super.initState();
@@ -63,7 +72,7 @@ class _BloodDetailResScreenState extends State<BloodDetailResScreen>
               controller: _tabController,
               children: [
                 RequestDonarsResScreen(
-                  donarsResToBlood: _donarsResToBlood,
+                  donarsResToBlood: bloodReqByUsers,
                     bloodDonationModel: widget.bloodDonationModel),
                 const Text("data")
               ],

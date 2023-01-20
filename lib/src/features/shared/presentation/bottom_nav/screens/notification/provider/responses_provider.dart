@@ -66,11 +66,25 @@ class ResponseProvider with ChangeNotifier {
 
   //############# give res to user about donation req ########################
 
-  changeStatofDonationReq(InterestedDonarsModel donarsModel, List a) {
-    _streams.userQuery
-        .doc(donarsModel.userTo)
-        .collection(Streams.requestByUser)
-        .doc(donarsModel.donationId)
-        .update({"intrestedDonars": FieldValue.arrayUnion(a)});
+  changeStatofDonationReq(InterestedDonarsModel donarsModel, List a, List b,String stat) {
+   
+  
+     _streams.userQuery
+          .doc(donarsModel.userTo)
+          .collection(Streams.requestByUser)
+          .doc(donarsModel.donationId)
+          .update({'intrestedDonars': FieldValue.arrayRemove(b)});
+      _streams.userQuery
+          .doc(donarsModel.userTo)
+          .collection(Streams.requestByUser)
+          .doc(donarsModel.donationId)
+          .update({'intrestedDonars': FieldValue.arrayUnion(a)});
+      _streams.userQuery
+          .doc(donarsModel.userFrom)
+          .collection(Streams.userInterests)
+          .doc(donarsModel.donationId)
+          .update({"donarStat": stat});
+     
+   
   }
 }

@@ -11,6 +11,7 @@ import '../../../../src/features/shared/domain/models/user_profile_model.dart';
 import '../../../../src/services/dist_util.dart';
 import '../../../../src/utils/utils.dart';
 import '../../../../src/utils/widget_utils/cache_image.dart';
+import '../providers/requests_provider.dart';
 
 class ReqResCard extends StatelessWidget {
   const ReqResCard(
@@ -31,6 +32,7 @@ class ReqResCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //log(donarStat!.donarStat!);
+    log(index!.toString());
     return Card(
       elevation: 8,
       shape: const RoundedRectangleBorder(
@@ -120,66 +122,123 @@ class ReqResCard extends StatelessWidget {
                                     bottomRight: Radius.circular(24))),
                             child: const Text("Rejected with thanks :)"),
                           )
-                : Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(24),
-                          bottomRight: Radius.circular(24),
-                        )),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        InkWell(
-                          onTap: () {},
-                          child: SizedBox(
-                            width: size.width / 2,
-                            child: const Text(
-                              "DECLINE",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.bold),
+                : bloodDonationModel.intrestedDonars![index!]['donarStat'] ==
+                        'accepted'
+                    ? const Text("accepeted")
+                    : bloodDonationModel.intrestedDonars![index!]
+                                ['donarStat'] ==
+                            'declined'
+                        ? const Text("declined")
+                        : Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(24),
+                                  bottomRight: Radius.circular(24),
+                                )),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    List a =
+                                        bloodDonationModel.intrestedDonars!;
+                                    List b = [];
+                                    for (var i = 0; i < a.length; i++) {
+                                      InterestedDonarsModel donarsModel =
+                                          InterestedDonarsModel.fromMap(
+                                              bloodDonationModel
+                                                  .intrestedDonars![i]);
+                                      b.add(donarsModel.toMap());
+                                    }
+
+                                    InterestedDonarsModel donarsModel =
+                                        InterestedDonarsModel.fromMap(
+                                            bloodDonationModel
+                                                .intrestedDonars![index!]);
+
+                                    InterestedDonarsModel
+                                        interestedDonarsModel =
+                                        InterestedDonarsModel(
+                                            userFrom: donarsModel.userFrom,
+                                            userTo: donarsModel.userTo,
+                                            donationId: donarsModel.donationId,
+                                            donarStat: "declined");
+                                    b[index!] = interestedDonarsModel.toMap();
+
+                                    Provider.of<ResponseProvider>(context,
+                                            listen: false)
+                                        .changeStatofDonationReq(
+                                            interestedDonarsModel,
+                                            b,
+                                            a,
+                                            "declined");
+                                  },
+                                  child: SizedBox(
+                                    width: size.width / 2,
+                                    child: const Text(
+                                      "DECLINE",
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    List a =
+                                        bloodDonationModel.intrestedDonars!;
+                                    List b = [];
+                                    for (var i = 0; i < a.length; i++) {
+                                      InterestedDonarsModel donarsModel =
+                                          InterestedDonarsModel.fromMap(
+                                              bloodDonationModel
+                                                  .intrestedDonars![i]);
+                                      b.add(donarsModel.toMap());
+                                    }
+
+                                    InterestedDonarsModel donarsModel =
+                                        InterestedDonarsModel.fromMap(
+                                            bloodDonationModel
+                                                .intrestedDonars![index!]);
+
+                                    InterestedDonarsModel
+                                        interestedDonarsModel =
+                                        InterestedDonarsModel(
+                                            userFrom: donarsModel.userFrom,
+                                            userTo: donarsModel.userTo,
+                                            donationId: donarsModel.donationId,
+                                            donarStat: "accepted");
+                                    b[index!] = interestedDonarsModel.toMap();
+
+                                    Provider.of<ResponseProvider>(context,
+                                            listen: false)
+                                        .changeStatofDonationReq(
+                                            interestedDonarsModel,
+                                            b,
+                                            a,
+                                            "accepted");
+                                    Provider.of<RequestProvider>(context,
+                                            listen: false)
+                                        .getIntrestedDonars(bloodDonationModel
+                                            .intrestedDonars!);
+                                  },
+                                  child: Container(
+                                    width: size.width / 3,
+                                    alignment: Alignment.bottomRight,
+                                    child: const Text(
+                                      "CONFIRM",
+                                      style: TextStyle(
+                                          color: Colors.redAccent,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            List a = bloodDonationModel.intrestedDonars!;
-
-                            InterestedDonarsModel donarsModel =
-                                InterestedDonarsModel.fromMap(bloodDonationModel
-                                    .intrestedDonars![index!]);
-                            
-
-                            InterestedDonarsModel interestedDonarsModel =
-                                InterestedDonarsModel(
-                                    userFrom: donarsModel.userFrom,
-                                    userTo: donarsModel.userTo,
-                                    donationId: donarsModel.donationId,
-                                    donarStat: "accepted");
-                            a[index!] = interestedDonarsModel.toMap();
-                            log(interestedDonarsModel.userFrom!);
-
-                            Provider.of<ResponseProvider>(context,
-                                    listen: false)
-                                .changeStatofDonationReq(interestedDonarsModel,a);
-                          },
-                          child: Container(
-                            width: size.width / 3,
-                            alignment: Alignment.bottomRight,
-                            child: const Text(
-                              "CONFIRM",
-                              style: TextStyle(
-                                  color: Colors.redAccent,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  )
+                          )
           ],
         ),
       ),

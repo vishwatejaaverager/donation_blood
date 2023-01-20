@@ -163,30 +163,40 @@ class RequestProvider with ChangeNotifier {
 
 // ################ load intrested donars #####################
 
-  final List<Map<String, dynamic>> _intrestedDonars = [];
+  List<Map<String, dynamic>> _intrestedDonars = [];
   List<Map<String, dynamic>> get intrestedDonars => _intrestedDonars;
 
   bool _isDonarsLoading = true;
   bool get isDonarLoading => _isDonarsLoading;
 
-  getIntrestedDonars(InterestedDonarsModel donars) async {
-    // log("came");
-   
-    // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-    //   notifyListeners();
-    // });
-    //if (_intrestedDonars.isEmpty) {
-    // for (var i = 0; i < donars.length; i    {
-    await _streams.userQuery.doc(donars.userFrom).get().then((value) {
-      var a = value.data();
-      _intrestedDonars.add(a!);
+  getIntrestedDonars(List a) async {
+    _isDonarsLoading = true;
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      notifyListeners();
     });
+    _intrestedDonars = [];
+
+    for (var i = 0; i < a.length; i++) {
+      InterestedDonarsModel interestedDonarsModel =
+          InterestedDonarsModel.fromMap(a[i]);
+      log("message");
+      log(interestedDonarsModel.userFrom!);
+      await _streams.userQuery
+          .doc(interestedDonarsModel.userFrom)
+          .get()
+          .then((value) {
+        log("got");
+        var a = value.data();
+        _intrestedDonars.add(a!);
+      });
+    }
+
     //}
     // }
     _isDonarsLoading = false;
     // log(isDonarLoading.toString());
-   // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       notifyListeners();
-    //});
+    });
   }
 }

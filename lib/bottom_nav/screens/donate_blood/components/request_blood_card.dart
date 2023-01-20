@@ -1,7 +1,5 @@
-import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/request_response_screens/donation_detail_res_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../src/features/shared/domain/models/blood_donation_model.dart';
 import '../../../../src/utils/navigation.dart';
@@ -72,8 +70,8 @@ class RequestBloodCard extends StatelessWidget {
                   if (isDetail) {
                     Navigation.instance.navigateTo(BloodDetailResScreen.id.path,
                         args: {
-                          'bloodDonationInfo' : bloodDonationModel,
-                          'id' : id
+                          'bloodDonationInfo': bloodDonationModel,
+                          'id': id
                         });
                   } else {
                     Navigation.instance.navigateTo(BloodDonateReqScreen.id.path,
