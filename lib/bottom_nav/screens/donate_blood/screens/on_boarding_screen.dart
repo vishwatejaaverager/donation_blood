@@ -2,6 +2,7 @@ import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/request
 import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
+import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/utils/routes.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -18,20 +19,27 @@ class DonateOnBoardingScreen extends StatelessWidget {
     return Scaffold(
       body: OnBoardingSlider(
           onFinish: () {
-            //user of current !! 
-            String userId = Provider.of<ProfileProvider>(context, listen: false)
-                .userProfile!
-                .userId!;
+            //user of current !!
+            UserProfile userId =
+                Provider.of<ProfileProvider>(context, listen: false)
+                    .userProfile!;
             RequestProvider reqProv =
                 Provider.of<RequestProvider>(context, listen: false);
-            
+
             if (reqProv.selectedOpt == 'Yes' &&
                 reqProv.selectedOpt1 == 'Yes' &&
                 reqProv.selectedOpt2 == 'No') {
               InterestedDonarsModel donar = InterestedDonarsModel(
-                  userFrom: userId,
+                  donarName: userId.name,
+                  donarsNumber: userId.phone,
+                  userFrom: userId.userId,
+                  bloodGroup: userId.bloodGroup,
+                  donarImage: userId.profileImage,
                   donationId: bloodDonationModel.donationId,
                   userTo: bloodDonationModel.userId!,
+                  lat: userId.lat,
+                  lng: userId.long,
+                  location: userId.location,
                   donarStat: "nothing");
               reqProv.addInterestedDonars(donar);
             } else {

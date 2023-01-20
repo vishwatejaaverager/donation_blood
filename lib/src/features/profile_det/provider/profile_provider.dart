@@ -191,6 +191,7 @@ class ProfileProvider with ChangeNotifier {
           .collection(Streams.requestByUser)
           .doc(bloodDonation.donationId)
           .set(bloodDonation.toMap());
+      
 
       Navigation.instance.pushBack();
       Navigation.instance.pushBack();
@@ -202,7 +203,7 @@ class ProfileProvider with ChangeNotifier {
 
 // if emergency we will send notification to requested blood type users as well as waatti message
 
-  sendRequesToSameTypeBlood() {}
+  
 
   //############ store userInfo ####################
 

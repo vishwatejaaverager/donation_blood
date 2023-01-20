@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_req_model.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/notification/provider/responses_provider.dart';
 import 'package:donation_blood/src/utils/utils.dart';
@@ -9,37 +11,61 @@ import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 
 class SeekersResponseScreen extends StatelessWidget {
-  const SeekersResponseScreen({super.key});
+  final Stream<QuerySnapshot<Map<String, dynamic>>> seekerRequests;
+  const SeekersResponseScreen({super.key, required this.seekerRequests});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ResponseProvider>(builder: ((_, __, ___) {
-      return ListView.builder(
-          itemCount: __.isLoading
-              ? 5
-              : __.seekerRequest.isEmpty
-                  ? 1
-                  : __.seekerRequest.length,
-          itemBuilder: ((context, index) {
-            if (!__.isLoading && __.seekerRequest.isNotEmpty) {
-              log("okok");
-              BloodRequestModel requestData =
-                  BloodRequestModel.fromMap(__.seekerRequest[index].data());
-              return SeekerReqCard(bloodReq: requestData);
-            } else if (__.isLoading) {
-              log("message");
-              return const CircularProgressIndicator();
+    return StreamBuilder(
+        stream: seekerRequests,
+        builder: ((context, snapshot) {
+          if (snapshot.hasData) {
+            //log("hhase");
+            log(snapshot.data!.docs.length.toString());
+            if (snapshot.data!.docs.isNotEmpty) {
+              return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: ((context, index) {
+                    BloodDonationModel requestData = BloodDonationModel.fromMap(
+                        snapshot.data!.docs[index].data());
+                    log(requestData.toMap().toString());
+                    return SeekerReqCard(bloodReq: requestData);
+                  }));
             } else {
-              log("came");
-              return const Center(child: Text("No Requests"));
+              return const Text("kjbfjb");
             }
-          }));
-    }));
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else {
+            return const Text("data");
+          }
+        }));
   }
 }
 
+// ListView.builder(
+//           itemCount: __.isLoading
+//               ? 5
+//               : __.seekerRequest.isEmpty
+//                   ? 1
+//                   : __.seekerRequest.length,
+//           itemBuilder: ((context, index) {
+//             if (!__.isLoading && __.seekerRequest.isNotEmpty) {
+//               log("okok");
+//               BloodRequestModel requestData =
+//                   BloodRequestModel.fromMap(__.seekerRequest[index].data());
+//               return SeekerReqCard(bloodReq: requestData);
+//             } else if (__.isLoading) {
+//               // log("message");
+//               return const CircularProgressIndicator();
+//             } else {
+//               log("came");
+//               return const Center(child: Text("No Requests"));
+//             }
+//           }));
+
 class SeekerReqCard extends StatelessWidget {
-  final BloodRequestModel bloodReq;
+  final BloodDonationModel bloodReq;
   const SeekerReqCard({
     Key? key,
     required this.bloodReq,
@@ -54,7 +80,7 @@ class SeekerReqCard extends StatelessWidget {
         child: Column(
           children: [
             Visibility(
-              visible: bloodReq.isEmergency!,
+              visible: bloodReq.isEmergency ?? true,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -106,7 +132,7 @@ class SeekerReqCard extends StatelessWidget {
                                   color: Colors.black,
                                   fontSize: 16),
                             ),
-                            Text(bloodReq.distance!)
+                            // Text(bloodReq.distance!)
                           ],
                         ),
                       )
@@ -201,13 +227,18 @@ class SeekerReqCard extends StatelessWidget {
                   )),
                   sbw(24),
                   Expanded(
-                      child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        color: Colors.redAccent,
-                        borderRadius: BorderRadius.circular(8)),
-                    child: const Center(child: Text("Accept Offer")),
-                  )),
+                      child: InkWell(
+                        onTap: () {
+                          
+                        },
+                        child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(8)),
+                                          child: const Center(child: Text("Accept Offer")),
+                                        ),
+                      )),
                 ],
               ),
             )

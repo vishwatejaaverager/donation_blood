@@ -26,6 +26,7 @@ class _NotificationScreenState extends State<NotificationScreen>
   late TabController _tabController;
   late ResponseProvider responseProvider;
   late Stream<QuerySnapshot<Map<String, dynamic>>> _bloodReqByUsers;
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _seekerReqByUser;
   String? userId;
   @override
   void initState() {
@@ -39,6 +40,10 @@ class _NotificationScreenState extends State<NotificationScreen>
     _bloodReqByUsers = _streams.userQuery
         .doc(userId)
         .collection(Streams.userInterests)
+        .snapshots();
+    _seekerReqByUser = _streams.userQuery
+        .doc(userId)
+        .collection(Streams.seekersRequest)
         .snapshots();
 
     super.initState();
@@ -69,7 +74,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                 child: TabBarView(
               controller: _tabController,
               children: [
-                const SeekersResponseScreen(),
+                 SeekersResponseScreen(seekerRequests: _seekerReqByUser,),
                 BloodUserResScreen(
                   bloodReqByUsers: _bloodReqByUsers,
                 )

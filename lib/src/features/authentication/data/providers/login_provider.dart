@@ -98,7 +98,7 @@ class LoginProvider with ChangeNotifier {
             .get()
             .then((value) {
           if (value.docs.isNotEmpty) {
-            log("message");
+           // log("message");
             Navigation.instance.navigateTo(BottomNavScreen.id.path);
           } else {
              Navigation.instance.navigateTo(EditProfileScreen.id.path);

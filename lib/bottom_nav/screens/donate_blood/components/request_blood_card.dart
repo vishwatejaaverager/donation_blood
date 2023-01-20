@@ -180,7 +180,7 @@ class RequestBloodCard extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12)),
                               child: Container(
-                                padding: const EdgeInsets.all(8),
+                              //  padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12)),
                                 child: const Icon(Icons.share),

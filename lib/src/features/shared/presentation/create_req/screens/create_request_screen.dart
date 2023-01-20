@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../../bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import '../../../../profile_det/screens/profile_detail_screen.dart';
 import '../../widgets/text_fields.dart';
 
@@ -273,7 +274,7 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                       .toString();
                                   BloodDonationModel bloodDonationModel =
                                       BloodDonationModel(
-                                        donationId: a,
+                                          donationId: a,
                                           name: userProfile.name,
                                           image: userProfile.profileImage,
                                           userId: userProfile.userId,
@@ -291,6 +292,11 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           long: hospLoc.lng);
                                   __.addBloodRequestToFirebase(
                                       bloodDonationModel);
+
+                                  Provider.of<RequestProvider>(context,
+                                          listen: false)
+                                      .sendReqToOtherDonars(userProfile.userId!,
+                                          a, bloodDonationModel);
                                 } else {
                                   appToast("Please Do Fill All The Details :(");
                                 }
