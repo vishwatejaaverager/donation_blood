@@ -8,7 +8,9 @@ class BloodRequestModel {
   String? userFrom;
   String? userTo;
   String? distance;
+  String? note;
   String? location;
+  String? patientName;
   String? deadLine;
   String? bloodGroup;
   String? reqStat;
@@ -20,7 +22,9 @@ class BloodRequestModel {
     this.userFrom,
     this.userTo,
     this.distance,
+    this.note,
     this.location,
+    this.patientName,
     this.deadLine,
     this.bloodGroup,
     this.reqStat,
@@ -34,7 +38,9 @@ class BloodRequestModel {
     String? userFrom,
     String? userTo,
     String? distance,
+    String? note,
     String? location,
+    String? patientName,
     String? deadLine,
     String? bloodGroup,
     String? reqStat,
@@ -47,7 +53,9 @@ class BloodRequestModel {
       userFrom: userFrom ?? this.userFrom,
       userTo: userTo ?? this.userTo,
       distance: distance ?? this.distance,
+      note: note ?? this.note,
       location: location ?? this.location,
+      patientName: patientName ?? this.patientName,
       deadLine: deadLine ?? this.deadLine,
       bloodGroup: bloodGroup ?? this.bloodGroup,
       reqStat: reqStat ?? this.reqStat,
@@ -63,7 +71,9 @@ class BloodRequestModel {
       'userFrom': userFrom,
       'userTo': userTo,
       'distance': distance,
+      'note': note,
       'location': location,
+      'patientName': patientName,
       'deadLine': deadLine,
       'bloodGroup': bloodGroup,
       'reqStat': reqStat,
@@ -79,7 +89,9 @@ class BloodRequestModel {
       userFrom: map['userFrom'] != null ? map['userFrom'] as String : null,
       userTo: map['userTo'] != null ? map['userTo'] as String : null,
       distance: map['distance'] != null ? map['distance'] as String : null,
+      note: map['note'] != null ? map['note'] as String : null,
       location: map['location'] != null ? map['location'] as String : null,
+      patientName: map['patientName'] != null ? map['patientName'] as String : null,
       deadLine: map['deadLine'] != null ? map['deadLine'] as String : null,
       bloodGroup: map['bloodGroup'] != null ? map['bloodGroup'] as String : null,
       reqStat: map['reqStat'] != null ? map['reqStat'] as String : null,
@@ -94,7 +106,7 @@ class BloodRequestModel {
 
   @override
   String toString() {
-    return 'BloodRequestModel(name: $name, image: $image, phone: $phone, userFrom: $userFrom, userTo: $userTo, distance: $distance, location: $location, deadLine: $deadLine, bloodGroup: $bloodGroup, reqStat: $reqStat, isEmergency: $isEmergency)';
+    return 'BloodRequestModel(name: $name, image: $image, phone: $phone, userFrom: $userFrom, userTo: $userTo, distance: $distance, note: $note, location: $location, patientName: $patientName, deadLine: $deadLine, bloodGroup: $bloodGroup, reqStat: $reqStat, isEmergency: $isEmergency)';
   }
 
   @override
@@ -108,7 +120,9 @@ class BloodRequestModel {
       other.userFrom == userFrom &&
       other.userTo == userTo &&
       other.distance == distance &&
+      other.note == note &&
       other.location == location &&
+      other.patientName == patientName &&
       other.deadLine == deadLine &&
       other.bloodGroup == bloodGroup &&
       other.reqStat == reqStat &&
@@ -123,7 +137,9 @@ class BloodRequestModel {
       userFrom.hashCode ^
       userTo.hashCode ^
       distance.hashCode ^
+      note.hashCode ^
       location.hashCode ^
+      patientName.hashCode ^
       deadLine.hashCode ^
       bloodGroup.hashCode ^
       reqStat.hashCode ^

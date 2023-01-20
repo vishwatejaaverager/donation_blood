@@ -1,4 +1,7 @@
 import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/requests_provider.dart';
+import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
+import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
+import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
 import 'package:donation_blood/src/utils/routes.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -6,14 +9,35 @@ import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 import 'package:provider/provider.dart';
 
 class DonateOnBoardingScreen extends StatelessWidget {
+  final BloodDonationModel bloodDonationModel;
   static const id = AppRoutes.donateOnBoardingScreen;
-  const DonateOnBoardingScreen({super.key});
+  const DonateOnBoardingScreen({super.key, required this.bloodDonationModel});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: OnBoardingSlider(
-          onFinish: () {},
+          onFinish: () {
+            //user of current !! 
+            String userId = Provider.of<ProfileProvider>(context, listen: false)
+                .userProfile!
+                .userId!;
+            RequestProvider reqProv =
+                Provider.of<RequestProvider>(context, listen: false);
+            
+            if (reqProv.selectedOpt == 'Yes' &&
+                reqProv.selectedOpt1 == 'Yes' &&
+                reqProv.selectedOpt2 == 'No') {
+              InterestedDonarsModel donar = InterestedDonarsModel(
+                  userFrom: userId,
+                  donationId: bloodDonationModel.donationId,
+                  userTo: bloodDonationModel.userId!,
+                  donarStat: "nothing");
+              reqProv.addInterestedDonars(donar);
+            } else {
+              appToast("Sorry You Are Not Elgible :(");
+            }
+          },
           finishButtonText: "Continue",
           totalPage: 4,
           headerBackgroundColor: Colors.white,
@@ -68,7 +92,7 @@ class DonateOnBoardingScreen extends StatelessWidget {
                 opt: '',
                 quest: __.selectedOpt == 'Yes' &&
                         __.selectedOpt1 == 'Yes' &&
-                        __.selectedOpt2 == 'Yes'
+                        __.selectedOpt2 == 'No'
                     ? "Received a transfusion in the past 3 months !?"
                     : "Sorry You Are Not Elgible :( dont be dissapointed you can share this to your friends  :)",
               );

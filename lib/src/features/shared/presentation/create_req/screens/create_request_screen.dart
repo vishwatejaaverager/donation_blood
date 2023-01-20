@@ -5,6 +5,7 @@ import 'package:donation_blood/src/features/profile_det/provider/profile_provide
 import 'package:donation_blood/src/features/profile_det/provider/search_provider.dart';
 import 'package:donation_blood/src/features/profile_det/screens/location_search_screen.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
+import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:donation_blood/src/utils/routes.dart';
 import 'package:donation_blood/src/utils/utils.dart';
@@ -263,15 +264,27 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           context,
                                           listen: false)
                                       .userLocation;
+                                  UserProfile userProfile =
+                                      Provider.of<ProfileProvider>(context,
+                                              listen: false)
+                                          .userProfile!;
+                                  String a = DateTime.now()
+                                      .microsecondsSinceEpoch
+                                      .toString();
                                   BloodDonationModel bloodDonationModel =
                                       BloodDonationModel(
+                                        donationId: a,
+                                          name: userProfile.name,
+                                          image: userProfile.profileImage,
+                                          userId: userProfile.userId,
                                           patientName: _nameController.text,
                                           number: _mobileController.text,
                                           bloodGroup: __.selectedBloodGroup,
                                           donationStat: "in process",
                                           units: __.unitDrop,
+                                          intrestedDonars: [],
                                           deadLine: __.reqDate,
-                                          donatedUnits: '',
+                                          donatedUnits: '0',
                                           location: __.description,
                                           lat: hospLoc!.lat,
                                           isEmergency: __.isEmergency,

@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/bottom_nav_screen.dart';
-import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/home/screens/home_screen.dart';
 import 'package:donation_blood/src/services/image_storage.dart';
 import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:donation_blood/src/utils/user_pref/user_preferences.dart';
@@ -183,12 +182,16 @@ class ProfileProvider with ChangeNotifier {
       Loading().witIndicator(
           context: Navigation.instance.navigationKey.currentState!.context,
           title: "Creating Request :)");
-      await _streams.requestQuery.doc().set(bloodDonation.toMap());
+      await _streams.requestQuery
+          .doc(bloodDonation.donationId)
+          .set(bloodDonation.toMap());
+
       await _streams.userQuery
           .doc(id)
-          .collection("requests")
-          .doc()
+          .collection(Streams.requestByUser)
+          .doc(bloodDonation.donationId)
           .set(bloodDonation.toMap());
+
       Navigation.instance.pushBack();
       Navigation.instance.pushBack();
       appToast("Succesfully Request Added Hold Tight :)");
@@ -196,6 +199,10 @@ class ProfileProvider with ChangeNotifier {
       log(e.toString());
     }
   }
+
+// if emergency we will send notification to requested blood type users as well as waatti message
+
+  sendRequesToSameTypeBlood() {}
 
   //############ store userInfo ####################
 

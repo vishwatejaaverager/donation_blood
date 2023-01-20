@@ -114,7 +114,7 @@ class DonarProvider with ChangeNotifier {
         .set(bloodRequestModel.toMap());
     _streams.userQuery
         .doc(bloodRequestModel.userTo)
-        .collection(Streams.requests)
+        .collection(Streams.seekersRequest)
         .doc()
         .set(bloodRequestModel.toMap());
   }

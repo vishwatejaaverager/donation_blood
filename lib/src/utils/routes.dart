@@ -10,7 +10,10 @@ enum AppRoutes {
   locationSearchScreen("location_search_screen"),
   createReqScreen("create_req_screen"),
   bloodDonateReqScreen("blood_donate_req_screen"),
+  bloodDetailResScreen("blood_res_detail_scree"),
+  requestDonarsResScreen("req_donars_res_screen"),
   donateOnBoardingScreen("donate_onboarding_screen");
+
 
   const AppRoutes(this.path);
 
