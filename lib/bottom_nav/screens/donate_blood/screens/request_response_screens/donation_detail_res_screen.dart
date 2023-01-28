@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/donate_blood_screen.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/request_response_screens/request_donar_res_screen.dart';
@@ -36,13 +38,16 @@ class _BloodDetailResScreenState extends State<BloodDetailResScreen>
     //     .doc(widget.bloodDonationModel.donationId)
     //     .collection(Streams.otherDonarsIntrest)
     //     .snapshots();
-   var   userProfile =
+    var userProfile =
         Provider.of<ProfileProvider>(context, listen: false).userProfile!;
+    log("${widget.bloodDonationModel.donationId!}res screen");
+    log(userProfile.userId!);
     bloodReqByUsers = _streams.userQuery
         .doc(userProfile.userId!)
         .collection(Streams.requestByUser)
+        .doc(widget.bloodDonationModel.donationId!)
+        .collection(Streams.shownInterestToDonate)
         .snapshots();
-
     super.initState();
   }
 
@@ -72,7 +77,7 @@ class _BloodDetailResScreenState extends State<BloodDetailResScreen>
               controller: _tabController,
               children: [
                 RequestDonarsResScreen(
-                  donarsResToBlood: bloodReqByUsers,
+                    donarsResToBlood: bloodReqByUsers,
                     bloodDonationModel: widget.bloodDonationModel),
                 const Text("data")
               ],

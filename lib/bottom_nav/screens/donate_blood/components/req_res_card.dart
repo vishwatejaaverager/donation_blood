@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 
+import '../../../../src/features/profile_det/provider/profile_provider.dart';
 import '../../../../src/features/shared/domain/models/blood_donation_model.dart';
+import '../../../../src/features/shared/domain/models/user_profile_model.dart';
 import '../../../../src/services/dist_util.dart';
 import '../../../../src/utils/utils.dart';
 import '../../../../src/utils/widget_utils/cache_image.dart';
@@ -53,16 +55,12 @@ class ReqResCard extends StatelessWidget {
                     : donarStat!.donarStat == 'accepted'
                         ? const ReqResDonarAccepted()
                         : const ResReqDonarRejected()
-                : bloodDonationModel.intrestedDonars![index!]['donarStat'] ==
-                        'accepted'
+                : donarStat!.donarStat == 'accepted'
                     ? const ResReqBloodReqAccepted()
-                    : bloodDonationModel.intrestedDonars![index!]
-                                ['donarStat'] ==
-                            'declined'
+                    : donarStat!.donarStat == 'declined'
                         ? const ResReqRequesterDeclined()
                         : ResReqRequesterResOn(
-                            bloodDonationModel: bloodDonationModel,
-                            index: index)
+                            bloodReq: donarStat!, index: index)
           ],
         ),
       ),
@@ -73,11 +71,11 @@ class ReqResCard extends StatelessWidget {
 class ResReqRequesterResOn extends StatelessWidget {
   const ResReqRequesterResOn({
     Key? key,
-    required this.bloodDonationModel,
+    required this.bloodReq,
     required this.index,
   }) : super(key: key);
 
-  final BloodDonationModel bloodDonationModel;
+  final InterestedDonarsModel bloodReq;
   final int? index;
 
   @override
@@ -95,31 +93,7 @@ class ResReqRequesterResOn extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           InkWell(
-            onTap: () {
-              List a = bloodDonationModel.intrestedDonars!;
-              List b = [];
-              for (var i = 0; i < a.length; i++) {
-                InterestedDonarsModel donarsModel =
-                    InterestedDonarsModel.fromMap(
-                        bloodDonationModel.intrestedDonars![i]);
-                b.add(donarsModel.toMap());
-              }
-
-              InterestedDonarsModel donarsModel = InterestedDonarsModel.fromMap(
-                  bloodDonationModel.intrestedDonars![index!]);
-
-              InterestedDonarsModel interestedDonarsModel =
-                  InterestedDonarsModel(
-                      userFrom: donarsModel.userFrom,
-                      userTo: donarsModel.userTo,
-                      donationId: donarsModel.donationId,
-                      donarStat: "declined");
-              b[index!] = interestedDonarsModel.toMap();
-
-              Provider.of<ResponseProvider>(context, listen: false)
-                  .changeStatofDonationReq(
-                      interestedDonarsModel, b, a, "declined");
-            },
+            onTap: () {},
             child: SizedBox(
               width: size.width / 2,
               child: const Text(
@@ -131,36 +105,55 @@ class ResReqRequesterResOn extends StatelessWidget {
           ),
           InkWell(
             onTap: () {
-              List a = bloodDonationModel.intrestedDonars!;
-              List b = [];
-              for (var i = 0; i < a.length; i++) {
-                InterestedDonarsModel donarsModel =
-                    InterestedDonarsModel.fromMap(
-                        bloodDonationModel.intrestedDonars![i]);
-                b.add(donarsModel.toMap());
-              }
+              // List a = bloodDonationModel.intrestedDonars!;
+              // List b = [];
+              // for (var i = 0; i < a.length; i++) {
+              //   InterestedDonarsModel donarsModel =
+              //       InterestedDonarsModel.fromMap(
+              //           bloodDonationModel.intrestedDonars![i]);
+              //   b.add(donarsModel.toMap());
+              // }
 
-              InterestedDonarsModel donarsModel = InterestedDonarsModel.fromMap(
-                  bloodDonationModel.intrestedDonars![index!]);
+              // InterestedDonarsModel donarsModel = InterestedDonarsModel.fromMap(
+              //     bloodDonationModel.intrestedDonars![index!]);
 
-              InterestedDonarsModel interestedDonarsModel =
-                  InterestedDonarsModel(
-                      donarsNumber: donarsModel.donarsNumber,
-                      donarImage: donarsModel.donarImage,
-                      donarName: donarsModel.donarName,
-                      bloodGroup: donarsModel.bloodGroup,
-                      lat: donarsModel.lat,
-                      lng: donarsModel.lng,
-                      location: donarsModel.location,
-                      userFrom: donarsModel.userFrom,
-                      userTo: donarsModel.userTo,
-                      donationId: donarsModel.donationId,
-                      donarStat: "accepted");
-              b[index!] = interestedDonarsModel.toMap();
+              // InterestedDonarsModel interestedDonarsModel =
+              //     InterestedDonarsModel(
+              //         donarsNumber: donarsModel.donarsNumber,
+              //         donarImage: donarsModel.donarImage,
+              //         donarName: donarsModel.donarName,
+              //         bloodGroup: donarsModel.bloodGroup,
+              //         lat: donarsModel.lat,
+              //         lng: donarsModel.lng,
+              //         location: donarsModel.location,
+              //         userFrom: donarsModel.userFrom,
+              //         userTo: donarsModel.userTo,
+              //         donationId: donarsModel.donationId,
+              //         donarStat: "accepted");
+              // b[index!] = interestedDonarsModel.toMap();
+              UserProfile userId =
+                  Provider.of<ProfileProvider>(context, listen: false)
+                      .userProfile!;
+
+              InterestedDonarsModel donarsModel = InterestedDonarsModel(
+                  patientName: bloodReq.patientName,
+                  isEmergency: bloodReq.isEmergency,
+                  donarName: userId.name,
+                  donarsNumber: userId.phone,
+                  userFrom: userId.userId,
+                  deadLine: bloodReq.deadLine,
+                  phoneNumber: userId.phone,
+                  bloodGroup: userId.bloodGroup,
+                  donarImage: userId.profileImage,
+                  donationId: bloodReq.donationId,
+                  userTo: bloodReq.userFrom,
+                  lat: userId.lat,
+                  lng: userId.long,
+                  location: userId.location,
+                  donarStat: "nothing");
 
               Provider.of<ResponseProvider>(context, listen: false)
-                  .changeStatofDonationReq(
-                      interestedDonarsModel, b, a, "accepted");
+                  .acceptDonationFromDonar(donarsModel);
               // Provider.of<RequestProvider>(context,
               //         listen: false)
               //     .getIntrestedDonars(bloodDonationModel
@@ -231,9 +224,7 @@ class ResReqBloodReqAccepted extends StatelessWidget {
       child: Column(
         children: [
           InkWell(
-            onTap: () {
-              
-            },
+            onTap: () {},
             child: const Center(
                 child: Text(
               "Contact Donar ",

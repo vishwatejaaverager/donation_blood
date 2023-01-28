@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import '../../../../profile_det/screens/profile_detail_screen.dart';
+import '../../../domain/models/interested_donar_model.dart';
 import '../../widgets/text_fields.dart';
 
 class CreateReqScreen extends StatefulWidget {
@@ -272,7 +273,45 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                   String a = DateTime.now()
                                       .microsecondsSinceEpoch
                                       .toString();
+                                  InterestedDonarsModel donar =
+                                      InterestedDonarsModel(
+                                          patientName: _nameController.text,
+                                          name: userProfile.name,
+                                          donarName: userProfile.name,
+                                          donarsNumber: userProfile.phone,
+                                          userFrom: userProfile.userId,
+                                          bloodGroup: userProfile.bloodGroup,
+                                          donarImage: userProfile.profileImage,
+                                          donationId: a,
+                                          userTo: '',
+                                          isEmergency: __.isEmergency,
+                                          deadLine: __.reqDate,
+                                          phoneNumber: _mobileController.text,
+                                          lat: userProfile.lat,
+                                          lng: userProfile.long,
+                                          location: userProfile.location,
+                                          donarStat: "nothing");
+
                                   BloodDonationModel bloodDonationModel =
+                                      BloodDonationModel(
+                                          donationId: a,
+                                          name: userProfile.name,
+                                          image: userProfile.profileImage,
+                                          userId: userProfile.userId,
+                                          patientName: _nameController.text,
+                                          number: _mobileController.text,
+                                          bloodGroup: __.selectedBloodGroup,
+                                          donationStat: "in process",
+                                          units: __.unitDrop,
+                                          intrestedDonars: [donar.toMap()],
+                                          deadLine: __.reqDate,
+                                          donatedUnits: '0',
+                                          location: __.description,
+                                          lat: hospLoc!.lat,
+                                          isEmergency: __.isEmergency,
+                                          long: hospLoc.lng);
+
+                                  BloodDonationModel bloodDonationModel2 =
                                       BloodDonationModel(
                                           donationId: a,
                                           name: userProfile.name,
@@ -287,16 +326,16 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           deadLine: __.reqDate,
                                           donatedUnits: '0',
                                           location: __.description,
-                                          lat: hospLoc!.lat,
+                                          lat: hospLoc.lat,
                                           isEmergency: __.isEmergency,
                                           long: hospLoc.lng);
                                   __.addBloodRequestToFirebase(
-                                      bloodDonationModel);
+                                      bloodDonationModel2);
 
                                   Provider.of<RequestProvider>(context,
                                           listen: false)
-                                      .sendReqToOtherDonars(userProfile.userId!,
-                                          a, bloodDonationModel);
+                                      .sendReqToOtherDonars(
+                                          userProfile.userId!, a, donar);
                                 } else {
                                   appToast("Please Do Fill All The Details :(");
                                 }

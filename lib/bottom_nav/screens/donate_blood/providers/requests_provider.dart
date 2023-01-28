@@ -41,52 +41,103 @@ class RequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  addInterestedDonars(InterestedDonarsModel donarsModel) async {
-    try {
-      // await _streams.requestQuery
-      //     .where('userId', isEqualTo: donarsModel.userTo)
-      //     .get()
-      //     .then((value) {
-      //   String docId = value.docs.single.id;
-      //   log(docId);
-      //   _streams.requestQuery.doc(docId).update({
-      //     'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
-      //   });
-      // });
-      await _streams.requestQuery.doc(donarsModel.donationId).update({
-        'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
-      });
 
-      // await _streams.userQuery
+ accepDonation(InterestedDonarsModel donarsModel,String response){
+   _streams.userQuery
+        .doc(donarsModel.userFrom)
+        .collection(Streams.seekersRequest)
+        .doc(donarsModel.donationId)
+        .update({'donarStat': response});
+    _streams.userQuery
+        .doc(donarsModel.userTo)
+        .collection(Streams.requestByUser)
+        .doc(donarsModel.donationId)
+        .collection(Streams.shownInterestToDonate)
+        .doc(donarsModel.userFrom)
+        .set(donarsModel.toMap());
+ }
+
+  addInterestedDonars(InterestedDonarsModel donarsModel,
+      {bool isSeeker = false}) async {
+    try {
+      // add interested donars in blood requests
+      // await _streams.requestQuery.doc(donarsModel.donationId).update({
+      //   'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
+      // });
+
+      //add sepearate collection in interested donars
+      // _streams.userQuery
       //     .doc(donarsModel.userTo)
       //     .collection(Streams.requestByUser)
-      //     .where('userId', isEqualTo: donarsModel.userTo)
-      //     .get()
-      //     .then((value) {
-      //   String docId = value.docs.single.id;
-      //   log(docId);
-      _streams.userQuery
-          .doc(donarsModel.userTo)
-          .collection(Streams.requestByUser)
-          .doc(donarsModel.donationId)
-          .update({
-        'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
-      });
-      _streams.userQuery
-          .doc(donarsModel.userTo)
-          .collection(Streams.requestByUser)
-          .doc(donarsModel.donationId)
-          .collection(Streams.otherDonarsIntrest)
-          .doc()
-          .set(donarsModel.toMap());
+      //     .doc(donarsModel.donationId)
+      //     .collection(Streams.shownInterestToDonate)
+      //     .doc(donarsModel.userFrom)
+      //     .set(donarsModel.toMap());
+
       _streams.userQuery
           .doc(donarsModel.userFrom)
-          .collection(Streams.userInterests)
+          .collection(Streams.seekersRequest)
           .doc(donarsModel.donationId)
+          .update({
+            'donarStat' : ""
+          });
+      _streams.userQuery
+          .doc(donarsModel.userTo)
+          .collection(Streams.requestByUser)
+          .doc(donarsModel.donationId)
+          .collection(Streams.shownInterestToDonate)
+          .doc(donarsModel.userFrom)
           .set(donarsModel.toMap());
+
+      // _streams.userQuery
+      //     .doc(donarsModel.userTo)
+      //     .collection(Streams.requestByUser)
+      //     .doc(donarsModel.donationId)
+      //     .update({
+      //   'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
+      // });
+
+      // _streams.userQuery
+      //     .doc(donarsModel.userTo)
+      //     .collection(Streams.requestByUser)
+      //     .doc(donarsModel.donationId)
+      //     .collection(Streams.otherDonarsIntrest)
+      //     .doc()
+      //     .set(donarsModel.toMap());
+      // _streams.userQuery
+      //     .doc(donarsModel.userFrom)
+      //     .collection(Streams.userInterests)
+      //     .doc(donarsModel.donationId)
+      //     .set(donarsModel.toMap());
+      // if (isSeeker) {
+      //   _streams.userQuery
+      //       .doc(donarsModel.userFrom)
+      //       .collection(Streams.seekersRequest)
+      //       .doc(donarsModel.donationId)
+      //       .update({});
+      // }
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  rejectTheDonation(InterestedDonarsModel donarsModel, List a, List b) {
+    log("message");
+    _streams.userQuery
+        .doc(donarsModel.userFrom)
+        .collection(Streams.seekersRequest)
+        .doc(donarsModel.donationId)
+        .update({
+      'intrestedDonars': FieldValue.arrayUnion([b])
+    });
+
+    _streams.userQuery
+        .doc(donarsModel.userFrom)
+        .collection(Streams.seekersRequest)
+        .doc(donarsModel.donationId)
+        .update({
+      'intrestedDonars': FieldValue.arrayRemove([a])
+    });
   }
 
 //######################## all requests loading #################################
@@ -199,7 +250,7 @@ class RequestProvider with ChangeNotifier {
   sendReqToOtherDonars(
     String userID,
     String donationId,
-    BloodDonationModel bloodDonationModel, {
+    InterestedDonarsModel bloodDonationModel, {
     bool isEmergency = false,
   }) {
     _streams.userQuery
@@ -216,9 +267,14 @@ class RequestProvider with ChangeNotifier {
               .collection(Streams.seekersRequest)
               .doc(donationId)
               .set(bloodDonationModel.toMap());
+          // _streams.userQuery
+          //     .doc(_allDonars[i].id)
+          //     .collection(Streams.seekersRequest)
+          //     .doc(donationId).collection().
+          //     .set(bloodDonationModel.toMap());
         }
-        if(isEmergency){
-          //waatiiiii 
+        if (isEmergency) {
+          //waatiiiii
         }
       }
     });

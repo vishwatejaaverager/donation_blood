@@ -1,14 +1,16 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
-import 'package:donation_blood/src/features/shared/domain/models/blood_req_model.dart';
-import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/notification/provider/responses_provider.dart';
+import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:donation_blood/src/utils/widget_utils/cache_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
+
+import '../../../../../../../../../bottom_nav/screens/donate_blood/providers/requests_provider.dart';
+import '../../../../../../../profile_det/provider/profile_provider.dart';
+import '../../../../../../domain/models/user_profile_model.dart';
 
 class SeekersResponseScreen extends StatelessWidget {
   final Stream<QuerySnapshot<Map<String, dynamic>>> seekerRequests;
@@ -26,10 +28,11 @@ class SeekersResponseScreen extends StatelessWidget {
               return ListView.builder(
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: ((context, index) {
-                    BloodDonationModel requestData = BloodDonationModel.fromMap(
-                        snapshot.data!.docs[index].data());
+                    InterestedDonarsModel requestData =
+                        InterestedDonarsModel.fromMap(
+                            snapshot.data!.docs[index].data());
                     log(requestData.toMap().toString());
-                    return SeekerReqCard(bloodReq: requestData);
+                    return SeekerReqCard(bloodReq: requestData, index: index);
                   }));
             } else {
               return const Text("kjbfjb");
@@ -65,11 +68,10 @@ class SeekersResponseScreen extends StatelessWidget {
 //           }));
 
 class SeekerReqCard extends StatelessWidget {
-  final BloodDonationModel bloodReq;
-  const SeekerReqCard({
-    Key? key,
-    required this.bloodReq,
-  }) : super(key: key);
+  final InterestedDonarsModel bloodReq;
+  final int index;
+  const SeekerReqCard({Key? key, required this.bloodReq, required this.index})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +113,7 @@ class SeekerReqCard extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 30,
-                        child: CacheImage(image: bloodReq.image!),
+                        child: CacheImage(image: bloodReq.donarImage!),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 16.0),
@@ -188,21 +190,54 @@ class SeekerReqCard extends StatelessWidget {
                               ],
                             ),
                             sbh(8),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Card(
-                                  elevation: 8,
-                                  child: Image.asset(
-                                    "assets/home/deadline.png",
-                                    scale: 25,
+                            InkWell(
+                              onTap: () {
+                                log("message");
+                                // List a = bloodReq.intrestedDonars!;
+                                // List b = [];
+                                // for (var i = 0; i < a.length; i++) {
+                                //   InterestedDonarsModel donarsModel =
+                                //       InterestedDonarsModel.fromMap(
+                                //           bloodReq.intrestedDonars![i]);
+                                //   b.add(donarsModel.toMap());
+                                // }
+
+                                // UserProfile userId = Provider.of<ProfileProvider>(
+                                //         context,
+                                //         listen: false)
+                                //     .userProfile!;
+                                // InterestedDonarsModel donarsModels =
+                                //     InterestedDonarsModel(
+                                //         donarName: userId.name,
+                                //         donarsNumber: userId.phone,
+                                //         userFrom: userId.userId,
+                                //         bloodGroup: userId.bloodGroup,
+                                //         donarImage: userId.profileImage,
+                                //         donationId: bloodReq.donationId,
+                                //         userTo: bloodReq.userId,
+                                //         lat: userId.lat,
+                                //         lng: userId.long,
+                                //         location: userId.location,
+                                //         donarStat: "nothing");
+                                // Provider.of<RequestProvider>(context, listen: false)
+                                //     .rejectTheDonation(donarsModels, a, b);
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Card(
+                                    elevation: 8,
+                                    child: Image.asset(
+                                      "assets/home/deadline.png",
+                                      scale: 25,
+                                    ),
                                   ),
-                                ),
-                                sbw(16),
-                                Text(bloodReq.deadLine!,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold))
-                              ],
+                                  sbw(16),
+                                  Text(bloodReq.deadLine!,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold))
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -211,37 +246,112 @@ class SeekerReqCard extends StatelessWidget {
                   ),
                 ],
               ),
-              //sbw(24),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16, bottom: 8),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(8)),
-                    padding: const EdgeInsets.all(8),
-                    child: const Center(child: Text("Reject With thanks ")),
-                  )),
-                  sbw(24),
-                  Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          
-                        },
-                        child: Container(
-                                          padding: const EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                          color: Colors.redAccent,
-                          borderRadius: BorderRadius.circular(8)),
-                                          child: const Center(child: Text("Accept Offer")),
-                                        ),
-                      )),
-                ],
-              ),
-            )
+            bloodReq.donarStat == 'nothing'
+                ? Padding(
+                    padding:
+                        const EdgeInsets.only(left: 16.0, right: 16, bottom: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: InkWell(
+                          onTap: () {
+                            // log("message");
+                            // List a = bloodReq.intrestedDonars!;
+                            // List b = [];
+                            // for (var i = 0; i < a.length; i++) {
+                            //   InterestedDonarsModel donarsModel =
+                            //       InterestedDonarsModel.fromMap(
+                            //           bloodReq.intrestedDonars![i]);
+                            //   b.add(donarsModel.toMap());
+                            // }
+
+                            // InterestedDonarsModel donarsModel =
+                            //     InterestedDonarsModel.fromMap(
+                            //         bloodReq.intrestedDonars![index]);
+
+                            // InterestedDonarsModel interestedDonarsModel =
+                            //     InterestedDonarsModel(
+                            //         userFrom: donarsModel.userFrom,
+                            //         userTo: donarsModel.userTo,
+                            //         donationId: donarsModel.donationId,
+                            //         donarStat: "declined");
+
+                            // UserProfile userId = Provider.of<ProfileProvider>(
+                            //         context,
+                            //         listen: false)
+                            //     .userProfile!;
+                            // InterestedDonarsModel donarsModels =
+                            //     InterestedDonarsModel(
+                            //         donarName: userId.name,
+                            //         donarsNumber: userId.phone,
+                            //         userFrom: userId.userId,
+                            //         bloodGroup: userId.bloodGroup,
+                            //         donarImage: userId.profileImage,
+                            //         donationId: bloodReq.donationId,
+                            //         userTo: bloodReq.userId,
+                            //         lat: userId.lat,
+                            //         lng: userId.long,
+                            //         location: userId.location,
+                            //         donarStat: "declined");
+                            //       b[index] = donarsModels.toMap();
+                            // Provider.of<RequestProvider>(context, listen: false)
+                            //     .rejectTheDonation(donarsModels, a, b);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(8)),
+                            padding: const EdgeInsets.all(8),
+                            child: const Center(
+                                child: Text("Reject With thanks ")),
+                          ),
+                        )),
+                        sbw(24),
+                        Expanded(
+                            child: InkWell(
+                          onTap: () {
+                            UserProfile userId = Provider.of<ProfileProvider>(
+                                    context,
+                                    listen: false)
+                                .userProfile!;
+
+                            InterestedDonarsModel donarsModel =
+                                InterestedDonarsModel(
+                                    patientName: bloodReq.patientName,
+                                    isEmergency: bloodReq.isEmergency,
+                                    donarName: userId.name,
+                                    donarsNumber: userId.phone,
+                                    userFrom: userId.userId,
+                                    deadLine: bloodReq.deadLine,
+                                    phoneNumber: userId.phone,
+                                    bloodGroup: userId.bloodGroup,
+                                    donarImage: userId.profileImage,
+                                    donationId: bloodReq.donationId,
+                                    userTo: bloodReq.userFrom,
+                                    lat: userId.lat,
+                                    lng: userId.long,
+                                    location: userId.location,
+                                    donarStat: "nothing");
+                            Provider.of<RequestProvider>(context, listen: false)
+                                .accepDonation(donarsModel, "sent_accepted");
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                color: Colors.redAccent,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: const Center(child: Text("Accept Offer")),
+                          ),
+                        )),
+                      ],
+                    ),
+                  )
+                : bloodReq.donarStat == 'sent_accepted'
+                    ? const Text("Waiting for response")
+                    : bloodReq.donarStat == 'accepted'
+                        ? const Text("Accepted")
+                        : const Text("Declined")
           ],
         ));
   }

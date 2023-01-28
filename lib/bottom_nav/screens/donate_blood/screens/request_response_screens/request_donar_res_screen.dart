@@ -1,11 +1,9 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/utils/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../src/features/shared/domain/models/interested_donar_model.dart';
 import '../../components/req_res_card.dart';
@@ -32,21 +30,17 @@ class RequestDonarsResScreen extends StatelessWidget {
               return ListView.builder(
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: ((context, index) {
-                    BloodDonationModel bloodDonationModel =
-                        BloodDonationModel.fromMap(
+                    InterestedDonarsModel donar =
+                        InterestedDonarsModel.fromMap(
                             snapshot.data!.docs[index].data());
-                    if (bloodDonationModel.intrestedDonars!.isNotEmpty) {
-                      InterestedDonarsModel requestData =
-                          InterestedDonarsModel.fromMap(
-                              bloodDonationModel.intrestedDonars![index]);
+                   
 
                       return ReqResCard(
+                        isWaitRes: false,
                           index: index,
-                          donarStat: requestData,
+                          donarStat: donar,
                           bloodDonationModel: bloodDonationModel);
-                    } else {
-                      return const Text("No Donars");
-                    }
+                    
                   }));
             } else {
               return const Text("kjbfjb");
