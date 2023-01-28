@@ -16,6 +16,7 @@ class BloodDonationModel {
   num? lat;
   num? long;
   String? image;
+  
   String? name;
   String? donationId;
   BloodDonationModel(

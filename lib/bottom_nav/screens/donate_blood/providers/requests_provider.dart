@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
 import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/utils/streams.dart';
@@ -40,52 +41,103 @@ class RequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  addInterestedDonars(InterestedDonarsModel donarsModel) async {
-    try {
-      // await _streams.requestQuery
-      //     .where('userId', isEqualTo: donarsModel.userTo)
-      //     .get()
-      //     .then((value) {
-      //   String docId = value.docs.single.id;
-      //   log(docId);
-      //   _streams.requestQuery.doc(docId).update({
-      //     'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
-      //   });
-      // });
-      await _streams.requestQuery.doc(donarsModel.donationId).update({
-        'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
-      });
 
-      // await _streams.userQuery
+ accepDonation(InterestedDonarsModel donarsModel,String response){
+   _streams.userQuery
+        .doc(donarsModel.userFrom)
+        .collection(Streams.seekersRequest)
+        .doc(donarsModel.donationId)
+        .update({'donarStat': response});
+    _streams.userQuery
+        .doc(donarsModel.userTo)
+        .collection(Streams.requestByUser)
+        .doc(donarsModel.donationId)
+        .collection(Streams.shownInterestToDonate)
+        .doc(donarsModel.userFrom)
+        .set(donarsModel.toMap());
+ }
+
+  addInterestedDonars(InterestedDonarsModel donarsModel,
+      {bool isSeeker = false}) async {
+    try {
+      // add interested donars in blood requests
+      // await _streams.requestQuery.doc(donarsModel.donationId).update({
+      //   'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
+      // });
+
+      //add sepearate collection in interested donars
+      // _streams.userQuery
       //     .doc(donarsModel.userTo)
       //     .collection(Streams.requestByUser)
-      //     .where('userId', isEqualTo: donarsModel.userTo)
-      //     .get()
-      //     .then((value) {
-      //   String docId = value.docs.single.id;
-      //   log(docId);
-      _streams.userQuery
-          .doc(donarsModel.userTo)
-          .collection(Streams.requestByUser)
-          .doc(donarsModel.donationId)
-          .update({
-        'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
-      });
-      _streams.userQuery
-          .doc(donarsModel.userTo)
-          .collection(Streams.requestByUser)
-          .doc(donarsModel.donationId)
-          .collection(Streams.otherDonarsIntrest)
-          .doc()
-          .set(donarsModel.toMap());
+      //     .doc(donarsModel.donationId)
+      //     .collection(Streams.shownInterestToDonate)
+      //     .doc(donarsModel.userFrom)
+      //     .set(donarsModel.toMap());
+
       _streams.userQuery
           .doc(donarsModel.userFrom)
-          .collection(Streams.userInterests)
+          .collection(Streams.seekersRequest)
           .doc(donarsModel.donationId)
+          .update({
+            'donarStat' : ""
+          });
+      _streams.userQuery
+          .doc(donarsModel.userTo)
+          .collection(Streams.requestByUser)
+          .doc(donarsModel.donationId)
+          .collection(Streams.shownInterestToDonate)
+          .doc(donarsModel.userFrom)
           .set(donarsModel.toMap());
+
+      // _streams.userQuery
+      //     .doc(donarsModel.userTo)
+      //     .collection(Streams.requestByUser)
+      //     .doc(donarsModel.donationId)
+      //     .update({
+      //   'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
+      // });
+
+      // _streams.userQuery
+      //     .doc(donarsModel.userTo)
+      //     .collection(Streams.requestByUser)
+      //     .doc(donarsModel.donationId)
+      //     .collection(Streams.otherDonarsIntrest)
+      //     .doc()
+      //     .set(donarsModel.toMap());
+      // _streams.userQuery
+      //     .doc(donarsModel.userFrom)
+      //     .collection(Streams.userInterests)
+      //     .doc(donarsModel.donationId)
+      //     .set(donarsModel.toMap());
+      // if (isSeeker) {
+      //   _streams.userQuery
+      //       .doc(donarsModel.userFrom)
+      //       .collection(Streams.seekersRequest)
+      //       .doc(donarsModel.donationId)
+      //       .update({});
+      // }
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  rejectTheDonation(InterestedDonarsModel donarsModel, List a, List b) {
+    log("message");
+    _streams.userQuery
+        .doc(donarsModel.userFrom)
+        .collection(Streams.seekersRequest)
+        .doc(donarsModel.donationId)
+        .update({
+      'intrestedDonars': FieldValue.arrayUnion([b])
+    });
+
+    _streams.userQuery
+        .doc(donarsModel.userFrom)
+        .collection(Streams.seekersRequest)
+        .doc(donarsModel.donationId)
+        .update({
+      'intrestedDonars': FieldValue.arrayRemove([a])
+    });
   }
 
 //######################## all requests loading #################################
@@ -104,7 +156,6 @@ class RequestProvider with ChangeNotifier {
       _allRequests = allReq.docs;
       log(_allRequests.length.toString());
       for (var i = 0; i < _allRequests.length; i++) {
-        log("message");
         storeBloodType(_allRequests, userProfile, i);
         storeEmergencyRequests(_allRequests, i);
       }
@@ -169,34 +220,63 @@ class RequestProvider with ChangeNotifier {
   bool _isDonarsLoading = true;
   bool get isDonarLoading => _isDonarsLoading;
 
-  getIntrestedDonars(List a) async {
+  getIntrestedDonars(InterestedDonarsModel interestedDonarsModel) async {
     _isDonarsLoading = true;
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      notifyListeners();
-    });
     _intrestedDonars = [];
 
-    for (var i = 0; i < a.length; i++) {
-      InterestedDonarsModel interestedDonarsModel =
-          InterestedDonarsModel.fromMap(a[i]);
-      log("message");
-      log(interestedDonarsModel.userFrom!);
-      await _streams.userQuery
-          .doc(interestedDonarsModel.userFrom)
-          .get()
-          .then((value) {
-        log("got");
-        var a = value.data();
-        _intrestedDonars.add(a!);
-      });
-    }
+    //for (var i = 0; i < a.length; i++) {
 
+    await _streams.userQuery
+        .doc(interestedDonarsModel.userFrom)
+        .get()
+        .then((value) {
+      var a = value.data();
+      _intrestedDonars.add(a!);
+    });
+    // }
     //}
     // }
     _isDonarsLoading = false;
     // log(isDonarLoading.toString());
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      notifyListeners();
+    // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    notifyListeners();
+    //});
+  }
+
+  //######### send req to donars ############################
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> _allDonars = [];
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> get allDonars => _allDonars;
+
+  sendReqToOtherDonars(
+    String userID,
+    String donationId,
+    InterestedDonarsModel bloodDonationModel, {
+    bool isEmergency = false,
+  }) {
+    _streams.userQuery
+        .where('isAvailable', isEqualTo: true)
+        .get()
+        .then((value) {
+      _allDonars = value.docs;
+
+      for (var i = 0; i < _allDonars.length; i++) {
+        if (_allDonars[i].id != userID &&
+            _allDonars[i]['bloodGroup'] == bloodDonationModel.bloodGroup) {
+          _streams.userQuery
+              .doc(_allDonars[i].id)
+              .collection(Streams.seekersRequest)
+              .doc(donationId)
+              .set(bloodDonationModel.toMap());
+          // _streams.userQuery
+          //     .doc(_allDonars[i].id)
+          //     .collection(Streams.seekersRequest)
+          //     .doc(donationId).collection().
+          //     .set(bloodDonationModel.toMap());
+        }
+        if (isEmergency) {
+          //waatiiiii
+        }
+      }
     });
   }
 }
