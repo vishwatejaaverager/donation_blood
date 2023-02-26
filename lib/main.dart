@@ -6,8 +6,6 @@ import 'package:donation_blood/src/utils/user_pref/user_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-
 import 'firebase_options.dart';
 import 'src/app.dart';
 import 'src/utils/general_providers.dart';

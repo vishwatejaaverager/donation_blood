@@ -1,5 +1,5 @@
 enum AppRoutes {
-  loginScreen("login_screen"),
+   loginScreen("login_screen"),
   otpScreen("otp_screen"),
   bottomScreen("bottom_screen"),
   homeScreen("home_screen"),

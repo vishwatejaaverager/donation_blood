@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'features/profile_det/screens/profile_detail_screen.dart';
 import 'utils/app_router.dart';
 import 'features/authentication/presentation/login_screen/login_screen.dart';
 import 'features/shared/presentation/bottom_nav/screens/bottom_nav_screen.dart';
@@ -26,9 +25,9 @@ class MyApp extends StatelessWidget {
         ),
         // ignore: unrelated_type_equality_checks
         //home: const EditProfileScreen());
-    home: preferences.getUserId() != ""
-        ? const BottomNavScreen()
-        : const LoginScreen());
+        home: preferences.getUserId() != ""
+            ? const BottomNavScreen()
+            : const LoginScreen());
 
     // preferences.getUserId() != ""
     //     ? const BottomNavScreen

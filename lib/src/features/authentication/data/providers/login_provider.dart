@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/bottom_nav_screen.dart';
-import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/home/screens/home_screen.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -92,16 +91,16 @@ class LoginProvider with ChangeNotifier {
         Preferences.setUserID(a.user!.uid);
         setUserId(a.user!.uid);
         setPhone(a.user!.phoneNumber!);
-       // log(a.user.toString());
+        // log(a.user.toString());
         await _streams.userQuery
             .where("userId", isEqualTo: a.user!.uid.toString())
             .get()
             .then((value) {
           if (value.docs.isNotEmpty) {
-           // log("message");
+            // log("message");
             Navigation.instance.navigateTo(BottomNavScreen.id.path);
           } else {
-             Navigation.instance.navigateTo(EditProfileScreen.id.path);
+            Navigation.instance.navigateTo(EditProfileScreen.id.path);
           }
         });
       }

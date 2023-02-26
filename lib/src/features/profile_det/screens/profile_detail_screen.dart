@@ -105,33 +105,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   Consumer(builder: ((context, value, child) {
                     return Row(
-                    children: [
-                      Expanded(
-                          child: InkWell(
-                              onTap: () {
-                                Navigation.instance
-                                    .navigateTo(LocationSeachScreen.id.path);
-                              },
-                              child: EmptyTextField(
-                                text: SizedBox(
-                                  width: size.width/1.4,
-                                  child: Text(
-                                    __.description,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
+                      children: [
+                        Expanded(
+                            child: InkWell(
+                                onTap: () {
+                                  Navigation.instance
+                                      .navigateTo(LocationSeachScreen.id.path);
+                                },
+                                child: EmptyTextField(
+                                  text: SizedBox(
+                                    width: size.width / 1.4,
+                                    child: Text(
+                                      __.description,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                ),
-                              ))),
-                      Container(
-                        margin: const EdgeInsets.only(right: 16),
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: Colors.grey)),
-                        child: const Icon(Icons.gps_fixed),
-                      )
-                    ],
-                  );
+                                ))),
+                        Container(
+                          margin: const EdgeInsets.only(right: 16),
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(color: Colors.grey)),
+                          child: const Icon(Icons.gps_fixed),
+                        )
+                      ],
+                    );
                   })),
                   // EmptyTextField(
                   //     text: __.dropDownValue,
@@ -148,7 +148,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   //             __.setDropDownValue(value!);
                   //           })),
                   //     )),
-                   Padding(
+                  const Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
                     child: Text(
@@ -328,7 +328,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             Provider.of<SearchProvider>(context, listen: false)
                                 .userLocation!;
                         UserProfile userProfile = UserProfile(
-                          userId: userId,
+                            userId: userId,
                             name: _nameController.text,
                             age: _ageController.text,
                             gender: __.dropDownValue,
@@ -339,6 +339,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             profileImage: __.imageUrl,
                             lat: loc.lat,
                             long: loc.lng,
+                            donatedTime: "",
                             phone: phone);
                         __.addUserToFirebase(userProfile, userId);
                       },

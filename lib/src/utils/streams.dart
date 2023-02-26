@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Streams {
+  static const wallet = 'wallet';
   static const requests = 'yourRequests';
   static const seekersRequest = 'seekersRequest';
   static const user = 'users';
@@ -10,7 +11,6 @@ class Streams {
   static const userInterests = 'userInterestsDonate';
   static const bloodRequest = 'blood_requests';
   static const seekerReqDonationStat = 'donationStat';
-  
 
   final userQuery = FirebaseFirestore.instance.collection(user);
   final requestQuery = FirebaseFirestore.instance.collection(bloodRequest);
