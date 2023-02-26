@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../bottom_nav/screens/donate_blood/screens/donate_blood_details_sreen.dart';
-import '../../bottom_nav/screens/donate_blood/screens/request_response_screens/request_donar_res_screen.dart';
 import '../features/authentication/presentation/login_screen/login_screen.dart';
 import '../features/authentication/presentation/otp_screen.dart';
 import '../features/profile_det/screens/location_search_screen.dart';
@@ -40,14 +39,13 @@ class AppRouter {
         bloodDonationModel: bloodDonationModel,
       ));
     } else if (route.name == BloodDetailResScreen.id.path) {
-      Map<String,dynamic> bloodDonationModel =
+      Map<String, dynamic> bloodDonationModel =
           route.arguments as Map<String, dynamic>;
       return pageTransition(BloodDetailResScreen(
         bloodDonationModel: bloodDonationModel['bloodDonationInfo'],
         bloodId: bloodDonationModel['id'],
-        
       ));
-    } 
+    }
     // else if (route.name == RequestDonarsResScreen.id.path) {
     //   BloodDonationModel bloodDonationModel =
     //       route.arguments as BloodDonationModel;
@@ -55,8 +53,8 @@ class AppRouter {
     //     bloodDonationModel: bloodDonationModel,
     //   ));
     // }
-    
-     else if (route.name == DonateOnBoardingScreen.id.path) {
+
+    else if (route.name == DonateOnBoardingScreen.id.path) {
       BloodDonationModel bloodDonationModel =
           route.arguments as BloodDonationModel;
       return pageTransition(DonateOnBoardingScreen(

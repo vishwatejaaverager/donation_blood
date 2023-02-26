@@ -29,8 +29,10 @@ class ReqResCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //log(donarStat!.donarStat!);
-    log(index!.toString());
+    log(donarStat!.donarStat!);
+    log(bloodDonationModel.units!);
+
+    // log(index!.toString());
     return Card(
       elevation: 8,
       shape: const RoundedRectangleBorder(
@@ -53,14 +55,38 @@ class ReqResCard extends StatelessWidget {
                 ? donarStat!.donarStat == 'nothing'
                     ? const ResReqDonarResNothing()
                     : donarStat!.donarStat == 'accepted'
-                        ? const ReqResDonarAccepted()
-                        : const ResReqDonarRejected()
+                        ? const ReqResDonarStatTile(
+                            text: "Accepted will contact you soon",
+                          )
+                        : const ReqResDonarStatTile(
+                            text: "Rejected with thanks",
+                          )
                 : donarStat!.donarStat == 'accepted'
-                    ? const ResReqBloodReqAccepted()
+                    ? ResReqBloodReqAccepted(
+                        tileText: "Contact Donar",
+                        contactDonar: () {
+                          
+                        },
+                        notDonated: () {
+                          Provider.of<ResponseProvider>(context, listen: false)
+                              .actualAcceptAndRejectDonation(
+                                  donarStat!, "not_donated");
+                        },
+                        donated: () {
+                          log(donarStat!.toMap().toString());
+                          Provider.of<ResponseProvider>(context, listen: false)
+                              .actualAcceptAndRejectDonation(
+                                  donarStat!, "donated",
+                                  bloodDonationModel: bloodDonationModel);
+                        },
+                      )
                     : donarStat!.donarStat == 'declined'
                         ? const ResReqRequesterDeclined()
-                        : ResReqRequesterResOn(
-                            bloodReq: donarStat!, index: index)
+                        : donarStat!.donarStat == 'donated'
+                            ? const ReqResDonarStatTile(text: "Donated")
+                            : ResReqRequesterResOn(
+                                bloodReq: donarStat!,
+                              )
           ],
         ),
       ),
@@ -72,11 +98,9 @@ class ResReqRequesterResOn extends StatelessWidget {
   const ResReqRequesterResOn({
     Key? key,
     required this.bloodReq,
-    required this.index,
   }) : super(key: key);
 
   final InterestedDonarsModel bloodReq;
-  final int? index;
 
   @override
   Widget build(BuildContext context) {
@@ -105,32 +129,6 @@ class ResReqRequesterResOn extends StatelessWidget {
           ),
           InkWell(
             onTap: () {
-              // List a = bloodDonationModel.intrestedDonars!;
-              // List b = [];
-              // for (var i = 0; i < a.length; i++) {
-              //   InterestedDonarsModel donarsModel =
-              //       InterestedDonarsModel.fromMap(
-              //           bloodDonationModel.intrestedDonars![i]);
-              //   b.add(donarsModel.toMap());
-              // }
-
-              // InterestedDonarsModel donarsModel = InterestedDonarsModel.fromMap(
-              //     bloodDonationModel.intrestedDonars![index!]);
-
-              // InterestedDonarsModel interestedDonarsModel =
-              //     InterestedDonarsModel(
-              //         donarsNumber: donarsModel.donarsNumber,
-              //         donarImage: donarsModel.donarImage,
-              //         donarName: donarsModel.donarName,
-              //         bloodGroup: donarsModel.bloodGroup,
-              //         lat: donarsModel.lat,
-              //         lng: donarsModel.lng,
-              //         location: donarsModel.location,
-              //         userFrom: donarsModel.userFrom,
-              //         userTo: donarsModel.userTo,
-              //         donationId: donarsModel.donationId,
-              //         donarStat: "accepted");
-              // b[index!] = interestedDonarsModel.toMap();
               UserProfile userId =
                   Provider.of<ProfileProvider>(context, listen: false)
                       .userProfile!;
@@ -153,7 +151,7 @@ class ResReqRequesterResOn extends StatelessWidget {
                   donarStat: "nothing");
 
               Provider.of<ResponseProvider>(context, listen: false)
-                  .acceptDonationFromDonar(donarsModel);
+                  .acceptDonationFromDonarAndReject(donarsModel, "accepted");
               // Provider.of<RequestProvider>(context,
               //         listen: false)
               //     .getIntrestedDonars(bloodDonationModel
@@ -207,7 +205,19 @@ class ResReqRequesterDeclined extends StatelessWidget {
 }
 
 class ResReqBloodReqAccepted extends StatelessWidget {
+  final bool decideDonated, showDonated;
+  final String donationStat, tileText;
+
+  final Function()? contactDonar, notDonated, donated;
+
   const ResReqBloodReqAccepted({
+    this.decideDonated = false,
+    this.donationStat = '',
+    this.contactDonar,
+    this.notDonated,
+    this.donated,
+    this.tileText = '',
+    this.showDonated = true,
     Key? key,
   }) : super(key: key);
 
@@ -221,40 +231,55 @@ class ResReqBloodReqAccepted extends StatelessWidget {
             bottomLeft: Radius.circular(24),
             bottomRight: Radius.circular(24),
           )),
-      child: Column(
-        children: [
-          InkWell(
-            onTap: () {},
-            child: const Center(
-                child: Text(
-              "Contact Donar ",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            )),
-          ),
-          const Divider(
-            thickness: 2,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                onTap: () {},
-                child: const Text(
-                  "Not Donated",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
+      child: decideDonated
+          ? Center(
+              child: Text(
+                donationStat,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              InkWell(
-                onTap: () {},
-                child: const Text(
-                  "Donated",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            )
+          : Column(
+              children: [
+                InkWell(
+                  onTap: contactDonar,
+                  child: Center(
+                      child: Text(
+                    tileText,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
+                  )),
                 ),
-              )
-            ],
-          )
-        ],
-      ),
+                showDonated
+                    ? const Divider(
+                        thickness: 2,
+                      )
+                    : const SizedBox(),
+                showDonated
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: notDonated,
+                            child: const Text(
+                              "Not Donated",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: donated,
+                            child: const Text(
+                              "Donated",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                          )
+                        ],
+                      )
+                    : const SizedBox()
+              ],
+            ),
     );
   }
 }
@@ -279,9 +304,11 @@ class ResReqDonarRejected extends StatelessWidget {
   }
 }
 
-class ReqResDonarAccepted extends StatelessWidget {
-  const ReqResDonarAccepted({
+class ReqResDonarStatTile extends StatelessWidget {
+  final String text;
+  const ReqResDonarStatTile({
     Key? key,
+    required this.text,
   }) : super(key: key);
 
   @override
@@ -294,7 +321,10 @@ class ReqResDonarAccepted extends StatelessWidget {
           borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(24),
               bottomRight: Radius.circular(24))),
-      child: const Text("Accepted will contact you soon"),
+      child: Text(
+        text,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
     );
   }
 }

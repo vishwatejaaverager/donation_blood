@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 
 import '../../../utils/routes.dart';
 import '../../../utils/utils.dart';
-import '../../../utils/widget_utils/loading.dart';
 import '../data/providers/login_provider.dart';
 import 'login_screen/login_button.dart';
 
@@ -106,7 +105,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 LoginButton(
                     onPressed: () {
                       log("pressed");
-                       
+
                       Provider.of<LoginProvider>(context, listen: false)
                           .verifyOTP(
                         _otpController.text,

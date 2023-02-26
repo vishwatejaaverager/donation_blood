@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:flutter/cupertino.dart';
@@ -85,21 +86,70 @@ class ResponseProvider with ChangeNotifier {
         .update({"donarStat": stat});
   }
 
-  acceptDonationFromDonar(InterestedDonarsModel donarsModel) async{
-  await  _streams.userQuery
+  acceptDonationFromDonarAndReject(
+      InterestedDonarsModel donarsModel, String response,
+      {BloodDonationModel? bloodDonationModel}) async {
+    await _streams.userQuery
         .doc(donarsModel.userFrom)
         .collection(Streams.requestByUser)
         .doc(donarsModel.donationId)
         .collection(Streams.shownInterestToDonate)
         .doc(donarsModel.userTo)
-        .update({'donarStat': 'accepted'});
+        .update({'donarStat': response});
 
-  await  _streams.userQuery
+    _streams.userQuery
         .doc(donarsModel.userTo)
         .collection(Streams.seekersRequest)
         .doc(donarsModel.donationId)
-        .update({
-          'donarStat' : 'accepted'
-        });
+        .update({'donarStat': response});
+  }
+
+  actualAcceptAndRejectDonation(
+      InterestedDonarsModel donarsModel, String response,
+      {BloodDonationModel? bloodDonationModel}) async {
+    log("${donarsModel.userTo} thisss is thi s");
+    log("${donarsModel.userFrom} thisss is thi s");
+    await _streams.userQuery
+        .doc(donarsModel.userTo)
+        .collection(Streams.requestByUser)
+        .doc(donarsModel.donationId)
+        .collection(Streams.shownInterestToDonate)
+        .doc(donarsModel.userFrom)
+        .update({'donarStat': response});
+
+    await _streams.userQuery
+        .doc(donarsModel.userFrom)
+        .collection(Streams.seekersRequest)
+        .doc(donarsModel.donationId)
+        .update({'donarStat': response});
+
+    if (response == 'donated') {
+      var a = int.parse(bloodDonationModel!.units!);
+      int b = a - 1;
+
+      await _streams.userQuery.doc(donarsModel.userFrom).update(
+          {"isAvailable": false, "donatedTime": DateTime.now().toString()});
+
+      await _streams.requestQuery
+          .doc(donarsModel.donationId)
+          .update({"units": b.toString()});
+
+      await _streams.userQuery
+          .doc(donarsModel.userTo)
+          .collection(Streams.requestByUser)
+          .doc(donarsModel.donationId)
+          .update({"units": b.toString()});
+      if (b == 0) {
+        await _streams.requestQuery
+            .doc(donarsModel.donationId)
+            .update({"donationStat": "completed"});
+
+        await _streams.userQuery
+            .doc(donarsModel.userTo)
+            .collection(Streams.requestByUser)
+            .doc(donarsModel.donationId)
+            .update({"donationStat": "completed"});
+      }
+    }
   }
 }

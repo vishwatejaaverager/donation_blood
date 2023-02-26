@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/donars/provider/donar_provider.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -37,8 +36,8 @@ class SearchProvider with ChangeNotifier {
         _userLocation = value.result.geometry!.location;
         log("${_userLocation!.lat}latitude");
         log("${_userLocation!.lng} longitude");
-        Provider.of<DonarProvider>(context, listen: false)
-            .setHospitalLocation(_userLocation!);
+        // Provider.of<DonarProvider>(context, listen: false)
+        //     .setHospitalLocation(_userLocation!);
 
         Navigation.instance.pushBack();
       });
@@ -52,7 +51,7 @@ class SearchProvider with ChangeNotifier {
     Uri uri = Uri.https(
         "maps.googleapis.com",
         '/maps/api/place/autocomplete/json',
-        {"input": query, "key": "AIzaSyBzm0NvCH2RFsttbwBBMTujYtidyYK97pY"});
+        {"input": query, "key": "AIzaSyD2KTqh2cJBIeMKfb6aB_-hgWRO5hpVsuo"});
     await fetchUrl(uri);
     // if (res != null) {
     //   log(res.toString());
