@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/notification/provider/responses_provider.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/notification/screens/filtered_screens/blood_response_screen.dart';
-import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/notification/screens/filtered_screens/blood_user_res_screen.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,22 +24,22 @@ class _NotificationScreenState extends State<NotificationScreen>
   final Streams _streams = Streams();
   late TabController _tabController;
   late ResponseProvider responseProvider;
-  late Stream<QuerySnapshot<Map<String, dynamic>>> _bloodReqByUsers;
+  //late Stream<QuerySnapshot<Map<String, dynamic>>> _bloodReqByUsers;
   late Stream<QuerySnapshot<Map<String, dynamic>>> _seekerReqByUser;
   String? userId;
   @override
   void initState() {
-    _tabController = TabController(vsync: this, length: 2);
+    _tabController = TabController(vsync: this, length: 1);
     userId = Provider.of<ProfileProvider>(context, listen: false)
         .userProfile!
         .userId;
     responseProvider = Provider.of<ResponseProvider>(context, listen: false);
     responseProvider.getAllSeekersRequest(userId!);
     log("${userId!}notification screen");
-    _bloodReqByUsers = _streams.userQuery
-        .doc(userId)
-        .collection(Streams.userInterests)
-        .snapshots();
+    // _bloodReqByUsers = _streams.userQuery
+    //     .doc(userId)
+    //     .collection(Streams.userInterests)
+    //     .snapshots();
     _seekerReqByUser = _streams.userQuery
         .doc(userId)
         .collection(Streams.seekersRequest)
@@ -66,7 +65,7 @@ class _NotificationScreenState extends State<NotificationScreen>
             FrequencyTabs(
                 tabs: const [
                   SizedBox(child: Center(child: Text("Seeker's  Requests"))),
-                  SizedBox(child: Center(child: Text("Your Requests")))
+                  //  SizedBox(child: Center(child: Text("Your Requests")))
                 ],
                 controller: _tabController,
                 tags: const []),
@@ -74,10 +73,12 @@ class _NotificationScreenState extends State<NotificationScreen>
                 child: TabBarView(
               controller: _tabController,
               children: [
-                 SeekersResponseScreen(seekerRequests: _seekerReqByUser,),
-                BloodUserResScreen(
-                  bloodReqByUsers: _bloodReqByUsers,
-                )
+                SeekersResponseScreen(
+                  seekerRequests: _seekerReqByUser,
+                ),
+                // BloodUserResScreen(
+                //   bloodReqByUsers: _bloodReqByUsers,
+                // )
               ],
             ))
           ],

@@ -1,13 +1,19 @@
 import 'dart:developer';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
 import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
+import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:donation_blood/src/utils/streams.dart';
+import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:map_launcher/map_launcher.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:random_string/random_string.dart';
+import 'package:share_plus/share_plus.dart';
 
 class RequestProvider with ChangeNotifier {
   final Streams _streams = Streams();
@@ -41,46 +47,41 @@ class RequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
- accepDonation(InterestedDonarsModel donarsModel,String response){
-   _streams.userQuery
+  accepDonation(InterestedDonarsModel donarsModel, String response) async {
+    await _streams.userQuery
         .doc(donarsModel.userFrom)
         .collection(Streams.seekersRequest)
         .doc(donarsModel.donationId)
         .update({'donarStat': response});
-    _streams.userQuery
+    await _streams.userQuery
         .doc(donarsModel.userTo)
         .collection(Streams.requestByUser)
         .doc(donarsModel.donationId)
         .collection(Streams.shownInterestToDonate)
         .doc(donarsModel.userFrom)
         .set(donarsModel.toMap());
- }
+    Navigation.instance.pushBack();
+  }
 
-  addInterestedDonars(InterestedDonarsModel donarsModel,
-      {bool isSeeker = false}) async {
+  rejectRequest(String userId, String donarId) async {
     try {
-      // add interested donars in blood requests
-      // await _streams.requestQuery.doc(donarsModel.donationId).update({
-      //   'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
-      // });
-
-      //add sepearate collection in interested donars
-      // _streams.userQuery
-      //     .doc(donarsModel.userTo)
-      //     .collection(Streams.requestByUser)
-      //     .doc(donarsModel.donationId)
-      //     .collection(Streams.shownInterestToDonate)
-      //     .doc(donarsModel.userFrom)
-      //     .set(donarsModel.toMap());
-
-      _streams.userQuery
-          .doc(donarsModel.userFrom)
+      log(userId);
+      log(donarId);
+      await _streams.userQuery
+          .doc(userId)
           .collection(Streams.seekersRequest)
-          .doc(donarsModel.donationId)
-          .update({
-            'donarStat' : ""
-          });
+          .doc(donarId)
+          .update({"donarStat": "some"});
+      Navigation.instance.pushBack();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  addInterestedDonars(
+    InterestedDonarsModel donarsModel,
+  ) async {
+    try {
       _streams.userQuery
           .doc(donarsModel.userTo)
           .collection(Streams.requestByUser)
@@ -89,33 +90,8 @@ class RequestProvider with ChangeNotifier {
           .doc(donarsModel.userFrom)
           .set(donarsModel.toMap());
 
-      // _streams.userQuery
-      //     .doc(donarsModel.userTo)
-      //     .collection(Streams.requestByUser)
-      //     .doc(donarsModel.donationId)
-      //     .update({
-      //   'intrestedDonars': FieldValue.arrayUnion([donarsModel.toMap()])
-      // });
-
-      // _streams.userQuery
-      //     .doc(donarsModel.userTo)
-      //     .collection(Streams.requestByUser)
-      //     .doc(donarsModel.donationId)
-      //     .collection(Streams.otherDonarsIntrest)
-      //     .doc()
-      //     .set(donarsModel.toMap());
-      // _streams.userQuery
-      //     .doc(donarsModel.userFrom)
-      //     .collection(Streams.userInterests)
-      //     .doc(donarsModel.donationId)
-      //     .set(donarsModel.toMap());
-      // if (isSeeker) {
-      //   _streams.userQuery
-      //       .doc(donarsModel.userFrom)
-      //       .collection(Streams.seekersRequest)
-      //       .doc(donarsModel.donationId)
-      //       .update({});
-      // }
+      Navigation.instance.pushBack();
+      appToast("We will update you soon when user confirms");
     } catch (e) {
       log(e.toString());
     }
@@ -193,10 +169,6 @@ class RequestProvider with ChangeNotifier {
     if (req[index]['bloodGroup'] == userProfile.bloodGroup) {
       _sameType.add(req[index]);
     }
-    //  }
-    // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-    //   notifyListeners();
-    // });
   }
 
 //########################## launch maps ###################################
@@ -278,5 +250,22 @@ class RequestProvider with ChangeNotifier {
         }
       }
     });
+  }
+
+  shareImage(Uint8List file) async {
+    try {
+      final directory = await getTemporaryDirectory();
+      String path = directory.path;
+      log('$path this is the path');
+
+      File c = await File('$path/imageName.jpg').writeAsBytes(file);
+      //  var g = RandomStringGenerator(fixedLength: 5);
+      var h = randomString(3);
+      final File newim = await c.copy('$path/$h.jpg');
+      XFile files = XFile(newim.path);
+      await Share.shareXFiles([files]);
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }

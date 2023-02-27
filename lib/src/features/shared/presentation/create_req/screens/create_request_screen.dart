@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import '../../../../../../bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import '../../../../profile_det/screens/profile_detail_screen.dart';
 import '../../../domain/models/interested_donar_model.dart';
+import '../../widgets/alert_dialog.dart';
 import '../../widgets/text_fields.dart';
 
 class CreateReqScreen extends StatefulWidget {
@@ -284,6 +285,7 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           donarImage: userProfile.profileImage,
                                           donationId: a,
                                           userTo: '',
+                                          isAutomated: true,
                                           isEmergency: __.isEmergency,
                                           deadLine: __.reqDate,
                                           phoneNumber: _mobileController.text,
@@ -329,15 +331,24 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           lat: hospLoc.lat,
                                           isEmergency: __.isEmergency,
                                           long: hospLoc.lng);
-                                  __.addBloodRequestToFirebase(
-                                      bloodDonationModel2);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return BlurryDialog("Create Request",
+                                          "Are You Sure Really want to Create Request ?",
+                                          () {
+                                           __.addBloodRequestToFirebase(
+                                            bloodDonationModel2);
 
-                                  Provider.of<RequestProvider>(context,
-                                          listen: false)
-                                      .sendReqToOtherDonars(
-                                          userProfile.userId!, a, donar);
+                                        Provider.of<RequestProvider>(context,
+                                                listen: false)
+                                            .sendReqToOtherDonars(
+                                                userProfile.userId!, a, donar);
+                                      });
+                                    },
+                                  );
                                 } else {
-                                  appToast("Please Do Fill All The Details :(");
+                                  //appToast("Please Do Fill All The Details :(");
                                 }
                               }),
                               text: "Request Donation")
@@ -354,3 +365,5 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
     );
   }
 }
+
+// ignore: must_be_immutable

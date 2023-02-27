@@ -1,16 +1,17 @@
-import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/requests_provider.dart';
-import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
 import 'package:donation_blood/src/features/shared/presentation/create_req/screens/create_request_screen.dart';
 import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../../../../bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import '../../../../../../../../bottom_nav/screens/home/componets/home_header.dart';
 import '../../../../../../../../bottom_nav/screens/home/componets/home_view_count.dart';
 import '../../../../../../../../bottom_nav/screens/home/componets/wave_clipper.dart';
 import '../../../../../../../utils/colors.dart';
 import '../../../../../../../utils/routes.dart';
 import '../../../../../../../utils/utils.dart';
+import '../../../../../../profile_det/provider/profile_provider.dart';
+import '../../../../../domain/models/user_profile_model.dart';
 
 class HomeScreen extends StatefulWidget {
   static const id = AppRoutes.homeScreen;
@@ -21,12 +22,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+   UserProfile? userProfile;
+  late RequestProvider requestProvider;
   @override
   void initState() {
-    Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
+   // Future.delayed(const Duration(seconds: 5), () {
+     // Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
+      // userProfile =
+      //     Provider.of<ProfileProvider>(context, listen: false).userProfile!;
+      //     requestProvider = Provider.of<RequestProvider>(context, listen: false);
 
+      // requestProvider.getAllReuests(userProfile!);
+    
+    
     super.initState();
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -88,9 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
-                    onTap: () {
-                      
-                    },
+                    onTap: () {},
                     child: Card(
                       elevation: 10,
                       child: Container(

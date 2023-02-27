@@ -54,24 +54,28 @@ class UserProfileProvider extends ChangeNotifier {
   String get liters => _liters;
 
   getSavedLivesAndPoints(String userId) async {
-    var a = await _streams.userQuery
-        .doc(userId)
-        .collection(Streams.seekersRequest)
-        .where("donarStat", isEqualTo: "claimed")
-        .get();
+    try {
+      var a = await _streams.userQuery
+          .doc(userId)
+          .collection(Streams.seekersRequest)
+          .where("donarStat", isEqualTo: "claimed")
+          .get();
 
-    var b = await _streams.userQuery
-        .doc(userId)
-        .collection(Streams.wallet)
-        .doc(userId)
-        .get();
+      var b = await _streams.userQuery
+          .doc(userId)
+          .collection(Streams.wallet)
+          .doc(userId)
+          .get();
 
-    _livesCount = a.docs.length.toString();
-    _coins = b.data()!['coins'];
-    var c = double.parse(_livesCount);
-    var d = c * 350;
+      _livesCount = a.docs.length.toString();
+      _coins = b.data()!['coins'];
+      var c = double.parse(_livesCount);
+      var d = c * 350;
 
-    _liters = d.toString();
-    notifyListeners();
+      _liters = d.toString();
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }

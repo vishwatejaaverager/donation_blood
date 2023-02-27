@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
+import 'package:donation_blood/src/features/shared/presentation/widgets/warning_text.dart';
 import 'package:donation_blood/src/utils/routes.dart';
 import 'package:flutter/material.dart';
 
@@ -30,20 +31,18 @@ class RequestDonarsResScreen extends StatelessWidget {
               return ListView.builder(
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: ((context, index) {
-                    InterestedDonarsModel donar =
-                        InterestedDonarsModel.fromMap(
-                            snapshot.data!.docs[index].data());
-                   
+                    InterestedDonarsModel donar = InterestedDonarsModel.fromMap(
+                        snapshot.data!.docs[index].data());
 
-                      return ReqResCard(
+                    return ReqResCard(
                         isWaitRes: false,
-                          index: index,
-                          donarStat: donar,
-                          bloodDonationModel: bloodDonationModel);
-                    
+                        index: index,
+                        donarStat: donar,
+                        bloodDonationModel: bloodDonationModel);
                   }));
             } else {
-              return const Text("kjbfjb");
+              return const WarningWidget(
+                  text: "No Response From Donars :( \n Hold tight :) ");
             }
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();

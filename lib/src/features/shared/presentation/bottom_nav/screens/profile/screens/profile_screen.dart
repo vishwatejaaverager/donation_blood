@@ -1,6 +1,8 @@
 import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
 import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/provider/user_profile_provider.dart';
+import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/screens/reward_screens/reward_screen.dart';
+import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
@@ -66,9 +68,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Center(
+                      Center(
                           child: CircleAvatar(
                         radius: 40,
+                        backgroundColor: Colors.black.withOpacity(0.6),
+                        child: const Icon(Icons.person),
                       )),
                       sbh(12),
                       Text(
@@ -198,7 +202,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          value.liters,
+                                          value.liters == ""
+                                              ? "0"
+                                              : value.liters,
                                           style: const TextStyle(
                                               fontSize: 24,
                                               fontWeight: FontWeight.bold),
@@ -253,28 +259,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             ListTile(
               onTap: () {
-                
+                Navigation.instance.navigateTo(RewardScreen.id.path);
               },
               leading: Image.asset(
                 'assets/profile/gift.png',
                 scale: 15,
               ),
               title: const Text("Reward Points"),
-              trailing: const Icon(Icons.arrow_right_alt,size: 32,),
-            ),
-            sbh(12),
-            ListTile(
-              onTap: () {},
-              leading: Image.asset(
-                'assets/profile/life_saved.png',
-                scale: 12,
-              ),
-              title: const Text("Lifes Saved"),
               trailing: const Icon(
                 Icons.arrow_right_alt,
                 size: 32,
               ),
-            )
+            ),
+            sbh(12),
+            // ListTile(
+            //   onTap: () {},
+            //   leading: Image.asset(
+            //     'assets/profile/life_saved.png',
+            //     scale: 12,
+            //   ),
+            //   title: const Text("Lifes Saved"),
+            //   trailing: const Icon(
+            //     Icons.arrow_right_alt,
+            //     size: 32,
+            //   ),
+            // )
           ],
         ),
       ),

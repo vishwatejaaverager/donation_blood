@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:confetti/confetti.dart';
 import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
+import 'package:donation_blood/src/features/shared/presentation/widgets/warning_text.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:donation_blood/src/utils/widget_utils/cache_image.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,9 @@ import '../../../../../../../../../bottom_nav/screens/donate_blood/components/re
 import '../../../../../../../../../bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import '../../../../../../../profile_det/provider/profile_provider.dart';
 import '../../../../../../domain/models/user_profile_model.dart';
+import '../../../../../widgets/alert_dialog.dart';
 import '../../../profile/provider/user_profile_provider.dart';
+import '../../provider/responses_provider.dart';
 
 class SeekersResponseScreen extends StatelessWidget {
   final Stream<QuerySnapshot<Map<String, dynamic>>> seekerRequests;
@@ -39,7 +42,8 @@ class SeekersResponseScreen extends StatelessWidget {
                     return SeekerReqCard(bloodReq: requestData, index: index);
                   }));
             } else {
-              return const Text("kjbfjb");
+              return const WarningWidget(
+                  text: "No One is Looking For Blood :)");
             }
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
@@ -267,7 +271,25 @@ class _SeekerReqCardState extends State<SeekerReqCard> {
                           children: [
                             Expanded(
                                 child: InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return BlurryDialog("Reject",
+                                        "Are You Sure Really want to Reject Request ?",
+                                        () {
+                                      UserProfile userId =
+                                          Provider.of<ProfileProvider>(context,
+                                                  listen: false)
+                                              .userProfile!;
+                                      Provider.of<RequestProvider>(context,
+                                              listen: false)
+                                          .rejectRequest(userId.userId!,
+                                              widget.bloodReq.donationId!);
+                                    });
+                                  },
+                                );
+                              },
                               child: Container(
                                 decoration: BoxDecoration(
                                     border: Border.all(color: Colors.black),
@@ -281,34 +303,45 @@ class _SeekerReqCardState extends State<SeekerReqCard> {
                             Expanded(
                                 child: InkWell(
                               onTap: () {
-                                UserProfile userId =
-                                    Provider.of<ProfileProvider>(context,
-                                            listen: false)
-                                        .userProfile!;
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return BlurryDialog("Accept",
+                                        "Are You Sure Really want to Accept Request ?",
+                                        () {
+                                      UserProfile userId =
+                                          Provider.of<ProfileProvider>(context,
+                                                  listen: false)
+                                              .userProfile!;
 
-                                InterestedDonarsModel donarsModel =
-                                    InterestedDonarsModel(
-                                        patientName:
-                                            widget.bloodReq.patientName,
-                                        isEmergency:
-                                            widget.bloodReq.isEmergency,
-                                        donarName: userId.name,
-                                        donarsNumber: userId.phone,
-                                        userFrom: userId.userId,
-                                        deadLine: widget.bloodReq.deadLine,
-                                        phoneNumber: userId.phone,
-                                        bloodGroup: userId.bloodGroup,
-                                        donarImage: userId.profileImage,
-                                        donationId: widget.bloodReq.donationId,
-                                        userTo: widget.bloodReq.userFrom,
-                                        lat: userId.lat,
-                                        lng: userId.long,
-                                        location: userId.location,
-                                        donarStat: "nothing");
-                                Provider.of<RequestProvider>(context,
-                                        listen: false)
-                                    .accepDonation(
-                                        donarsModel, "sent_accepted");
+                                      InterestedDonarsModel donarsModel =
+                                          InterestedDonarsModel(
+                                              patientName:
+                                                  widget.bloodReq.patientName,
+                                              isEmergency:
+                                                  widget.bloodReq.isEmergency,
+                                              donarName: userId.name,
+                                              donarsNumber: userId.phone,
+                                              userFrom: userId.userId,
+                                              deadLine:
+                                                  widget.bloodReq.deadLine,
+                                              phoneNumber: userId.phone,
+                                              bloodGroup: userId.bloodGroup,
+                                              donarImage: userId.profileImage,
+                                              donationId:
+                                                  widget.bloodReq.donationId,
+                                              userTo: widget.bloodReq.userFrom,
+                                              lat: userId.lat,
+                                              lng: userId.long,
+                                              location: userId.location,
+                                              donarStat: "nothing");
+                                      Provider.of<RequestProvider>(context,
+                                              listen: false)
+                                          .accepDonation(
+                                              donarsModel, "sent_accepted");
+                                    });
+                                  },
+                                );
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(8),
@@ -329,6 +362,10 @@ class _SeekerReqCardState extends State<SeekerReqCard> {
                                 tileText: "Contact Donar",
                                 contactDonar: () {
                                   //   log(widget.bloodReq.phoneNumber.toString());
+                                  var a = widget.bloodReq.phoneNumber;
+                                  Provider.of<ResponseProvider>(context,
+                                          listen: false)
+                                      .launchPhoneApp("+91$a");
                                 },
                                 showDonated: false,
                               )

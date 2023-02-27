@@ -29,11 +29,11 @@ void main() async {
                   providers: generalProviders,
                   child: const MyApp(),
                 );
-              }),  
+              }),
             ),
           ), (error, stackTrace) {
     log(error.toString());
-    
+
     log(stackTrace.toString());
 
     // exit (crash) app

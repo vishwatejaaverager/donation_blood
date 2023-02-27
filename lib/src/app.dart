@@ -23,11 +23,11 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        // ignore: unrelated_type_equality_checks
-        //home: const EditProfileScreen());
         home: preferences.getUserId() != ""
             ? const BottomNavScreen()
             : const LoginScreen());
+    // ignore: unrelated_type_equality_checks
+    //home: const EditProfileScreen());
 
     // preferences.getUserId() != ""
     //     ? const BottomNavScreen
