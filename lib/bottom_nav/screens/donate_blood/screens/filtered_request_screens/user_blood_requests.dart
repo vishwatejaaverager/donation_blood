@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../src/features/shared/presentation/widgets/warning_text.dart';
 import '../../components/request_blood_card.dart';
 
 class UserBloodRequestsScreen extends StatelessWidget {
@@ -14,23 +15,24 @@ class UserBloodRequestsScreen extends StatelessWidget {
         stream: bloodReqByUsers,
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
-            return ListView.builder(
-                itemCount: snapshot.data!.docs.length,
-                itemBuilder: ((context, index) {
-                  BloodDonationModel requestData = BloodDonationModel.fromMap(
-                      snapshot.data!.docs[index].data());
-                  // if (requestData.intrestedDonars!.isNotEmpty) {
-                  //   Provider.of<RequestProvider>(context, listen: false)
-                  //       .getIntrestedDonars(InterestedDonarsModel.fromMap(
-                  //           requestData.intrestedDonars![index]));
-                  // }
+            if (snapshot.data!.docs.isNotEmpty) {
+              return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: ((context, index) {
+                    BloodDonationModel requestData = BloodDonationModel.fromMap(
+                        snapshot.data!.docs[index].data());
 
-                  return RequestBloodCard(
-                    bloodDonationModel: requestData,
-                    showHosp: false,
-                    isDetail: true,
-                  );
-                }));
+                    return RequestBloodCard(
+                      bloodDonationModel: requestData,
+                      showHosp: false,
+                      isDetail: true,
+                    );
+                  }));
+            } else {
+              return const WarningWidget(
+                text: "You Dint Kept Any Blood Request Yet :)",
+              );
+            }
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
           } else {

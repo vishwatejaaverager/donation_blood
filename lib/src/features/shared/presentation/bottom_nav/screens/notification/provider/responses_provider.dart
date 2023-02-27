@@ -6,6 +6,7 @@ import 'package:donation_blood/src/features/shared/domain/models/interested_dona
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ResponseProvider with ChangeNotifier {
   final Streams _streams = Streams();
@@ -88,20 +89,30 @@ class ResponseProvider with ChangeNotifier {
 
   acceptDonationFromDonarAndReject(
       InterestedDonarsModel donarsModel, String response,
-      {BloodDonationModel? bloodDonationModel}) async {
-    await _streams.userQuery
-        .doc(donarsModel.userFrom)
-        .collection(Streams.requestByUser)
-        .doc(donarsModel.donationId)
-        .collection(Streams.shownInterestToDonate)
-        .doc(donarsModel.userTo)
-        .update({'donarStat': response});
+      {BloodDonationModel? bloodDonationModel, bool isReject = true}) async {
+    if (isReject) {
+      await _streams.userQuery
+          .doc(donarsModel.userFrom)
+          .collection(Streams.requestByUser)
+          .doc(donarsModel.donationId)
+          .collection(Streams.shownInterestToDonate)
+          .doc(donarsModel.userTo)
+          .update({'donarStat': response});
 
-    _streams.userQuery
-        .doc(donarsModel.userTo)
-        .collection(Streams.seekersRequest)
-        .doc(donarsModel.donationId)
-        .update({'donarStat': response});
+      _streams.userQuery
+          .doc(donarsModel.userTo)
+          .collection(Streams.seekersRequest)
+          .doc(donarsModel.donationId)
+          .update({'donarStat': response});
+    } else {
+      await _streams.userQuery
+          .doc(donarsModel.userFrom)
+          .collection(Streams.requestByUser)
+          .doc(donarsModel.donationId)
+          .collection(Streams.shownInterestToDonate)
+          .doc(donarsModel.userTo)
+          .update({'donarStat': response});
+    }
   }
 
   actualAcceptAndRejectDonation(
@@ -125,6 +136,8 @@ class ResponseProvider with ChangeNotifier {
 
     if (response == 'donated') {
       var a = int.parse(bloodDonationModel!.units!);
+      var d = int.parse(bloodDonationModel.donatedUnits!);
+      int f = d + 1;
       int b = a - 1;
 
       await _streams.userQuery.doc(donarsModel.userFrom).update(
@@ -132,13 +145,13 @@ class ResponseProvider with ChangeNotifier {
 
       await _streams.requestQuery
           .doc(donarsModel.donationId)
-          .update({"units": b.toString()});
+          .update({"units": b.toString(), "donatedUnits": f.toString()});
 
       await _streams.userQuery
           .doc(donarsModel.userTo)
           .collection(Streams.requestByUser)
           .doc(donarsModel.donationId)
-          .update({"units": b.toString()});
+          .update({"units": b.toString(), " donatedUnits": f.toString()});
       if (b == 0) {
         await _streams.requestQuery
             .doc(donarsModel.donationId)
@@ -150,6 +163,15 @@ class ResponseProvider with ChangeNotifier {
             .doc(donarsModel.donationId)
             .update({"donationStat": "completed"});
       }
+    }
+  }
+
+  void launchPhoneApp(String phoneNumber) async {
+    final phoneUrl = 'tel:$phoneNumber';
+    if (await canLaunchUrl(Uri.parse(phoneUrl))) {
+      await launchUrl(Uri.parse(phoneUrl));
+    } else {
+      throw 'Could not launch $phoneUrl';
     }
   }
 }

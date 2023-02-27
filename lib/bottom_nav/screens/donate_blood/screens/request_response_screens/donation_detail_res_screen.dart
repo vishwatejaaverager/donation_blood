@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/donate_blood_screen.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/request_response_screens/request_donar_res_screen.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
+import 'package:donation_blood/src/features/shared/presentation/widgets/warning_text.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +57,7 @@ class _BloodDetailResScreenState extends State<BloodDetailResScreen>
     return SafeArea(
       child: Scaffold(
         body: Column(
+          
           children: [
             FrequencyTabs(
                 controller: _tabController,
@@ -79,7 +81,7 @@ class _BloodDetailResScreenState extends State<BloodDetailResScreen>
                 RequestDonarsResScreen(
                     donarsResToBlood: bloodReqByUsers,
                     bloodDonationModel: widget.bloodDonationModel),
-                const Text("data")
+                const WarningWidget(text: "Blood banks will be integrated soon :)")
               ],
             ))
           ],

@@ -1,7 +1,11 @@
+import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/request_response_screens/donation_detail_res_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 
 import '../../../../src/features/shared/domain/models/blood_donation_model.dart';
+import '../../../../src/features/shared/presentation/widgets/sharable_widgte.dart';
 import '../../../../src/utils/navigation.dart';
 import '../../../../src/utils/utils.dart';
 import '../screens/donate_blood_details_sreen.dart';
@@ -11,8 +15,10 @@ class RequestBloodCard extends StatelessWidget {
   final bool showHosp;
   final bool isDetail;
   final String? id;
+  final ScreenshotController? controller;
   const RequestBloodCard({
     required this.bloodDonationModel,
+    this.controller,
     this.showHosp = true,
     this.isDetail = false,
     this.id,
@@ -175,17 +181,34 @@ class RequestBloodCard extends StatelessWidget {
                                 )
                               ],
                             ),
-                            Card(
-                              elevation: 20,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: Container(
-                              //  padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12)),
-                                child: const Icon(Icons.share),
-                              ),
-                            )
+                            Consumer<RequestProvider>(
+                                builder: ((context, value, child) {
+                              return InkWell(
+                                onTap: () async {
+                                  final image = await controller!
+                                      .captureFromWidget(SharableWidget(
+                                    bloodInfo: bloodDonationModel,
+                                  ));
+                                  value.shareImage(image);
+                                  // final images =
+                                  //     (await decodeImageFromList(image));
+                                  // ByteData? byteData = await images.toByteData(
+                                  //     format: ImageByteFormat.png);
+                                },
+                                child: Card(
+                                  elevation: 20,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  child: Container(
+                                    //  padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    child: const Icon(Icons.share),
+                                  ),
+                                ),
+                              );
+                            }))
                           ],
                         ),
                       )

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/notification/provider/responses_provider.dart';
+import 'package:donation_blood/src/features/shared/presentation/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
@@ -65,28 +66,52 @@ class ReqResCard extends StatelessWidget {
                     ? ResReqBloodReqAccepted(
                         tileText: "Contact Donar",
                         contactDonar: () {
-                          
+                          log(donarStat!.phoneNumber.toString());
+                          Provider.of<ResponseProvider>(context, listen: false)
+                              .launchPhoneApp(donarStat!.phoneNumber!);
                         },
                         notDonated: () {
-                          Provider.of<ResponseProvider>(context, listen: false)
-                              .actualAcceptAndRejectDonation(
-                                  donarStat!, "not_donated");
+                          showDialog(
+                              context: context,
+                              builder: ((context) {
+                                return BlurryDialog("Donation",
+                                    "Are you sure you want to keep it has not donated ?",
+                                    (() {
+                                  Provider.of<ResponseProvider>(context,
+                                          listen: false)
+                                      .actualAcceptAndRejectDonation(
+                                          donarStat!, "not_donated");
+                                }));
+                              }));
                         },
                         donated: () {
-                          log(donarStat!.toMap().toString());
-                          Provider.of<ResponseProvider>(context, listen: false)
-                              .actualAcceptAndRejectDonation(
-                                  donarStat!, "donated",
-                                  bloodDonationModel: bloodDonationModel);
+                          showDialog(
+                              context: context,
+                              builder: ((context) {
+                                return BlurryDialog("Donation",
+                                    "Are you sure you want to keep it has not donated ?",
+                                    (() {
+                                  log(donarStat!.toMap().toString());
+                                  Provider.of<ResponseProvider>(context,
+                                          listen: false)
+                                      .actualAcceptAndRejectDonation(
+                                          donarStat!, "donated",
+                                          bloodDonationModel:
+                                              bloodDonationModel);
+                                }));
+                              }));
                         },
                       )
                     : donarStat!.donarStat == 'declined'
                         ? const ResReqRequesterDeclined()
                         : donarStat!.donarStat == 'donated'
                             ? const ReqResDonarStatTile(text: "Donated")
-                            : ResReqRequesterResOn(
-                                bloodReq: donarStat!,
-                              )
+                            : donarStat!.donarStat == 'not_donated'
+                                ? const ReqResDonarStatTile(
+                                    text: "Marked as not Donated")
+                                : ResReqRequesterResOn(
+                                    bloodReq: donarStat!,
+                                  )
           ],
         ),
       ),
@@ -117,7 +142,40 @@ class ResReqRequesterResOn extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           InkWell(
-            onTap: () {},
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: ((context) {
+                    return BlurryDialog(
+                        "Decline", "Are you sure want to decline ?", (() {
+                      UserProfile userId =
+                          Provider.of<ProfileProvider>(context, listen: false)
+                              .userProfile!;
+
+                      InterestedDonarsModel donarsModel = InterestedDonarsModel(
+                          patientName: bloodReq.patientName,
+                          isEmergency: bloodReq.isEmergency,
+                          donarName: userId.name,
+                          donarsNumber: userId.phone,
+                          userFrom: userId.userId,
+                          deadLine: bloodReq.deadLine,
+                          phoneNumber: userId.phone,
+                          bloodGroup: userId.bloodGroup,
+                          donarImage: userId.profileImage,
+                          donationId: bloodReq.donationId,
+                          userTo: bloodReq.userFrom,
+                          lat: userId.lat,
+                          lng: userId.long,
+                          location: userId.location,
+                          donarStat: "nothing");
+
+                      Provider.of<ResponseProvider>(context, listen: false)
+                          .acceptDonationFromDonarAndReject(
+                              donarsModel, "declined",
+                              isReject: false);
+                    }));
+                  }));
+            },
             child: SizedBox(
               width: size.width / 2,
               child: const Text(
@@ -129,33 +187,41 @@ class ResReqRequesterResOn extends StatelessWidget {
           ),
           InkWell(
             onTap: () {
-              UserProfile userId =
-                  Provider.of<ProfileProvider>(context, listen: false)
-                      .userProfile!;
+              showDialog(
+                  context: context,
+                  builder: ((context) {
+                    return BlurryDialog(
+                        "Confirm", "Are you sure want to confirm ?", (() {
+                      UserProfile userId =
+                          Provider.of<ProfileProvider>(context, listen: false)
+                              .userProfile!;
 
-              InterestedDonarsModel donarsModel = InterestedDonarsModel(
-                  patientName: bloodReq.patientName,
-                  isEmergency: bloodReq.isEmergency,
-                  donarName: userId.name,
-                  donarsNumber: userId.phone,
-                  userFrom: userId.userId,
-                  deadLine: bloodReq.deadLine,
-                  phoneNumber: userId.phone,
-                  bloodGroup: userId.bloodGroup,
-                  donarImage: userId.profileImage,
-                  donationId: bloodReq.donationId,
-                  userTo: bloodReq.userFrom,
-                  lat: userId.lat,
-                  lng: userId.long,
-                  location: userId.location,
-                  donarStat: "nothing");
+                      InterestedDonarsModel donarsModel = InterestedDonarsModel(
+                          patientName: bloodReq.patientName,
+                          isEmergency: bloodReq.isEmergency,
+                          donarName: userId.name,
+                          donarsNumber: userId.phone,
+                          userFrom: userId.userId,
+                          deadLine: bloodReq.deadLine,
+                          phoneNumber: userId.phone,
+                          bloodGroup: userId.bloodGroup,
+                          donarImage: userId.profileImage,
+                          donationId: bloodReq.donationId,
+                          userTo: bloodReq.userFrom,
+                          lat: userId.lat,
+                          lng: userId.long,
+                          location: userId.location,
+                          donarStat: "nothing");
 
-              Provider.of<ResponseProvider>(context, listen: false)
-                  .acceptDonationFromDonarAndReject(donarsModel, "accepted");
-              // Provider.of<RequestProvider>(context,
-              //         listen: false)
-              //     .getIntrestedDonars(bloodDonationModel
-              //         .intrestedDonars!);
+                      Provider.of<ResponseProvider>(context, listen: false)
+                          .acceptDonationFromDonarAndReject(
+                              donarsModel, "accepted");
+                      // Provider.of<RequestProvider>(context,
+                      //         listen: false)
+                      //     .getIntrestedDonars(bloodDonationModel
+                      //         .intrestedDonars!);
+                    }));
+                  }));
             },
             child: Container(
               width: size.width / 3,

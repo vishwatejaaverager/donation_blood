@@ -3,6 +3,7 @@ import 'package:donation_blood/src/features/profile_det/provider/profile_provide
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
 import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
+import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:donation_blood/src/utils/routes.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -30,19 +31,27 @@ class DonateOnBoardingScreen extends StatelessWidget {
                 reqProv.selectedOpt1 == 'Yes' &&
                 reqProv.selectedOpt2 == 'No') {
               InterestedDonarsModel donar = InterestedDonarsModel(
+                  name: userId.name,
+                  patientName: bloodDonationModel.patientName,
+                  isEmergency: bloodDonationModel.isEmergency,
                   donarName: userId.name,
                   donarsNumber: userId.phone,
                   userFrom: userId.userId,
+                  deadLine: bloodDonationModel.deadLine,
+                  phoneNumber: userId.phone,
                   bloodGroup: userId.bloodGroup,
                   donarImage: userId.profileImage,
                   donationId: bloodDonationModel.donationId,
-                  userTo: bloodDonationModel.userId!,
+                  userTo: bloodDonationModel.userId,
                   lat: userId.lat,
                   lng: userId.long,
+                  isAutomated: false,
                   location: userId.location,
                   donarStat: "nothing");
+
               reqProv.addInterestedDonars(donar);
             } else {
+              Navigation.instance.pushBack();
               appToast("Sorry You Are Not Elgible :(");
             }
           },
@@ -55,7 +64,7 @@ class DonateOnBoardingScreen extends StatelessWidget {
             Consumer<RequestProvider>(builder: ((_, __, ___) {
               return OnboardingWidget(
                 image: Image.asset(
-                  "assets/home/blood.png",
+                  "assets/common/on_board.jpg",
                   scale: 2,
                 ),
                 onpress1: () => __.setSelectedOpt('Yes'),
@@ -67,7 +76,7 @@ class DonateOnBoardingScreen extends StatelessWidget {
             Consumer<RequestProvider>(builder: ((_, __, ___) {
               return OnboardingWidget(
                 image: Image.asset(
-                  "assets/home/blood.png",
+                  "assets/common/on_board.jpg",
                   scale: 2,
                 ),
                 onpress1: () => __.setSelectedOpt1('Yes'),
@@ -79,7 +88,7 @@ class DonateOnBoardingScreen extends StatelessWidget {
             Consumer<RequestProvider>(builder: ((_, __, ___) {
               return OnboardingWidget(
                 image: Image.asset(
-                  "assets/home/blood.png",
+                  "assets/common/on_board.jpg",
                   scale: 2,
                 ),
                 onpress1: () => __.setSelectedOpt2('Yes'),
@@ -91,7 +100,7 @@ class DonateOnBoardingScreen extends StatelessWidget {
             Consumer<RequestProvider>(builder: ((_, __, ___) {
               return OnboardingWidget(
                 image: Image.asset(
-                  "assets/home/blood.png",
+                  "assets/common/on_board.jpg",
                   scale: 2,
                 ),
                 onpress1: () {},
@@ -142,6 +151,8 @@ class OnboardingWidget extends StatelessWidget {
               child: Text(
                 quest,
                 textAlign: TextAlign.center,
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ),

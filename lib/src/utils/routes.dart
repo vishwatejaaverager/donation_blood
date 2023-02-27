@@ -12,6 +12,7 @@ enum AppRoutes {
   bloodDonateReqScreen("blood_donate_req_screen"),
   bloodDetailResScreen("blood_res_detail_scree"),
   requestDonarsResScreen("req_donars_res_screen"),
+  rewardScreen("reward_screen"),
   donateOnBoardingScreen("donate_onboarding_screen");
 
 

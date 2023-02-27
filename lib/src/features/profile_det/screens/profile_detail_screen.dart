@@ -1,4 +1,3 @@
-import 'package:donation_blood/src/utils/widget_utils/cache_image.dart';
 import 'package:google_maps_webservice/src/core.dart';
 
 import 'package:flutter/material.dart';
@@ -46,31 +45,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       "Get Ready To Save Lifes :)",
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      String phone =
-                          Provider.of<LoginProvider>(context, listen: false)
-                              .phone;
-                      __.addProfileImageToFirebase(phone);
-                    },
-                    child: Center(
-                      // backgroundColor: Colors.white,
-                      child: __.imageUrl != null
-                          ? CacheImage(
-                              height: 100,
-                              width: 100,
-                              image: __.imageUrl!,
-                              fit: BoxFit.cover,
-                            )
-                          : const CircleAvatar(
-                              radius: 44,
-                              child: Icon(
-                                Icons.add_a_photo,
-                                color: Colors.grey,
-                              ),
-                            ),
                     ),
                   ),
 

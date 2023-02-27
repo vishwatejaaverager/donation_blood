@@ -7,6 +7,7 @@ import 'package:donation_blood/src/utils/streams.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 
 import 'filtered_request_screens/all_req_screen.dart';
 import 'filtered_request_screens/blood_type_screen.dart';
@@ -29,6 +30,7 @@ class _DonateBloodScreenState extends State<DonateBloodScreen>
   late Stream<QuerySnapshot<Map<String, dynamic>>> _bloodReqByUsers;
   @override
   void initState() {
+    Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
     requestProvider = Provider.of<RequestProvider>(context, listen: false);
     userProfile =
         Provider.of<ProfileProvider>(context, listen: false).userProfile!;
@@ -39,7 +41,7 @@ class _DonateBloodScreenState extends State<DonateBloodScreen>
         .doc(userProfile.userId!)
         .collection(Streams.requestByUser)
         .snapshots();
-    
+
     //
     // getAllRequests(requestProvider, userProfile);
     requestProvider.getAllReuests(userProfile);
@@ -61,6 +63,7 @@ class _DonateBloodScreenState extends State<DonateBloodScreen>
 
   @override
   Widget build(BuildContext context) {
+    final ssController = ScreenshotController();
     //final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -94,9 +97,15 @@ class _DonateBloodScreenState extends State<DonateBloodScreen>
               controller: _tabController,
               children: [
                 UserBloodRequestsScreen(bloodReqByUsers: _bloodReqByUsers),
-                const BloodTypeScreen(),
-                const EmergencyScreen(),
-                const AllRequestsScreeen(),
+                BloodTypeScreen(
+                  controller: ssController,
+                ),
+                EmergencyScreen(
+                  controller: ssController,
+                ),
+                AllRequestsScreeen(
+                  controller: ssController,
+                ),
               ],
             ))
 
