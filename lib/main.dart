@@ -20,6 +20,8 @@ void main() async {
 
   //* for catching any unhandled dart exceptions.
   runZonedGuarded(
+
+    
       () => runApp(
             DevicePreview(
               enabled: false,
