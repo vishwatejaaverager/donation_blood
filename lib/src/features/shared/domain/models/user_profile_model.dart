@@ -10,6 +10,7 @@ class UserProfile {
   String? location;
   String? profileImage;
   num? lat;
+  String? token;
   num? long;
   String? phone;
   bool? isAvailable;
@@ -25,6 +26,7 @@ class UserProfile {
     this.location,
     this.profileImage,
     this.lat,
+    this.token,
     this.long,
     this.phone,
     this.isAvailable,
@@ -41,6 +43,7 @@ class UserProfile {
     String? location,
     String? profileImage,
     num? lat,
+    String? token,
     num? long,
     String? phone,
     bool? isAvailable,
@@ -56,6 +59,7 @@ class UserProfile {
       location: location ?? this.location,
       profileImage: profileImage ?? this.profileImage,
       lat: lat ?? this.lat,
+      token: token ?? this.token,
       long: long ?? this.long,
       phone: phone ?? this.phone,
       isAvailable: isAvailable ?? this.isAvailable,
@@ -74,6 +78,7 @@ class UserProfile {
       'location': location,
       'profileImage': profileImage,
       'lat': lat,
+      'token': token,
       'long': long,
       'phone': phone,
       'isAvailable': isAvailable,
@@ -92,6 +97,7 @@ class UserProfile {
       location: map['location'] != null ? map['location'] as String : null,
       profileImage: map['profileImage'] != null ? map['profileImage'] as String : null,
       lat: map['lat'] != null ? map['lat'] as num : null,
+      token: map['token'] != null ? map['token'] as String : null,
       long: map['long'] != null ? map['long'] as num : null,
       phone: map['phone'] != null ? map['phone'] as String : null,
       isAvailable: map['isAvailable'] != null ? map['isAvailable'] as bool : null,
@@ -107,7 +113,7 @@ class UserProfile {
 
   @override
   String toString() {
-    return 'UserProfile(name: $name, age: $age, gender: $gender, bloodGroup: $bloodGroup, medIssues: $medIssues, location: $location, profileImage: $profileImage, lat: $lat, long: $long, phone: $phone, isAvailable: $isAvailable, donatedTime: $donatedTime, userId: $userId)';
+    return 'UserProfile(name: $name, age: $age, gender: $gender, bloodGroup: $bloodGroup, medIssues: $medIssues, location: $location, profileImage: $profileImage, lat: $lat, token: $token, long: $long, phone: $phone, isAvailable: $isAvailable, donatedTime: $donatedTime, userId: $userId)';
   }
 
   @override
@@ -123,6 +129,7 @@ class UserProfile {
       other.location == location &&
       other.profileImage == profileImage &&
       other.lat == lat &&
+      other.token == token &&
       other.long == long &&
       other.phone == phone &&
       other.isAvailable == isAvailable &&
@@ -140,6 +147,7 @@ class UserProfile {
       location.hashCode ^
       profileImage.hashCode ^
       lat.hashCode ^
+      token.hashCode ^
       long.hashCode ^
       phone.hashCode ^
       isAvailable.hashCode ^

@@ -3,11 +3,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:donation_blood/src/features/notification/notification_services.dart';
 import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
 import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:donation_blood/src/utils/utils.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:map_launcher/map_launcher.dart';
@@ -219,13 +221,13 @@ class RequestProvider with ChangeNotifier {
   List<QueryDocumentSnapshot<Map<String, dynamic>>> _allDonars = [];
   List<QueryDocumentSnapshot<Map<String, dynamic>>> get allDonars => _allDonars;
 
-  sendReqToOtherDonars(
+  Future sendReqToOtherDonars(
     String userID,
     String donationId,
     InterestedDonarsModel bloodDonationModel, {
     bool isEmergency = false,
-  }) {
-    _streams.userQuery
+  }) async {
+    await _streams.userQuery
         .where('isAvailable', isEqualTo: true)
         .get()
         .then((value) {
@@ -234,22 +236,58 @@ class RequestProvider with ChangeNotifier {
       for (var i = 0; i < _allDonars.length; i++) {
         if (_allDonars[i].id != userID &&
             _allDonars[i]['bloodGroup'] == bloodDonationModel.bloodGroup) {
-          _streams.userQuery
-              .doc(_allDonars[i].id)
-              .collection(Streams.seekersRequest)
-              .doc(donationId)
-              .set(bloodDonationModel.toMap());
-          // _streams.userQuery
-          //     .doc(_allDonars[i].id)
-          //     .collection(Streams.seekersRequest)
-          //     .doc(donationId).collection().
-          //     .set(bloodDonationModel.toMap());
-        }
-        if (isEmergency) {
-          //waatiiiii
+          final userToToken = _allDonars[i].data()['token'];
+          InterestedDonarsModel donar = InterestedDonarsModel(
+              patientName: bloodDonationModel.patientName,
+              name: bloodDonationModel.name,
+              donarName: bloodDonationModel.name,
+              donarsNumber: bloodDonationModel.donarsNumber,
+              userFrom: bloodDonationModel.userFrom,
+              bloodGroup: bloodDonationModel.bloodGroup,
+              donarImage: bloodDonationModel.donarImage,
+              donationId: bloodDonationModel.donationId,
+              userFromToken: bloodDonationModel.userFromToken,
+              userToToken: userToToken,
+              userTo: '',
+              isAutomated: true,
+              isEmergency: bloodDonationModel.isEmergency,
+              deadLine: bloodDonationModel.deadLine,
+              phoneNumber: bloodDonationModel.phoneNumber,
+              lat: bloodDonationModel.lat,
+              lng: bloodDonationModel.lng,
+              location: bloodDonationModel.location,
+              donarStat: "nothing");
+          sendRequestAndNotification(
+              _allDonars, donationId, donar, userToToken, i, isEmergency);
         }
       }
     });
+  }
+
+  sendRequestAndNotification(
+      List alldonars,
+      String donationId,
+      InterestedDonarsModel donarsModel,
+      userToToken,
+      int i,
+      bool isEmergency) async {
+    await _streams.userQuery
+        .doc(allDonars[i].id)
+        .collection(Streams.seekersRequest)
+        .doc(donationId)
+        .set(donarsModel.toMap());
+
+    await NotificationService().sendPushNotification(userToToken,
+        title: "Blood Donation Request",
+        desc:
+            "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+
+    if (isEmergency) {
+      await NotificationService().sendPushNotification(userToToken,
+          title: "Urgent Blood Donation Request",
+          desc:
+              "We are in urgent need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+    }
   }
 
   shareImage(Uint8List file) async {
@@ -267,5 +305,13 @@ class RequestProvider with ChangeNotifier {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  Future getTokenAndSave(String userId) async {
+    await FirebaseMessaging.instance.getToken().then((value) {
+      _streams.userQuery.doc(userId).update({"token": value});
+
+      log("Saved the token ${value!}");
+    });
   }
 }

@@ -12,6 +12,8 @@ class InterestedDonarsModel {
   String? bloodGroup;
   num? lat;
   num? lng;
+  String? userFromToken;
+  String? userToToken;
   String? location;
   bool? isEmergency;
   String? name;
@@ -30,6 +32,8 @@ class InterestedDonarsModel {
     this.bloodGroup,
     this.lat,
     this.lng,
+    this.userFromToken,
+    this.userToToken,
     this.location,
     this.isEmergency,
     this.name,
@@ -50,6 +54,8 @@ class InterestedDonarsModel {
     String? bloodGroup,
     num? lat,
     num? lng,
+    String? userFromToken,
+    String? userToToken,
     String? location,
     bool? isEmergency,
     String? name,
@@ -69,6 +75,8 @@ class InterestedDonarsModel {
       bloodGroup: bloodGroup ?? this.bloodGroup,
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
+      userFromToken: userFromToken ?? this.userFromToken,
+      userToToken: userToToken ?? this.userToToken,
       location: location ?? this.location,
       isEmergency: isEmergency ?? this.isEmergency,
       name: name ?? this.name,
@@ -91,6 +99,8 @@ class InterestedDonarsModel {
       'bloodGroup': bloodGroup,
       'lat': lat,
       'lng': lng,
+      'userFromToken': userFromToken,
+      'userToToken': userToToken,
       'location': location,
       'isEmergency': isEmergency,
       'name': name,
@@ -113,6 +123,8 @@ class InterestedDonarsModel {
       bloodGroup: map['bloodGroup'] != null ? map['bloodGroup'] as String : null,
       lat: map['lat'] != null ? map['lat'] as num : null,
       lng: map['lng'] != null ? map['lng'] as num : null,
+      userFromToken: map['userFromToken'] != null ? map['userFromToken'] as String : null,
+      userToToken: map['userToToken'] != null ? map['userToToken'] as String : null,
       location: map['location'] != null ? map['location'] as String : null,
       isEmergency: map['isEmergency'] != null ? map['isEmergency'] as bool : null,
       name: map['name'] != null ? map['name'] as String : null,
@@ -131,7 +143,7 @@ class InterestedDonarsModel {
 
   @override
   String toString() {
-    return 'InterestedDonarsModel(userFrom: $userFrom, userTo: $userTo, donarsNumber: $donarsNumber, donationId: $donationId, donarStat: $donarStat, donarName: $donarName, donarImage: $donarImage, bloodGroup: $bloodGroup, lat: $lat, lng: $lng, location: $location, isEmergency: $isEmergency, name: $name, patientName: $patientName, isAutomated: $isAutomated, phoneNumber: $phoneNumber, deadLine: $deadLine)';
+    return 'InterestedDonarsModel(userFrom: $userFrom, userTo: $userTo, donarsNumber: $donarsNumber, donationId: $donationId, donarStat: $donarStat, donarName: $donarName, donarImage: $donarImage, bloodGroup: $bloodGroup, lat: $lat, lng: $lng, userFromToken: $userFromToken, userToToken: $userToToken, location: $location, isEmergency: $isEmergency, name: $name, patientName: $patientName, isAutomated: $isAutomated, phoneNumber: $phoneNumber, deadLine: $deadLine)';
   }
 
   @override
@@ -149,6 +161,8 @@ class InterestedDonarsModel {
       other.bloodGroup == bloodGroup &&
       other.lat == lat &&
       other.lng == lng &&
+      other.userFromToken == userFromToken &&
+      other.userToToken == userToToken &&
       other.location == location &&
       other.isEmergency == isEmergency &&
       other.name == name &&
@@ -170,6 +184,8 @@ class InterestedDonarsModel {
       bloodGroup.hashCode ^
       lat.hashCode ^
       lng.hashCode ^
+      userFromToken.hashCode ^
+      userToToken.hashCode ^
       location.hashCode ^
       isEmergency.hashCode ^
       name.hashCode ^

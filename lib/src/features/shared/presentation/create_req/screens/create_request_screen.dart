@@ -284,6 +284,8 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           bloodGroup: userProfile.bloodGroup,
                                           donarImage: userProfile.profileImage,
                                           donationId: a,
+                                          userFromToken: userProfile.token,
+                                          userToToken: '',
                                           userTo: '',
                                           isAutomated: true,
                                           isEmergency: __.isEmergency,
@@ -337,13 +339,18 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                       return BlurryDialog("Create Request",
                                           "Are You Sure Really want to Create Request ?",
                                           () {
-                                           __.addBloodRequestToFirebase(
+                                        __.addBloodRequestToFirebase(
                                             bloodDonationModel2);
 
                                         Provider.of<RequestProvider>(context,
                                                 listen: false)
                                             .sendReqToOtherDonars(
-                                                userProfile.userId!, a, donar);
+                                                userProfile.userId!, a, donar)
+                                            .then((value) {
+                                          Navigation.instance.pushBack();
+                                          Navigation.instance.pushBack();
+                                          Navigation.instance.pushBack();
+                                        });
                                       });
                                     },
                                   );

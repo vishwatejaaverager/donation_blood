@@ -311,6 +311,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             medIssues: __.selectedMedIssue,
                             location: __.description,
                             profileImage: __.imageUrl,
+                            token: "",
                             lat: loc.lat,
                             long: loc.lng,
                             donatedTime: "",

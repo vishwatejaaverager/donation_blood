@@ -1,3 +1,4 @@
+import 'package:donation_blood/src/features/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'utils/app_router.dart';
@@ -23,9 +24,13 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: preferences.getUserId() != ""
-            ? const BottomNavScreen()
-            : const LoginScreen());
+        home: const SplashScreen()
+
+        //  preferences.getUserId() != ""
+        //     ? const BottomNavScreen()
+        //     : const LoginScreen()
+
+        );
     // ignore: unrelated_type_equality_checks
     //home: const EditProfileScreen());
 
@@ -34,3 +39,5 @@ class MyApp extends StatelessWidget {
     //     : const LoginScreen());
   }
 }
+
+final Preferences preferences = Preferences();

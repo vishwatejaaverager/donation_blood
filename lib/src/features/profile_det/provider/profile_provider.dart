@@ -179,9 +179,9 @@ class ProfileProvider with ChangeNotifier {
   addBloodRequestToFirebase(BloodDonationModel bloodDonation) async {
     try {
       String id = _preferences.getUserId();
-      // Loading().witIndicator(
-      //     context: Navigation.instance.navigationKey.currentState!.context,
-      //     title: "Creating Request :)");
+      Loading().witIndicator(
+          context: Navigation.instance.navigationKey.currentState!.context,
+          title: "Creating Request :)");
       await _streams.requestQuery
           .doc(bloodDonation.donationId)
           .set(bloodDonation.toMap());
@@ -191,9 +191,8 @@ class ProfileProvider with ChangeNotifier {
           .collection(Streams.requestByUser)
           .doc(bloodDonation.donationId)
           .set(bloodDonation.toMap());
-      
 
-     // Navigation.instance.pushBack();
+      // Navigation.instance.pushBack();
       Navigation.instance.pushBack();
       Navigation.instance.pushBack();
       appToast("Succesfully Request Added Hold Tight :)");
@@ -202,16 +201,16 @@ class ProfileProvider with ChangeNotifier {
     }
   }
 
-
 // if emergency we will send notification to requested blood type users as well as waatti message
 
   //############ store userInfo ####################
 
-  getUserInfo() async {
+  Future<UserProfile?> getUserInfo() async {
     String id = _preferences.getUserId();
     var a = await _streams.userQuery.doc(id).get();
     _userProfile = UserProfile.fromMap(a.data()!);
-   // notifyListeners();
+    return _userProfile;
+    // notifyListeners();
   }
 
   String bloogGroupComplement(String s) {
