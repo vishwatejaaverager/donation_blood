@@ -1,7 +1,7 @@
+import 'package:donation_blood/src/features/notification/notification_services.dart';
 import 'package:donation_blood/src/features/shared/presentation/create_req/screens/create_request_screen.dart';
 import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../../../../bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import '../../../../../../../../bottom_nav/screens/home/componets/home_header.dart';
@@ -10,7 +10,6 @@ import '../../../../../../../../bottom_nav/screens/home/componets/wave_clipper.d
 import '../../../../../../../utils/colors.dart';
 import '../../../../../../../utils/routes.dart';
 import '../../../../../../../utils/utils.dart';
-import '../../../../../../profile_det/provider/profile_provider.dart';
 import '../../../../../domain/models/user_profile_model.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,28 +21,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-   UserProfile? userProfile;
+  UserProfile? userProfile;
   late RequestProvider requestProvider;
   @override
   void initState() {
     // Provider.of<RequestProvider>(context, listen: false)
-        //     .getTokenAndSave(value.userId!)
-        //     .then((value) {
-          
-        // });
-   // Future.delayed(const Duration(seconds: 5), () {
-     // Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
-      // userProfile =
-      //     Provider.of<ProfileProvider>(context, listen: false).userProfile!;
-      //     requestProvider = Provider.of<RequestProvider>(context, listen: false);
+    //     .getTokenAndSave(value.userId!)
+    //     .then((value) {
 
-      // requestProvider.getAllReuests(userProfile!);
-    
-    
+    // });
+    // Future.delayed(const Duration(seconds: 5), () {
+    // Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
+    // userProfile =
+    //     Provider.of<ProfileProvider>(context, listen: false).userProfile!;
+    //     requestProvider = Provider.of<RequestProvider>(context, listen: false);
+
+    // requestProvider.getAllReuests(userProfile!);
+
     super.initState();
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +101,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      NotificationService().sendPushNotification(
+                          "d15lB6xCTf6sfyjFiDCJ55:APA91bFGCNUgv-9aCnCwGqJjcABrUOrX-KMLngjkOT1NfI8JztF3BKJtW9bcHA6I7pAQZA1DiTelssrLrR40PP6Z63KHxjjYsHxkezuoLD1LcawXvPLPZw_ZxoY_M8J7jUzLL4jH5aE2",
+                          title: "Donation Blood",
+                          desc: "Bestie jathini dengax`"
+                          
+                          );
+                    },
                     child: Card(
                       elevation: 10,
                       child: Container(

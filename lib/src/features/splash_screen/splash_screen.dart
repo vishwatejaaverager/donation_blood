@@ -30,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Provider.of<RequestProvider>(context, listen: false)
             .getAllReuests(value!);
         NotificationService().requestNotificationPermission();
+        NotificationService().initInfo();
         Navigation.instance.navigateTo(BottomNavScreen.id.path);
       } else {
         Navigation.instance.navigateTo(LoginScreen.id.path);
