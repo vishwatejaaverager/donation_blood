@@ -1,3 +1,4 @@
+import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/donate_blood_screen.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/request_response_screens/donation_detail_res_screen.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/on_boarding_screen.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
@@ -35,7 +36,12 @@ class AppRouter {
       return pageTransition(const CreateReqScreen());
     } else if (route.name == RewardScreen.id.path) {
       return pageTransition(const RewardScreen());
-    } else if (route.name == BloodDonateReqScreen.id.path) {
+    } 
+     else if (route.name == DonateBloodScreen.id.path) {
+      return pageTransition(const DonateBloodScreen());
+    } 
+    
+    else if (route.name == BloodDonateReqScreen.id.path) {
       BloodDonationModel bloodDonationModel =
           route.arguments as BloodDonationModel;
       return pageTransition(BloodDonateReqScreen(

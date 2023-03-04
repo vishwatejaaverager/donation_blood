@@ -28,7 +28,7 @@ void main() async {
   runZonedGuarded(
       () => runApp(
             DevicePreview(
-              enabled: false,
+              enabled: true ,
               tools: const [...DevicePreview.defaultTools],
               builder: ((context) {
                 return MultiProvider(

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/filtered_request_screens/user_blood_requests.dart';
 import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
 import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
+import 'package:donation_blood/src/utils/routes.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'filtered_request_screens/blood_type_screen.dart';
 import 'filtered_request_screens/emergency_screen.dart';
 
 class DonateBloodScreen extends StatefulWidget {
+  static const id = AppRoutes.donateBloodScreen;
   const DonateBloodScreen({super.key});
 
   @override

@@ -2,12 +2,16 @@ import 'package:donation_blood/src/app.dart';
 import 'package:donation_blood/src/features/authentication/presentation/login_screen/login_screen.dart';
 import 'package:donation_blood/src/features/notification/notification_services.dart';
 import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
+import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/bottom_nav_screen.dart';
 import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../../../bottom_nav/screens/donate_blood/providers/requests_provider.dart';
+
+UserProfile? globalUserProfile;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -23,19 +27,26 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ProfileProvider>(context, listen: false)
-        .getUserInfo()
-        .then((value) {
-      if (preferences.getUserId() != "") {
-        Provider.of<RequestProvider>(context, listen: false)
-            .getAllReuests(value!);
+    if (preferences.getUserId() != "") {
+      Provider.of<ProfileProvider>(context, listen: false)
+          .getUserInfo()
+          .then((value) {
+        // if (preferences.getUserId() != "") {
+        globalUserProfile = value!;
         NotificationService().requestNotificationPermission();
         NotificationService().initInfo();
-        Navigation.instance.navigateTo(BottomNavScreen.id.path);
-      } else {
-        Navigation.instance.navigateTo(LoginScreen.id.path);
-      }
-    });
+        Provider.of<RequestProvider>(context, listen: false)
+            .getAllReuests(value);
+        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+          Navigation.instance.pushAndRemoveUntil(BottomNavScreen.id.path);
+        });
+        //}
+      });
+    } else {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        Navigation.instance.pushAndRemoveUntil(LoginScreen.id.path);
+      });
+    }
   }
 
   @override

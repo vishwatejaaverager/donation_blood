@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../../bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import '../../../../profile_det/screens/profile_detail_screen.dart';
 import '../../../domain/models/interested_donar_model.dart';
 import '../../widgets/alert_dialog.dart';
@@ -293,7 +292,7 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           phoneNumber: _mobileController.text,
                                           lat: userProfile.lat,
                                           lng: userProfile.long,
-                                          location: userProfile.location,
+                                          location: __.description,
                                           donarStat: "nothing");
 
                                   BloodDonationModel bloodDonationModel =
@@ -338,19 +337,19 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                     builder: (BuildContext context) {
                                       return BlurryDialog("Create Request",
                                           "Are You Sure Really want to Create Request ?",
-                                          () {
+                                          () async {
                                         __.addBloodRequestToFirebase(
                                             bloodDonationModel2);
 
-                                        Provider.of<RequestProvider>(context,
-                                                listen: false)
-                                            .sendReqToOtherDonars(
-                                                userProfile.userId!, a, donar)
-                                            .then((value) {
-                                          Navigation.instance.pushBack();
-                                          Navigation.instance.pushBack();
-                                          Navigation.instance.pushBack();
-                                        });
+                                        __.sendReqToOtherDonars(
+                                            userProfile.userId!, a, donar);
+
+                                        // Provider.of<RequestProvider>(context,
+                                        //         listen: false)
+                                        //     .sendReqToOtherDonars(
+                                        //         userProfile.userId!, a, donar);
+
+                                        // Navigation.instance.pushBack();
                                       });
                                     },
                                   );
