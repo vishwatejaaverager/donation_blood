@@ -20,6 +20,7 @@ class WarningWidget extends StatelessWidget {
         Image.asset(
           Assets.allImage,
           scale: scale,
+          
         ),
         sbh(24),
         Text(
