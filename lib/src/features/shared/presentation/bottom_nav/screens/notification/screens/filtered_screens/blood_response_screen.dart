@@ -7,6 +7,7 @@ import 'package:donation_blood/src/features/shared/domain/models/interested_dona
 import 'package:donation_blood/src/features/shared/presentation/widgets/warning_text.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:donation_blood/src/utils/widget_utils/cache_image.dart';
+import 'package:donation_blood/src/utils/widget_utils/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
@@ -148,7 +149,7 @@ class _SeekerReqCardState extends State<SeekerReqCard> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 12),
+                      horizontal: 4.0, vertical: 12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -161,16 +162,19 @@ class _SeekerReqCardState extends State<SeekerReqCard> {
                                 CacheImage(image: widget.bloodReq.donarImage!),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 16.0),
+                            padding: const EdgeInsets.only(left: 08.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text(
-                                  "${widget.bloodReq.name!.toUpperCase()} IS REQUESTING BLOOD FOR",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey),
+                                SizedBox(
+                                  child: Text(
+                                    "${widget.bloodReq.name!.toUpperCase()} IS SEEKING BLOOD FOR ",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey),
+                                  ),
                                 ),
                                 Text(
                                   widget.bloodReq.patientName!.toUpperCase(),
@@ -213,8 +217,8 @@ class _SeekerReqCardState extends State<SeekerReqCard> {
                                         )),
                                     sbw(12),
                                     SizedBox(
-                                      width: size.width / 2,
-                                      child: ReadMoreText(
+                                      width: getProportionateScreenWidth(
+                                          size.width / 2.5),                                      child: ReadMoreText(
                                         widget.bloodReq.location!,
                                         trimLines: 2,
                                         style: const TextStyle(

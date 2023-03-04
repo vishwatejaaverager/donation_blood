@@ -170,9 +170,9 @@ class RequestBloodCard extends StatelessWidget {
                             Row(
                               children: [
                                 const Icon(Icons.gps_fixed),
-                                sbw(8),
+                                
                                 SizedBox(
-                                  width: size.width / 1.456,
+                                  width: size.width /1.8,
                                   child: Text(
                                     bloodDonationModel.location!,
                                     style: const TextStyle(
