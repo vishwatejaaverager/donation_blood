@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:donation_blood/src/features/notification/notification_services.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
+import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
@@ -104,6 +106,14 @@ class ResponseProvider with ChangeNotifier {
           .collection(Streams.seekersRequest)
           .doc(donarsModel.donationId)
           .update({'donarStat': response});
+
+      log("${donarsModel.userToToken!}notification sent ");
+
+      NotificationService().sendPushNotification(donarsModel.userToToken!,
+          title: "Dear ${donarsModel.donarName}",
+          desc:
+              "We are delighted to inform you that your blood donation request has been accepted by one of our recipients. Your donation will make a significant impact on their health and well-being, and we cannot thank you enough for your generosity.");
+      Navigation.instance.pushBack();
     } else {
       await _streams.userQuery
           .doc(donarsModel.userFrom)
@@ -133,6 +143,11 @@ class ResponseProvider with ChangeNotifier {
         .collection(Streams.seekersRequest)
         .doc(donarsModel.donationId)
         .update({'donarStat': response});
+
+    NotificationService().sendPushNotification(donarsModel.userToToken!,
+        title: "Dear ${donarsModel.donarName}",
+        desc:
+            "We want to express our heartfelt gratitude for your recent blood donation at our center. Your selfless act of kindness has brought hope and support to those in need, and we cannot thank you enough for your generosity.");
 
     if (response == 'donated') {
       var a = int.parse(bloodDonationModel!.units!);
@@ -164,6 +179,7 @@ class ResponseProvider with ChangeNotifier {
             .update({"donationStat": "completed"});
       }
     }
+    Navigation.instance.pushBack();
   }
 
   void launchPhoneApp(String phoneNumber) async {

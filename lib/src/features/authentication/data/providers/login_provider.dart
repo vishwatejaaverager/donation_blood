@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/bottom_nav_screen.dart';
+import 'package:donation_blood/src/features/splash_screen/splash_screen.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -91,12 +93,13 @@ class LoginProvider with ChangeNotifier {
         Preferences.setUserID(a.user!.uid);
         setUserId(a.user!.uid);
         setPhone(a.user!.phoneNumber!);
-        // log(a.user.toString());
+
         await _streams.userQuery
             .where("userId", isEqualTo: a.user!.uid.toString())
             .get()
             .then((value) {
           if (value.docs.isNotEmpty) {
+            globalUserProfile = UserProfile.fromMap(value.docs[0].data());
             // log("message");
             Navigation.instance.navigateTo(BottomNavScreen.id.path);
           } else {

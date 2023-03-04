@@ -323,6 +323,10 @@ class _SeekerReqCardState extends State<SeekerReqCard> {
                                               donarName: userId.name,
                                               donarsNumber: userId.phone,
                                               userFrom: userId.userId,
+                                              userFromToken: widget.bloodReq.userFromToken,
+                                              userToToken: widget.bloodReq.userToToken,
+                                              isAutomated: false,
+                                              name: widget.bloodReq.name,
                                               deadLine:
                                                   widget.bloodReq.deadLine,
                                               phoneNumber: userId.phone,

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/bottom_nav_screen.dart';
 import 'package:donation_blood/src/services/image_storage.dart';
@@ -15,6 +16,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:jiffy/jiffy.dart';
 
 import '../../../utils/streams.dart';
+import '../../notification/notification_services.dart';
+import '../../shared/domain/models/interested_donar_model.dart';
 import '../../shared/domain/models/user_profile_model.dart';
 
 class ProfileProvider with ChangeNotifier {
@@ -191,14 +194,83 @@ class ProfileProvider with ChangeNotifier {
           .collection(Streams.requestByUser)
           .doc(bloodDonation.donationId)
           .set(bloodDonation.toMap());
-
-      // Navigation.instance.pushBack();
-      Navigation.instance.pushBack();
-      Navigation.instance.pushBack();
-      appToast("Succesfully Request Added Hold Tight :)");
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> _allDonars = [];
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> get allDonars => _allDonars;
+
+  sendReqToOtherDonars(
+    String userID,
+    String donationId,
+    InterestedDonarsModel bloodDonationModel, {
+    bool isEmergency = false,
+  }) async {
+    await _streams.userQuery
+        .where('isAvailable', isEqualTo: true)
+        .get()
+        .then((value) {
+      _allDonars = value.docs;
+
+      for (var i = 0; i < _allDonars.length; i++) {
+        if (_allDonars[i].id != userID &&
+            _allDonars[i]['bloodGroup'] == bloodDonationModel.bloodGroup) {
+          final userToToken = _allDonars[i].data()['token'];
+          InterestedDonarsModel donar = InterestedDonarsModel(
+              patientName: bloodDonationModel.patientName,
+              name: bloodDonationModel.name,
+              donarName: bloodDonationModel.name,
+              donarsNumber: bloodDonationModel.donarsNumber,
+              userFrom: bloodDonationModel.userFrom,
+              bloodGroup: bloodDonationModel.bloodGroup,
+              donarImage: bloodDonationModel.donarImage,
+              donationId: bloodDonationModel.donationId,
+              userFromToken: bloodDonationModel.userFromToken,
+              userToToken: userToToken,
+              userTo: '',
+              isAutomated: true,
+              isEmergency: bloodDonationModel.isEmergency,
+              deadLine: bloodDonationModel.deadLine,
+              phoneNumber: bloodDonationModel.phoneNumber,
+              lat: bloodDonationModel.lat,
+              lng: bloodDonationModel.lng,
+              location: bloodDonationModel.location,
+              donarStat: "nothing");
+          sendRequestAndNotification(
+              _allDonars, donationId, donar, userToToken, i, isEmergency);
+          
+        }
+      }
+    });
+  }
+
+  sendRequestAndNotification(List alldonars, String donationId,
+      InterestedDonarsModel donarsModel, userToToken, int i, bool isEmergency) async{
+  await  _streams.userQuery
+        .doc(allDonars[i].id)
+        .collection(Streams.seekersRequest)
+        .doc(donationId)
+        .set(donarsModel.toMap());
+
+    if (isEmergency) {
+      NotificationService().sendPushNotification(userToToken,
+          title: "Urgent Blood Donation Request",
+          desc:
+              "We are in urgent need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+    } else {
+      NotificationService().sendPushNotification(userToToken,
+          title: "Blood Donation Request",
+          desc:
+              "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+    }
+    Navigation.instance.pushBack();
+    Navigation.instance.pushBack();
+    Navigation.instance.pushBack();
+    appToast("Succesfully Request Added Hold Tight :)");
+    //Navigation.instance.pushBack();
+    //  Navigation.instance.pushBack();
   }
 
 // if emergency we will send notification to requested blood type users as well as waatti message
@@ -211,6 +283,10 @@ class ProfileProvider with ChangeNotifier {
     _userProfile = UserProfile.fromMap(a.data()!);
     return _userProfile;
     // notifyListeners();
+  }
+
+  setUserInfo(UserProfile userProfile) {
+    _userProfile = userProfile;
   }
 
   String bloogGroupComplement(String s) {

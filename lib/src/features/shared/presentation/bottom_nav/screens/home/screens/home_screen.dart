@@ -1,7 +1,10 @@
-import 'package:donation_blood/src/features/notification/notification_services.dart';
+import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/donate_blood_screen.dart';
+import 'package:donation_blood/src/features/shared/presentation/bottom_nav/provider/bottom_nav_provider.dart';
+import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/bottom_nav_screen.dart';
 import 'package:donation_blood/src/features/shared/presentation/create_req/screens/create_request_screen.dart';
 import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../../../../bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import '../../../../../../../../bottom_nav/screens/home/componets/home_header.dart';
@@ -71,14 +74,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const HomeHeader(),
-                const Positioned(
+                Positioned(
                     top: 100,
                     child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: HomeCountView(
-                          count: "157",
+                          count: Provider.of<RequestProvider>(context,
+                                  listen: false)
+                              .sameType
+                              .length
+                              .toString(),
                           image: "assets/home/blood.png",
-                          text1: "New blood request",
+                          text1: "Your Type Blood Requests in",
                           text2: "Hyderabad",
                         ))),
                 const Positioned(
@@ -102,12 +109,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      NotificationService().sendPushNotification(
-                          "d15lB6xCTf6sfyjFiDCJ55:APA91bFGCNUgv-9aCnCwGqJjcABrUOrX-KMLngjkOT1NfI8JztF3BKJtW9bcHA6I7pAQZA1DiTelssrLrR40PP6Z63KHxjjYsHxkezuoLD1LcawXvPLPZw_ZxoY_M8J7jUzLL4jH5aE2",
-                          title: "Donation Blood",
-                          desc: "Bestie jathini dengax`"
-                          
-                          );
+                      // NotificationService().sendPushNotification(
+                      //     "d15lB6xCTf6sfyjFiDCJ55:APA91bFGCNUgv-9aCnCwGqJjcABrUOrX-KMLngjkOT1NfI8JztF3BKJtW9bcHA6I7pAQZA1DiTelssrLrR40PP6Z63KHxjjYsHxkezuoLD1LcawXvPLPZw_ZxoY_M8J7jUzLL4jH5aE2",
+                      //     title: "Donation Blood",
+                      //     desc: "Bestie jathini denga"
+
+                      //     );
+                      Provider.of<BottomNavProvider>(context, listen: false)
+                          .setPageId(3);
+                      Navigation.instance
+                          .pushAndRemoveUntil(BottomNavScreen.id.path);
                     },
                     child: Card(
                       elevation: 10,
@@ -125,30 +136,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                 scale: 8,
                               ),
                               sbh(8),
-                              const Text("FIND A DONAR")
+                              const Text("Profile")
                             ],
                           )),
                     ),
                   ),
-                  Card(
-                    elevation: 10,
-                    child: Container(
-                        height: 150,
-                        width: 150,
-                        decoration: BoxDecoration(
-                            color: AppColors.whiteColor,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/home/bloodbag.png",
-                              scale: 8,
-                            ),
-                            sbh(8),
-                            const Text("BLOOD BANKS")
-                          ],
-                        )),
+                  InkWell(
+                    onTap: () {
+                      appToast("Will be integrated soon :)");
+                    },
+                    child: Card(
+                      elevation: 10,
+                      child: Container(
+                          height: 150,
+                          width: 150,
+                          decoration: BoxDecoration(
+                              color: AppColors.whiteColor,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/home/bloodbag.png",
+                                scale: 8,
+                              ),
+                              sbh(8),
+                              const Text("BLOOD BANKS")
+                            ],
+                          )),
+                    ),
                   ),
                 ],
               ),
@@ -186,25 +202,33 @@ class _HomeScreenState extends State<HomeScreen> {
                           )),
                     ),
                   ),
-                  Card(
-                    elevation: 10,
-                    child: Container(
-                        height: 150,
-                        width: 150,
-                        decoration: BoxDecoration(
-                            color: AppColors.whiteColor,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/home/req.png",
-                              scale: 8,
-                            ),
-                            sbh(8),
-                            const Text("Blood Requests")
-                          ],
-                        )),
+                  InkWell(
+                    onTap: () {
+                      Provider.of<BottomNavProvider>(context, listen: false)
+                          .setPageId(1);
+                      Navigation.instance
+                          .pushAndRemoveUntil(BottomNavScreen.id.path);
+                    },
+                    child: Card(
+                      elevation: 10,
+                      child: Container(
+                          height: 150,
+                          width: 150,
+                          decoration: BoxDecoration(
+                              color: AppColors.whiteColor,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/home/helping_hand.png",
+                                scale: 8,
+                              ),
+                              sbh(8),
+                              const Text("Blood Requests")
+                            ],
+                          )),
+                    ),
                   ),
                 ],
               ),

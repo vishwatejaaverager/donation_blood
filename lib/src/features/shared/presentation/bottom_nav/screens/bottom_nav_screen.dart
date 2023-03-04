@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
 import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/screens/profile_screen.dart';
+import 'package:donation_blood/src/features/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,16 +29,18 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   // Color currentColor = Colors.white;
   // late ConnectivityRepo connectivityRepo;
   // late BottomNavProvider bottomNavProvider;
-  late UserProfile userProfile;
-  
+  //late UserProfile userProfile;
 
   @override
   void initState() {
     //Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
-    userProfile =
-        Provider.of<ProfileProvider>(context, listen: false).userProfile!;
+    // Provider.of<ProfileProvider>(context, listen: false)
+    //     .getUserInfo()
+    //     .then((value) {
+    //   userProfile = value!;
+    // });
     Provider.of<RequestProvider>(context, listen: false)
-        .getTokenAndSave(userProfile.userId!);
+        .getTokenAndSave(globalUserProfile!.userId!);
 
     connect = Provider.of<ConnectivityRepo>(context, listen: false);
     connect.initConnectivity();

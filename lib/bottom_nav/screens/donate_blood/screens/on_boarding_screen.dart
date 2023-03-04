@@ -37,6 +37,9 @@ class DonateOnBoardingScreen extends StatelessWidget {
                   donarName: userId.name,
                   donarsNumber: userId.phone,
                   userFrom: userId.userId,
+                  userFromToken: "",
+                  userToToken: userId.token,
+
                   deadLine: bloodDonationModel.deadLine,
                   phoneNumber: userId.phone,
                   bloodGroup: userId.bloodGroup,

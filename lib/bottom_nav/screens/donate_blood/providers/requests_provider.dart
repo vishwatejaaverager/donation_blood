@@ -62,6 +62,14 @@ class RequestProvider with ChangeNotifier {
         .collection(Streams.shownInterestToDonate)
         .doc(donarsModel.userFrom)
         .set(donarsModel.toMap());
+
+    log("${donarsModel.userFromToken.toString()}this is user to token");
+
+    await NotificationService().sendPushNotification(donarsModel.userFromToken!,
+        title: "Dear ${donarsModel.name}",
+        desc:
+            "We are pleased to inform you that your blood donation request has been accepted by one of our generous donors. Your request has made a significant impact on someone's life, and we cannot thank you enough for your contribution.");
+
     Navigation.instance.pushBack();
   }
 
@@ -134,8 +142,10 @@ class RequestProvider with ChangeNotifier {
       _allRequests = allReq.docs;
       log(_allRequests.length.toString());
       for (var i = 0; i < _allRequests.length; i++) {
-        storeBloodType(_allRequests, userProfile, i);
-        storeEmergencyRequests(_allRequests, i);
+        if (_allRequests[i].data()['donationStat'] == 'in process') {
+          storeBloodType(_allRequests, userProfile, i);
+          storeEmergencyRequests(_allRequests, i);
+        }
       }
     }
     _isLoading = false;
@@ -218,77 +228,8 @@ class RequestProvider with ChangeNotifier {
   }
 
   //######### send req to donars ############################
-  List<QueryDocumentSnapshot<Map<String, dynamic>>> _allDonars = [];
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> _allDonars = [];
   List<QueryDocumentSnapshot<Map<String, dynamic>>> get allDonars => _allDonars;
-
-  Future sendReqToOtherDonars(
-    String userID,
-    String donationId,
-    InterestedDonarsModel bloodDonationModel, {
-    bool isEmergency = false,
-  }) async {
-    await _streams.userQuery
-        .where('isAvailable', isEqualTo: true)
-        .get()
-        .then((value) {
-      _allDonars = value.docs;
-
-      for (var i = 0; i < _allDonars.length; i++) {
-        if (_allDonars[i].id != userID &&
-            _allDonars[i]['bloodGroup'] == bloodDonationModel.bloodGroup) {
-          final userToToken = _allDonars[i].data()['token'];
-          InterestedDonarsModel donar = InterestedDonarsModel(
-              patientName: bloodDonationModel.patientName,
-              name: bloodDonationModel.name,
-              donarName: bloodDonationModel.name,
-              donarsNumber: bloodDonationModel.donarsNumber,
-              userFrom: bloodDonationModel.userFrom,
-              bloodGroup: bloodDonationModel.bloodGroup,
-              donarImage: bloodDonationModel.donarImage,
-              donationId: bloodDonationModel.donationId,
-              userFromToken: bloodDonationModel.userFromToken,
-              userToToken: userToToken,
-              userTo: '',
-              isAutomated: true,
-              isEmergency: bloodDonationModel.isEmergency,
-              deadLine: bloodDonationModel.deadLine,
-              phoneNumber: bloodDonationModel.phoneNumber,
-              lat: bloodDonationModel.lat,
-              lng: bloodDonationModel.lng,
-              location: bloodDonationModel.location,
-              donarStat: "nothing");
-          sendRequestAndNotification(
-              _allDonars, donationId, donar, userToToken, i, isEmergency);
-        }
-      }
-    });
-  }
-
-  sendRequestAndNotification(
-      List alldonars,
-      String donationId,
-      InterestedDonarsModel donarsModel,
-      userToToken,
-      int i,
-      bool isEmergency) async {
-    await _streams.userQuery
-        .doc(allDonars[i].id)
-        .collection(Streams.seekersRequest)
-        .doc(donationId)
-        .set(donarsModel.toMap());
-
-    await NotificationService().sendPushNotification(userToToken,
-        title: "Blood Donation Request",
-        desc:
-            "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
-
-    if (isEmergency) {
-      await NotificationService().sendPushNotification(userToToken,
-          title: "Urgent Blood Donation Request",
-          desc:
-              "We are in urgent need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
-    }
-  }
 
   shareImage(Uint8List file) async {
     try {
