@@ -145,6 +145,7 @@ class RequestProvider with ChangeNotifier {
         if (_allRequests[i].data()['donationStat'] == 'in process') {
           storeBloodType(_allRequests, userProfile, i);
           storeEmergencyRequests(_allRequests, i);
+          storeOtherBloodType(_allRequests, userProfile, i);
         }
       }
     }
@@ -180,6 +181,16 @@ class RequestProvider with ChangeNotifier {
     //for (var element in req) {
     if (req[index]['bloodGroup'] == userProfile.bloodGroup) {
       _sameType.add(req[index]);
+    }
+  }
+
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> _otherType = [];
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> get otherType => _otherType;
+
+  storeOtherBloodType(List req, UserProfile userProfile, int index) {
+    //for (var element in req) {
+    if (req[index]['bloodGroup'] != userProfile.bloodGroup) {
+      _otherType.add(req[index]);
     }
   }
 

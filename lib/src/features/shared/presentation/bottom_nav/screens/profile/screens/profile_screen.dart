@@ -261,6 +261,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           sbh(12),
+          ListTile(
+            onTap: () {
+              Navigation.instance.navigateTo(RewardScreen.id.path);
+            },
+            leading: Image.asset(
+              'assets/profile/gift.png',
+              scale: 15,
+            ),
+            title: const Text("Lifes Saved"),
+            trailing: const Icon(
+              Icons.arrow_right_alt,
+              size: 32,
+            ),
+          ),
           // ListTile(
           //   onTap: () {},
           //   leading: Image.asset(
