@@ -149,7 +149,7 @@ class RequestProvider with ChangeNotifier {
           storeBloodType(_allRequests, userProfile, i);
           storeEmergencyRequests(_allRequests, i);
           storeOtherBloodType(_allRequests, userProfile, i);
-        } else if(_allRequests[i].data()['donationStat'] == 'completed') {
+        } else if (_allRequests[i].data()['donationStat'] == 'completed') {
           _completedReq.add(_allRequests[i]);
         }
       }
@@ -244,7 +244,7 @@ class RequestProvider with ChangeNotifier {
   }
 
   //######### send req to donars ############################
-  final List<QueryDocumentSnapshot<Map<String, dynamic>>> _allDonars = [];
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> _allDonars = [];
   List<QueryDocumentSnapshot<Map<String, dynamic>>> get allDonars => _allDonars;
 
   shareImage(Uint8List file) async {
@@ -270,5 +270,87 @@ class RequestProvider with ChangeNotifier {
 
       log("Saved the token ${value!}");
     });
+  }
+
+  //  List<QueryDocumentSnapshot<Map<String, dynamic>>> _allDonars = [];
+  // List<QueryDocumentSnapshot<Map<String, dynamic>>> get allDonars => _allDonars;
+
+  sendReqToOtherDonars(
+    String userID,
+    String donationId,
+    InterestedDonarsModel bloodDonationModel, {
+    bool isEmergency = false,
+  }) async {
+    await _streams.userQuery
+        .where('isAvailable', isEqualTo: true)
+        .get()
+        .then((value) {
+      _allDonars = value.docs;
+
+      for (var i = 0; i < _allDonars.length; i++) {
+        if (_allDonars[i].id != userID &&
+            _allDonars[i]['bloodGroup'] == bloodDonationModel.bloodGroup) {
+          log("Came here in this ");
+          final userToToken = _allDonars[i].data()['token'];
+          InterestedDonarsModel donar = InterestedDonarsModel(
+              patientName: bloodDonationModel.patientName,
+              name: bloodDonationModel.name,
+              donarName: bloodDonationModel.name,
+              donarsNumber: bloodDonationModel.donarsNumber,
+              userFrom: bloodDonationModel.userFrom,
+              bloodGroup: bloodDonationModel.bloodGroup,
+              donarImage: bloodDonationModel.donarImage,
+              donationId: bloodDonationModel.donationId,
+              userFromToken: bloodDonationModel.userFromToken,
+              userToToken: userToToken,
+              userTo: '',
+              isAutomated: true,
+              isEmergency: bloodDonationModel.isEmergency,
+              deadLine: bloodDonationModel.deadLine,
+              phoneNumber: bloodDonationModel.phoneNumber,
+              lat: bloodDonationModel.lat,
+              lng: bloodDonationModel.lng,
+              location: bloodDonationModel.location,
+              donarStat: "nothing");
+
+          sendRequestAndNotification(
+              _allDonars, donationId, donar, userToToken, i, isEmergency);
+        }
+      }
+      // Navigation.instance.pushBack();
+      // Navigation.instance.pushBack();
+      // Navigation.instance.pushBack();
+      // appToast("Succesfully Request Added Hold Tight :)");
+    });
+  }
+
+  sendRequestAndNotification(
+      List alldonars,
+      String donationId,
+      InterestedDonarsModel donarsModel,
+      userToToken,
+      int i,
+      bool isEmergency) async {
+    log("Came in req and notification grp");
+    await _streams.userQuery
+        .doc(allDonars[i].id)
+        .collection(Streams.seekersRequest)
+        .doc(donationId)
+        .set(donarsModel.toMap());
+
+    // if (isEmergency) {
+    //   NotificationService().sendPushNotification(userToToken,
+    //       title: "Urgent Blood Donation Request",
+    //       desc:
+    //           "We are in urgent need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+    // } else {
+    NotificationService().sendPushNotification(userToToken,
+        title: "Blood Donation Request",
+        desc:
+            "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+    // }
+
+    //Navigation.instance.pushBack();
+    //  Navigation.instance.pushBack();
   }
 }

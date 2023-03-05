@@ -280,7 +280,10 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           donarName: userProfile.name,
                                           donarsNumber: userProfile.phone,
                                           userFrom: userProfile.userId,
-                                          bloodGroup: userProfile.bloodGroup,
+                                          bloodGroup: __.selectedBloodGroup ==
+                                                  "Bombay Blood"
+                                              ? "Bb"
+                                              : __.selectedBloodGroup,
                                           donarImage: userProfile.profileImage,
                                           donationId: a,
                                           userFromToken: userProfile.token,
@@ -346,7 +349,6 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           () async {
                                         __.addBloodRequestToFirebase(
                                             bloodDonationModel2);
-
                                         __.sendReqToOtherDonars(
                                             userProfile.userId!, a, donar);
 

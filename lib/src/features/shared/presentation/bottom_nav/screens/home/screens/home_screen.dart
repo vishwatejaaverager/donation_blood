@@ -95,13 +95,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: HomeCountView(
                                 count: Provider.of<RequestProvider>(context,
                                         listen: false)
-                                    .allRequests
+                                    .completedReq
                                     .length
                                     .toString(),
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 image: "assets/home/group.png",
-                                text1: "Blood requests ",
-                                text2: " in Hyd",
+                                text1: "Lifes saved in ",
+                                text2: " Blood Aid",
                               )),
                         ],
                       )
