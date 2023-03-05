@@ -24,7 +24,8 @@ class ProfileProvider with ChangeNotifier {
   final Streams _streams = Streams();
   final Preferences _preferences = Preferences();
 
-  String? _imageUrl;
+  String _imageUrl =
+      "https://firebasestorage.googleapis.com/v0/b/donationblood-4e0d9.appspot.com/o/profile.jpg?alt=media&token=e4a37d85-8899-46ae-93a1-668bc7a26d78";
   String? get imageUrl => _imageUrl;
 
 //############### user profile #####################3
@@ -160,7 +161,7 @@ class ProfileProvider with ChangeNotifier {
           context: Navigation.instance.navigationKey.currentState!.context,
           title: "Saving Info :)");
       await _streams.userQuery.doc(userId).set(userModel.toMap());
-      Navigation.instance.navigateTo(BottomNavScreen.id.path);
+      Navigation.instance.pushAndRemoveUntil(BottomNavScreen.id.path);
     } catch (e) {
       log(e.toString());
     }
@@ -240,15 +241,19 @@ class ProfileProvider with ChangeNotifier {
               donarStat: "nothing");
           sendRequestAndNotification(
               _allDonars, donationId, donar, userToToken, i, isEmergency);
-          
         }
       }
     });
   }
 
-  sendRequestAndNotification(List alldonars, String donationId,
-      InterestedDonarsModel donarsModel, userToToken, int i, bool isEmergency) async{
-  await  _streams.userQuery
+  sendRequestAndNotification(
+      List alldonars,
+      String donationId,
+      InterestedDonarsModel donarsModel,
+      userToToken,
+      int i,
+      bool isEmergency) async {
+    await _streams.userQuery
         .doc(allDonars[i].id)
         .collection(Streams.seekersRequest)
         .doc(donationId)

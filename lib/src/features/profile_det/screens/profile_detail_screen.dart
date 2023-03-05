@@ -1,3 +1,4 @@
+import 'package:donation_blood/src/features/splash_screen/splash_screen.dart';
 import 'package:google_maps_webservice/src/core.dart';
 
 import 'package:flutter/material.dart';
@@ -316,6 +317,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             long: loc.lng,
                             donatedTime: "",
                             phone: phone);
+                        globalUserProfile = userProfile;
                         __.addUserToFirebase(userProfile, userId);
                       },
                       text: "Submit"),
