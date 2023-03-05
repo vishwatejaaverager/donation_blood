@@ -130,6 +130,9 @@ class RequestProvider with ChangeNotifier {
   List<QueryDocumentSnapshot<Map<String, dynamic>>> _allRequests = [];
   List<QueryDocumentSnapshot<Map<String, dynamic>>> get allRequests =>
       _allRequests;
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> _completedReq = [];
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> get completedReq =>
+      _completedReq;
   getAllReuests(UserProfile userProfile) async {
     _isLoading = true;
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
@@ -146,6 +149,8 @@ class RequestProvider with ChangeNotifier {
           storeBloodType(_allRequests, userProfile, i);
           storeEmergencyRequests(_allRequests, i);
           storeOtherBloodType(_allRequests, userProfile, i);
+        } else if(_allRequests[i].data()['donationStat'] == 'completed') {
+          _completedReq.add(_allRequests[i]);
         }
       }
     }

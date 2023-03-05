@@ -14,7 +14,8 @@ class RequestBloodCard extends StatelessWidget {
   final BloodDonationModel bloodDonationModel;
   final bool showHosp;
   final bool isDetail;
-  final String? id;
+  final String? id,bottonText;
+  final bool isCompleted;
   final ScreenshotController? controller;
   const RequestBloodCard({
     required this.bloodDonationModel,
@@ -22,6 +23,8 @@ class RequestBloodCard extends StatelessWidget {
     this.showHosp = true,
     this.isDetail = false,
     this.id,
+    this.isCompleted = false,
+    this.bottonText = "Donate",
     Key? key,
   }) : super(key: key);
 
@@ -73,15 +76,18 @@ class RequestBloodCard extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  if (isDetail) {
-                    Navigation.instance.navigateTo(BloodDetailResScreen.id.path,
-                        args: {
-                          'bloodDonationInfo': bloodDonationModel,
-                          'id': id
-                        });
-                  } else {
-                    Navigation.instance.navigateTo(BloodDonateReqScreen.id.path,
-                        args: bloodDonationModel);
+                  if (!isCompleted) {
+                    if (isDetail) {
+                      Navigation.instance
+                          .navigateTo(BloodDetailResScreen.id.path, args: {
+                        'bloodDonationInfo': bloodDonationModel,
+                        'id': id
+                      });
+                    } else {
+                      Navigation.instance.navigateTo(
+                          BloodDonateReqScreen.id.path,
+                          args: bloodDonationModel);
+                    }
                   }
                 },
                 child: Container(
@@ -89,14 +95,14 @@ class RequestBloodCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                      color: Colors.red,
+                      color:isCompleted ? Colors.green : Colors.red,
                       borderRadius: BorderRadius.circular(24)),
                   child: Text(
-                    isDetail ? "Details" : "Donate",
+                    bottonText ?? "",
                     style: const TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold),
                   ),
-                ),
+              ),
               )
               // AnimatedButton(
               //   onPress: () {},
@@ -170,9 +176,8 @@ class RequestBloodCard extends StatelessWidget {
                             Row(
                               children: [
                                 const Icon(Icons.gps_fixed),
-                                
                                 SizedBox(
-                                  width: size.width /1.8,
+                                  width: size.width / 1.8,
                                   child: Text(
                                     bloodDonationModel.location!,
                                     style: const TextStyle(
