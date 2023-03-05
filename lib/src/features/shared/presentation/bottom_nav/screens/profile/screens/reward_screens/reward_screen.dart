@@ -2,6 +2,7 @@ import 'package:donation_blood/src/features/profile_det/provider/profile_provide
 import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/provider/user_profile_provider.dart';
 import 'package:donation_blood/src/features/shared/presentation/widgets/warning_text.dart';
+import 'package:donation_blood/src/features/splash_screen/splash_screen.dart';
 import 'package:donation_blood/src/utils/routes.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:donation_blood/src/utils/widget_utils/size_config.dart';
@@ -21,8 +22,7 @@ class _RewardScreenState extends State<RewardScreen> {
 
   @override
   void initState() {
-    _profile =
-        Provider.of<ProfileProvider>(context, listen: false).userProfile!;
+    _profile = globalUserProfile!;
     super.initState();
   }
 
@@ -47,7 +47,7 @@ class _RewardScreenState extends State<RewardScreen> {
             return Container(
               margin: const EdgeInsets.all(16),
               // height: size.height / 3,
-              width:getProportionateScreenWidth(size.width),
+              width: getProportionateScreenWidth(size.width),
               decoration: BoxDecoration(
                   color: Colors.red, borderRadius: BorderRadius.circular(12)),
               child: Padding(
@@ -111,12 +111,12 @@ class _RewardScreenState extends State<RewardScreen> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-        //  sbh(12),
+          //  sbh(12),
           const Center(
             child: WarningWidget(
                 scale: 7, text: " Rewards Will be available soooonnnnnnn :)"),
           ),
-        //  sbh(12)
+          //  sbh(12)
         ],
       ),
     ));

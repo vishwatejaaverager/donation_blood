@@ -11,19 +11,23 @@ class UserProfileProvider extends ChangeNotifier {
   String _daysLeft = "";
   String get daysLeft => _daysLeft;
 
-  daysFromPresent(DateTime date, String userID) {
-    DateTime now = DateTime.now(); // get the current date and time
-    Duration difference =
-        date.difference(now); // get the difference between the two dates
-    int days = difference.inDays.abs();
-    _donationDays = days;
-    var a = 90 - days;
-    _daysLeft = a.toString();
-    if (_donationDays == 90) {
-      updateUserAvailability(userID);
-    }
-    log(_donationDays
-        .toString()); // convert the difference to days, and take the absolute value (in case the date is in the past)
+  daysFromPresent(String date, String userID) {
+    try {
+      final actuaD = DateTime.parse(date);
+      DateTime now = DateTime.now(); // get the current date and time
+      Duration difference =
+          actuaD.difference(now); // get the difference between the two dates
+      int days = difference.inDays.abs();
+      _donationDays = days;
+      var a = 90 - days;
+      _daysLeft = a.toString();
+      if (_donationDays == 90) {
+        updateUserAvailability(userID);
+      }
+      log(_donationDays.toString());
+    } catch (e) {
+      log(e.toString());
+    } // convert the difference to days, and take the absolute value (in case the date is in the past)
   }
 
   updateUserAvailability(String userId) {

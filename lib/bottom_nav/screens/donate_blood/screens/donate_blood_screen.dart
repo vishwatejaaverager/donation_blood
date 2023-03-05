@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/filtered_request_screens/user_blood_requests.dart';
 import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
 import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
+import 'package:donation_blood/src/features/splash_screen/splash_screen.dart';
 import 'package:donation_blood/src/utils/routes.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:donation_blood/src/utils/utils.dart';
@@ -26,20 +27,20 @@ class _DonateBloodScreenState extends State<DonateBloodScreen>
   final Streams _streams = Streams();
 
   late TabController _tabController;
-  late UserProfile userProfile;
+ // late UserProfile userProfile;
 
   late Stream<QuerySnapshot<Map<String, dynamic>>> _bloodReqByUsers;
   @override
   void initState() {
     // Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
     // requestProvider = Provider.of<RequestProvider>(context, listen: false);
-    userProfile =
-        Provider.of<ProfileProvider>(context, listen: false).userProfile!;
+    // userProfile =
+    //     Provider.of<ProfileProvider>(context, listen: false).userProfile!;
     _tabController = TabController(vsync: this, length: 4);
     // actualUserProfile =
     //     Provider.of<ProfileProvider>(context, listen: false).userProfile!;
     _bloodReqByUsers = _streams.userQuery
-        .doc(userProfile.userId!)
+        .doc(globalUserProfile!.userId!)
         .collection(Streams.requestByUser)
         .snapshots();
 
