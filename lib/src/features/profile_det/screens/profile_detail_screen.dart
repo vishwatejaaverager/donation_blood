@@ -318,6 +318,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             donatedTime: "",
                             phone: phone);
                         globalUserProfile = userProfile;
+                        Provider.of<ProfileProvider>(context, listen: false)
+                            .setUserInfo(userProfile);
+
                         __.addUserToFirebase(userProfile, userId);
                       },
                       text: "Submit"),

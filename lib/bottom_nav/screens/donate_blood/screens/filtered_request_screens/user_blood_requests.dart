@@ -26,6 +26,7 @@ class UserBloodRequestsScreen extends StatelessWidget {
                       bloodDonationModel: requestData,
                       showHosp: false,
                       isDetail: true,
+                      bottonText: "Details",
                     );
                   }));
             } else {

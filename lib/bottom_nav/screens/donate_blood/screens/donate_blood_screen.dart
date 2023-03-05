@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/filtered_request_screens/user_blood_requests.dart';
-import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
-import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/features/splash_screen/splash_screen.dart';
 import 'package:donation_blood/src/utils/routes.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import 'filtered_request_screens/all_req_screen.dart';
@@ -27,7 +24,7 @@ class _DonateBloodScreenState extends State<DonateBloodScreen>
   final Streams _streams = Streams();
 
   late TabController _tabController;
- // late UserProfile userProfile;
+  // late UserProfile userProfile;
 
   late Stream<QuerySnapshot<Map<String, dynamic>>> _bloodReqByUsers;
   @override
@@ -83,7 +80,7 @@ class _DonateBloodScreenState extends State<DonateBloodScreen>
                   SizedBox(child: Center(child: Text("Your Requests"))),
                   SizedBox(child: Center(child: Text("My Type"))),
                   SizedBox(child: Center(child: Text("Emergency"))),
-                  SizedBox(child: Center(child: Text("All")))
+                  SizedBox(child: Center(child: Text("Others")))
                 ],
                 controller: _tabController,
                 tags: const []),

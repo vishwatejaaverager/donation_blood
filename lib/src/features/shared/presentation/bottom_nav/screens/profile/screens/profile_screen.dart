@@ -1,5 +1,6 @@
 import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/provider/user_profile_provider.dart';
+import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/screens/lifes_saved/lifes_saved_screens.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/screens/reward_screens/reward_screen.dart';
 import 'package:donation_blood/src/features/splash_screen/splash_screen.dart';
 import 'package:donation_blood/src/utils/navigation.dart';
@@ -261,6 +262,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           sbh(12),
+          ListTile(
+            onTap: () {
+              Navigation.instance.navigateTo(LifesSavedScreen.id.path);
+            },
+            leading: Image.asset(
+              'assets/profile/gift.png',
+              scale: 15,
+            ),
+            title: const Text("Lifes Saved"),
+            trailing: const Icon(
+              Icons.arrow_right_alt,
+              size: 32,
+            ),
+          ),
           // ListTile(
           //   onTap: () {},
           //   leading: Image.asset(

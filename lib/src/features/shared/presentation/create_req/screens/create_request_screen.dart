@@ -280,7 +280,10 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           donarName: userProfile.name,
                                           donarsNumber: userProfile.phone,
                                           userFrom: userProfile.userId,
-                                          bloodGroup: userProfile.bloodGroup,
+                                          bloodGroup: __.selectedBloodGroup ==
+                                                  "Bombay Blood"
+                                              ? "Bb"
+                                              : __.selectedBloodGroup,
                                           donarImage: userProfile.profileImage,
                                           donationId: a,
                                           userFromToken: userProfile.token,
@@ -303,7 +306,10 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           userId: userProfile.userId,
                                           patientName: _nameController.text,
                                           number: _mobileController.text,
-                                          bloodGroup: __.selectedBloodGroup,
+                                          bloodGroup: __.selectedBloodGroup ==
+                                                  "Bombay Blood"
+                                              ? "Bb"
+                                              : __.selectedBloodGroup,
                                           donationStat: "in process",
                                           units: __.unitDrop,
                                           intrestedDonars: [donar.toMap()],
@@ -322,7 +328,10 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           userId: userProfile.userId,
                                           patientName: _nameController.text,
                                           number: _mobileController.text,
-                                          bloodGroup: __.selectedBloodGroup,
+                                          bloodGroup: __.selectedBloodGroup ==
+                                                  "Bombay Blood"
+                                              ? "Bb"
+                                              : __.selectedBloodGroup,
                                           donationStat: "in process",
                                           units: __.unitDrop,
                                           intrestedDonars: [],
@@ -340,7 +349,6 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           () async {
                                         __.addBloodRequestToFirebase(
                                             bloodDonationModel2);
-
                                         __.sendReqToOtherDonars(
                                             userProfile.userId!, a, donar);
 

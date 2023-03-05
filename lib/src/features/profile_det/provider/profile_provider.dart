@@ -95,6 +95,7 @@ class ProfileProvider with ChangeNotifier {
 
   setSelectedBloodGroup(String s) {
     _selectedBloodGroup = s;
+    log(_selectedBloodGroup.toString());
     notifyListeners();
   }
 
@@ -214,10 +215,17 @@ class ProfileProvider with ChangeNotifier {
         .get()
         .then((value) {
       _allDonars = value.docs;
+      // log(userID + " this is the user id ");
+      // log(_allDonars.length.toString() + "all donars");
+      // log(bloodDonationModel.bloodGroup.toString() + "required blood group");
 
       for (var i = 0; i < _allDonars.length; i++) {
+        // log(_allDonars[i].id.toString() + " this is the user id loop");
         if (_allDonars[i].id != userID &&
-            _allDonars[i]['bloodGroup'] == bloodDonationModel.bloodGroup) {
+            _allDonars[i].data()['bloodGroup'] ==
+                bloodDonationModel.bloodGroup) {
+          log("came");
+
           final userToToken = _allDonars[i].data()['token'];
           InterestedDonarsModel donar = InterestedDonarsModel(
               patientName: bloodDonationModel.patientName,
@@ -243,6 +251,10 @@ class ProfileProvider with ChangeNotifier {
               _allDonars, donationId, donar, userToToken, i, isEmergency);
         }
       }
+      Navigation.instance.pushBack();
+      Navigation.instance.pushBack();
+      Navigation.instance.pushBack();
+      appToast("Succesfully Request Added Hold Tight :)");
     });
   }
 
@@ -270,10 +282,7 @@ class ProfileProvider with ChangeNotifier {
           desc:
               "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
     }
-    Navigation.instance.pushBack();
-    Navigation.instance.pushBack();
-    Navigation.instance.pushBack();
-    appToast("Succesfully Request Added Hold Tight :)");
+
     //Navigation.instance.pushBack();
     //  Navigation.instance.pushBack();
   }

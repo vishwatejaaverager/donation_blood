@@ -3,6 +3,7 @@ import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/request_r
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/on_boarding_screen.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/bottom_nav_screen.dart';
+import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/screens/lifes_saved/lifes_saved_screens.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/screens/reward_screens/reward_screen.dart';
 import 'package:donation_blood/src/features/shared/presentation/create_req/screens/create_request_screen.dart';
 import 'package:flutter/material.dart';
@@ -36,12 +37,11 @@ class AppRouter {
       return pageTransition(const CreateReqScreen());
     } else if (route.name == RewardScreen.id.path) {
       return pageTransition(const RewardScreen());
-    } 
-     else if (route.name == DonateBloodScreen.id.path) {
+    } else if (route.name == DonateBloodScreen.id.path) {
       return pageTransition(const DonateBloodScreen());
-    } 
-    
-    else if (route.name == BloodDonateReqScreen.id.path) {
+    } else if (route.name == LifesSavedScreen.id.path) {
+      return pageTransition(const LifesSavedScreen());
+    } else if (route.name == BloodDonateReqScreen.id.path) {
       BloodDonationModel bloodDonationModel =
           route.arguments as BloodDonationModel;
       return pageTransition(BloodDonateReqScreen(

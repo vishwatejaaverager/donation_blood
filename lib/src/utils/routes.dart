@@ -7,6 +7,7 @@ enum AppRoutes {
   profileScreen("profile_screen"),
   notificationScreen("notification_screen"),
   donateBloodScreen('donate_blood_screen'),
+  lifesSavedScreen('lifes_saved_screen'),
   editProfileScreen("profile_edit_screen"),
   locationSearchScreen("location_search_screen"),
   createReqScreen("create_req_screen"),

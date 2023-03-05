@@ -9,6 +9,8 @@ import 'package:donation_blood/src/utils/widget_utils/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../components/donar_card.dart';
+
 class RewardScreen extends StatefulWidget {
   static const id = AppRoutes.rewardScreen;
   const RewardScreen({super.key});
@@ -43,67 +45,7 @@ class _RewardScreenState extends State<RewardScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Consumer<UserProfileProvider>(builder: ((context, value, child) {
-            return Container(
-              margin: const EdgeInsets.all(16),
-              // height: size.height / 3,
-              width: getProportionateScreenWidth(size.width),
-              decoration: BoxDecoration(
-                  color: Colors.red, borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          "Coins",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "Blood Donation",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                    sbh(12),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          value.coins,
-                          style: const TextStyle(
-                              fontSize: 48, color: Colors.white),
-                        ),
-                        const Text(
-                          " Coins",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        )
-                      ],
-                    ),
-                    sbh(12),
-                    Text(
-                      _profile.name!,
-                      style: const TextStyle(fontSize: 16, color: Colors.white),
-                    ),
-                    Text(
-                      _profile.phone!.substring(3),
-                      style: const TextStyle(fontSize: 16, color: Colors.white),
-                    )
-                  ],
-                ),
-              ),
-            );
-          })),
+          DonarCard(profile: _profile),
           const Padding(
             padding: EdgeInsets.only(left: 24.0),
             child: Text(
@@ -122,3 +64,4 @@ class _RewardScreenState extends State<RewardScreen> {
     ));
   }
 }
+
