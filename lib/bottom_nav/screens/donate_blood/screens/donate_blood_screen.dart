@@ -5,8 +5,10 @@ import 'package:donation_blood/src/utils/routes.dart';
 import 'package:donation_blood/src/utils/streams.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../providers/requests_provider.dart';
 import 'filtered_request_screens/all_req_screen.dart';
 import 'filtered_request_screens/blood_type_screen.dart';
 import 'filtered_request_screens/emergency_screen.dart';
@@ -30,7 +32,8 @@ class _DonateBloodScreenState extends State<DonateBloodScreen>
   @override
   void initState() {
     // Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
-    // requestProvider = Provider.of<RequestProvider>(context, listen: false);
+    Provider.of<RequestProvider>(context, listen: false)
+        .getAllReuests(globalUserProfile!);
     // userProfile =
     //     Provider.of<ProfileProvider>(context, listen: false).userProfile!;
     _tabController = TabController(vsync: this, length: 4);

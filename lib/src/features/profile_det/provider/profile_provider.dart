@@ -201,7 +201,7 @@ class ProfileProvider with ChangeNotifier {
     }
   }
 
-  List<QueryDocumentSnapshot<Map<String, dynamic>>> _allDonars = [];
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> _allDonars = [];
   List<QueryDocumentSnapshot<Map<String, dynamic>>> get allDonars => _allDonars;
 
   sendReqToOtherDonars(
@@ -210,81 +210,384 @@ class ProfileProvider with ChangeNotifier {
     InterestedDonarsModel bloodDonationModel, {
     bool isEmergency = false,
   }) async {
-    await _streams.userQuery
-        .where('isAvailable', isEqualTo: true)
-        .get()
-        .then((value) {
-      _allDonars = value.docs;
-      // log(userID + " this is the user id ");
-      // log(_allDonars.length.toString() + "all donars");
-      // log(bloodDonationModel.bloodGroup.toString() + "required blood group");
-
-      for (var i = 0; i < _allDonars.length; i++) {
-        // log(_allDonars[i].id.toString() + " this is the user id loop");
-        if (_allDonars[i].id != userID &&
-            _allDonars[i].data()['bloodGroup'] ==
-                bloodDonationModel.bloodGroup) {
-          log("came");
-
-          final userToToken = _allDonars[i].data()['token'];
-          InterestedDonarsModel donar = InterestedDonarsModel(
-              patientName: bloodDonationModel.patientName,
-              name: bloodDonationModel.name,
-              donarName: bloodDonationModel.name,
-              donarsNumber: bloodDonationModel.donarsNumber,
-              userFrom: bloodDonationModel.userFrom,
-              bloodGroup: bloodDonationModel.bloodGroup,
-              donarImage: bloodDonationModel.donarImage,
-              donationId: bloodDonationModel.donationId,
-              userFromToken: bloodDonationModel.userFromToken,
-              userToToken: userToToken,
-              userTo: '',
-              isAutomated: true,
-              isEmergency: bloodDonationModel.isEmergency,
-              deadLine: bloodDonationModel.deadLine,
-              phoneNumber: bloodDonationModel.phoneNumber,
-              lat: bloodDonationModel.lat,
-              lng: bloodDonationModel.lng,
-              location: bloodDonationModel.location,
-              donarStat: "nothing");
-          sendRequestAndNotification(
-              _allDonars, donationId, donar, userToToken, i, isEmergency);
-        }
-      }
-      Navigation.instance.pushBack();
-      Navigation.instance.pushBack();
-      Navigation.instance.pushBack();
-      appToast("Succesfully Request Added Hold Tight :)");
-    });
+    // log(userID + " this is the user id ");
+    // log(_allDonars.length.toString() + "all donars");
+    // log(bloodDonationModel.bloodGroup.toString() + "required blood group");
+    sendRequestAndNotification(
+        donationId, bloodDonationModel, isEmergency, userID);
+    Navigation.instance.pushBack();
+    Navigation.instance.pushBack();
+    Navigation.instance.pushBack();
+    appToast("Succesfully Request Added Hold Tight :)");
+    // });
   }
 
   sendRequestAndNotification(
-      List alldonars,
       String donationId,
       InterestedDonarsModel donarsModel,
-      userToToken,
-      int i,
-      bool isEmergency) async {
-    await _streams.userQuery
-        .doc(allDonars[i].id)
-        .collection(Streams.seekersRequest)
-        .doc(donationId)
-        .set(donarsModel.toMap());
-
-    if (isEmergency) {
-      NotificationService().sendPushNotification(userToToken,
-          title: "Urgent Blood Donation Request",
-          desc:
-              "We are in urgent need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
-    } else {
-      NotificationService().sendPushNotification(userToToken,
-          title: "Blood Donation Request",
-          desc:
-              "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
-    }
+      bool isEmergency,
+      String userId) async {
+    checkComptabilityAndSendReq(
+        donarsModel.bloodGroup!, donationId, donarsModel, userId);
 
     //Navigation.instance.pushBack();
     //  Navigation.instance.pushBack();
+  }
+
+  checkComptabilityAndSendReq(String bloodGrp, String donationId,
+      InterestedDonarsModel donarsModel, String userId) {
+    log("came to chaeck compatability");
+    if (bloodGrp == 'A+') {
+      _streams.userQuery
+          .where('isAvailable', isEqualTo: true)
+          .get()
+          .then((value) {
+        for (var i = 0; i < value.docs.length; i++) {
+          if (value.docs[i].id != userId) {
+            if (value.docs[i].data()['bloodGroup'] == 'A+' ||
+                value.docs[i].data()['bloodGroup'] == 'A-' ||
+                value.docs[i].data()['bloodGroup'] == 'O+' ||
+                value.docs[i].data()['bloodGroup'] == 'O-') {
+              final userToToken = value.docs[i].data()['token'];
+              InterestedDonarsModel donar = InterestedDonarsModel(
+                  patientName: donarsModel.patientName,
+                  name: donarsModel.name,
+                  donarName: donarsModel.name,
+                  donarsNumber: donarsModel.donarsNumber,
+                  userFrom: donarsModel.userFrom,
+                  bloodGroup: donarsModel.bloodGroup,
+                  donarImage: donarsModel.donarImage,
+                  donationId: donarsModel.donationId,
+                  userFromToken: donarsModel.userFromToken,
+                  userToToken: userToToken,
+                  userTo: '',
+                  isAutomated: true,
+                  isEmergency: donarsModel.isEmergency,
+                  deadLine: donarsModel.deadLine,
+                  phoneNumber: donarsModel.phoneNumber,
+                  lat: donarsModel.lat,
+                  lng: donarsModel.lng,
+                  location: donarsModel.location,
+                  donarStat: "nothing");
+              _streams.userQuery
+                  .doc(value.docs[i].id)
+                  .collection(Streams.seekersRequest)
+                  .doc(donationId)
+                  .set(donar.toMap());
+              NotificationService().sendPushNotification(userToToken,
+                  title: "Blood Donation Request",
+                  desc:
+                      "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+            }
+          }
+        }
+      });
+    } else if (bloodGrp == 'O+') {
+      _streams.userQuery
+          .where('isAvailable', isEqualTo: true)
+          .get()
+          .then((value) {
+        log("came O+ group");
+        log("${value.docs.length}this is the user length");
+        for (var i = 0; i < value.docs.length; i++) {
+          if (value.docs[i].id != userId) {
+            if (value.docs[i].data()['bloodGroup'] == 'O+' ||
+                value.docs[i].data()['bloodGroup'] == 'O-') {
+              log("elgible");
+
+              final userToToken = value.docs[i].data()['token'];
+              InterestedDonarsModel donar = InterestedDonarsModel(
+                  patientName: donarsModel.patientName,
+                  name: donarsModel.name,
+                  donarName: donarsModel.name,
+                  donarsNumber: donarsModel.donarsNumber,
+                  userFrom: donarsModel.userFrom,
+                  bloodGroup: donarsModel.bloodGroup,
+                  donarImage: donarsModel.donarImage,
+                  donationId: donarsModel.donationId,
+                  userFromToken: donarsModel.userFromToken,
+                  userToToken: userToToken,
+                  userTo: '',
+                  isAutomated: true,
+                  isEmergency: donarsModel.isEmergency,
+                  deadLine: donarsModel.deadLine,
+                  phoneNumber: donarsModel.phoneNumber,
+                  lat: donarsModel.lat,
+                  lng: donarsModel.lng,
+                  location: donarsModel.location,
+                  donarStat: "nothing");
+              _streams.userQuery
+                  .doc(value.docs[i].id)
+                  .collection(Streams.seekersRequest)
+                  .doc(donationId)
+                  .set(donar.toMap());
+              NotificationService().sendPushNotification(userToToken,
+                  title: "Blood Donation Request",
+                  desc:
+                      "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+            }
+          }
+        }
+      });
+    } else if (bloodGrp == 'B+') {
+      _streams.userQuery
+          .where('isAvailable', isEqualTo: true)
+          .get()
+          .then((value) {
+        for (var i = 0; i < value.docs.length; i++) {
+          if (value.docs[i].id != userId) {
+            if (value.docs[i].data()['bloodGroup'] == 'B+' ||
+                value.docs[i].data()['bloodGroup'] == 'B-' ||
+                value.docs[i].data()['bloodGroup'] == 'O+' ||
+                value.docs[i].data()['bloodGroup'] == 'O-') {
+              final userToToken = value.docs[i].data()['token'];
+              InterestedDonarsModel donar = InterestedDonarsModel(
+                  patientName: donarsModel.patientName,
+                  name: donarsModel.name,
+                  donarName: donarsModel.name,
+                  donarsNumber: donarsModel.donarsNumber,
+                  userFrom: donarsModel.userFrom,
+                  bloodGroup: donarsModel.bloodGroup,
+                  donarImage: donarsModel.donarImage,
+                  donationId: donarsModel.donationId,
+                  userFromToken: donarsModel.userFromToken,
+                  userToToken: userToToken,
+                  userTo: '',
+                  isAutomated: true,
+                  isEmergency: donarsModel.isEmergency,
+                  deadLine: donarsModel.deadLine,
+                  phoneNumber: donarsModel.phoneNumber,
+                  lat: donarsModel.lat,
+                  lng: donarsModel.lng,
+                  location: donarsModel.location,
+                  donarStat: "nothing");
+              _streams.userQuery
+                  .doc(value.docs[i].id)
+                  .collection(Streams.seekersRequest)
+                  .doc(donationId)
+                  .set(donar.toMap());
+              NotificationService().sendPushNotification(userToToken,
+                  title: "Blood Donation Request",
+                  desc:
+                      "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+            }
+          }
+        }
+      });
+    } else if (bloodGrp == 'AB+') {
+      _streams.userQuery
+          .where('isAvailable', isEqualTo: true)
+          .get()
+          .then((value) {
+        for (var i = 0; i < value.docs.length; i++) {
+          if (value.docs[i].id != userId) {
+            final userToToken = value.docs[i].data()['token'];
+            InterestedDonarsModel donar = InterestedDonarsModel(
+                patientName: donarsModel.patientName,
+                name: donarsModel.name,
+                donarName: donarsModel.name,
+                donarsNumber: donarsModel.donarsNumber,
+                userFrom: donarsModel.userFrom,
+                bloodGroup: donarsModel.bloodGroup,
+                donarImage: donarsModel.donarImage,
+                donationId: donarsModel.donationId,
+                userFromToken: donarsModel.userFromToken,
+                userToToken: userToToken,
+                userTo: '',
+                isAutomated: true,
+                isEmergency: donarsModel.isEmergency,
+                deadLine: donarsModel.deadLine,
+                phoneNumber: donarsModel.phoneNumber,
+                lat: donarsModel.lat,
+                lng: donarsModel.lng,
+                location: donarsModel.location,
+                donarStat: "nothing");
+            _streams.userQuery
+                .doc(value.docs[i].id)
+                .collection(Streams.seekersRequest)
+                .doc(donationId)
+                .set(donar.toMap());
+            NotificationService().sendPushNotification(userToToken,
+                title: "Blood Donation Request",
+                desc:
+                    "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+          }
+        }
+      });
+    } else if (bloodGrp == 'AB-') {
+      _streams.userQuery
+          .where('isAvailable', isEqualTo: true)
+          .get()
+          .then((value) {
+        for (var i = 0; i < value.docs.length; i++) {
+          if (value.docs[i].id != userId) {
+            if (value.docs[i].data()['bloodGroup'] == 'AB-' ||
+                value.docs[i].data()['bloodGroup'] == 'A-' ||
+                value.docs[i].data()['bloodGroup'] == 'B-' ||
+                value.docs[i].data()['bloodGroup'] == 'O-') {
+              final userToToken = value.docs[i].data()['token'];
+              InterestedDonarsModel donar = InterestedDonarsModel(
+                  patientName: donarsModel.patientName,
+                  name: donarsModel.name,
+                  donarName: donarsModel.name,
+                  donarsNumber: donarsModel.donarsNumber,
+                  userFrom: donarsModel.userFrom,
+                  bloodGroup: donarsModel.bloodGroup,
+                  donarImage: donarsModel.donarImage,
+                  donationId: donarsModel.donationId,
+                  userFromToken: donarsModel.userFromToken,
+                  userToToken: userToToken,
+                  userTo: '',
+                  isAutomated: true,
+                  isEmergency: donarsModel.isEmergency,
+                  deadLine: donarsModel.deadLine,
+                  phoneNumber: donarsModel.phoneNumber,
+                  lat: donarsModel.lat,
+                  lng: donarsModel.lng,
+                  location: donarsModel.location,
+                  donarStat: "nothing");
+              _streams.userQuery
+                  .doc(value.docs[i].id)
+                  .collection(Streams.seekersRequest)
+                  .doc(donationId)
+                  .set(donar.toMap());
+              NotificationService().sendPushNotification(userToToken,
+                  title: "Blood Donation Request",
+                  desc:
+                      "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+            }
+          }
+        }
+      });
+    } else if (bloodGrp == 'A-') {
+      _streams.userQuery
+          .where('isAvailable', isEqualTo: true)
+          .get()
+          .then((value) {
+        for (var i = 0; i < value.docs.length; i++) {
+          if (value.docs[i].id != userId) {
+            if (value.docs[i].data()['bloodGroup'] == 'A-' ||
+                value.docs[i].data()['bloodGroup'] == 'O-') {
+              final userToToken = value.docs[i].data()['token'];
+              InterestedDonarsModel donar = InterestedDonarsModel(
+                  patientName: donarsModel.patientName,
+                  name: donarsModel.name,
+                  donarName: donarsModel.name,
+                  donarsNumber: donarsModel.donarsNumber,
+                  userFrom: donarsModel.userFrom,
+                  bloodGroup: donarsModel.bloodGroup,
+                  donarImage: donarsModel.donarImage,
+                  donationId: donarsModel.donationId,
+                  userFromToken: donarsModel.userFromToken,
+                  userToToken: userToToken,
+                  userTo: '',
+                  isAutomated: true,
+                  isEmergency: donarsModel.isEmergency,
+                  deadLine: donarsModel.deadLine,
+                  phoneNumber: donarsModel.phoneNumber,
+                  lat: donarsModel.lat,
+                  lng: donarsModel.lng,
+                  location: donarsModel.location,
+                  donarStat: "nothing");
+              _streams.userQuery
+                  .doc(value.docs[i].id)
+                  .collection(Streams.seekersRequest)
+                  .doc(donationId)
+                  .set(donar.toMap());
+              NotificationService().sendPushNotification(userToToken,
+                  title: "Blood Donation Request",
+                  desc:
+                      "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+            }
+          }
+        }
+      });
+    } else if (bloodGrp == 'B-') {
+      _streams.userQuery
+          .where('isAvailable', isEqualTo: true)
+          .get()
+          .then((value) {
+        for (var i = 0; i < value.docs.length; i++) {
+          if (value.docs[i].id != userId) {
+            if (value.docs[i].data()['bloodGroup'] == 'B-' ||
+                value.docs[i].data()['bloodGroup'] == 'O-') {
+              final userToToken = value.docs[i].data()['token'];
+              InterestedDonarsModel donar = InterestedDonarsModel(
+                  patientName: donarsModel.patientName,
+                  name: donarsModel.name,
+                  donarName: donarsModel.name,
+                  donarsNumber: donarsModel.donarsNumber,
+                  userFrom: donarsModel.userFrom,
+                  bloodGroup: donarsModel.bloodGroup,
+                  donarImage: donarsModel.donarImage,
+                  donationId: donarsModel.donationId,
+                  userFromToken: donarsModel.userFromToken,
+                  userToToken: userToToken,
+                  userTo: '',
+                  isAutomated: true,
+                  isEmergency: donarsModel.isEmergency,
+                  deadLine: donarsModel.deadLine,
+                  phoneNumber: donarsModel.phoneNumber,
+                  lat: donarsModel.lat,
+                  lng: donarsModel.lng,
+                  location: donarsModel.location,
+                  donarStat: "nothing");
+              _streams.userQuery
+                  .doc(value.docs[i].id)
+                  .collection(Streams.seekersRequest)
+                  .doc(donationId)
+                  .set(donar.toMap());
+              NotificationService().sendPushNotification(userToToken,
+                  title: "Blood Donation Request",
+                  desc:
+                      "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+            }
+          }
+        }
+      });
+    } else if (bloodGrp == 'O-') {
+      _streams.userQuery
+          .where('isAvailable', isEqualTo: true)
+          .get()
+          .then((value) {
+        for (var i = 0; i < value.docs.length; i++) {
+          if (value.docs[i].id != userId) {
+            if (value.docs[i].data()['bloodGroup'] == 'O-') {
+              final userToToken = value.docs[i].data()['token'];
+              InterestedDonarsModel donar = InterestedDonarsModel(
+                  patientName: donarsModel.patientName,
+                  name: donarsModel.name,
+                  donarName: donarsModel.name,
+                  donarsNumber: donarsModel.donarsNumber,
+                  userFrom: donarsModel.userFrom,
+                  bloodGroup: donarsModel.bloodGroup,
+                  donarImage: donarsModel.donarImage,
+                  donationId: donarsModel.donationId,
+                  userFromToken: donarsModel.userFromToken,
+                  userToToken: userToToken,
+                  userTo: '',
+                  isAutomated: true,
+                  isEmergency: donarsModel.isEmergency,
+                  deadLine: donarsModel.deadLine,
+                  phoneNumber: donarsModel.phoneNumber,
+                  lat: donarsModel.lat,
+                  lng: donarsModel.lng,
+                  location: donarsModel.location,
+                  donarStat: "nothing");
+              _streams.userQuery
+                  .doc(value.docs[i].id)
+                  .collection(Streams.seekersRequest)
+                  .doc(donationId)
+                  .set(donar.toMap());
+              NotificationService().sendPushNotification(userToToken,
+                  title: "Blood Donation Request",
+                  desc:
+                      "We are in need of blood donors to help save the life of a patient undergoing medical treatment.You are elgible for this please do consider to donate");
+            }
+          }
+        }
+      });
+    }
   }
 
 // if emergency we will send notification to requested blood type users as well as waatti message

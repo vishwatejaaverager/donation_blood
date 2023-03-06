@@ -6,6 +6,7 @@ import 'package:donation_blood/src/features/shared/domain/models/blood_donation_
 import 'package:donation_blood/src/features/shared/domain/models/interested_donar_model.dart';
 import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:donation_blood/src/utils/streams.dart';
+import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -152,22 +153,24 @@ class ResponseProvider with ChangeNotifier {
     if (response == 'donated') {
       var a = int.parse(bloodDonationModel!.units!);
       var d = int.parse(bloodDonationModel.donatedUnits!);
-      int f = d + 1;
-      int b = a - 1;
+      int donatedUnits = d + 1;
+      int units = a - 1;
 
-      await _streams.userQuery.doc(donarsModel.userFrom).update(
+      _streams.userQuery.doc(donarsModel.userFrom).update(
           {"isAvailable": false, "donatedTime": DateTime.now().toString()});
 
-      await _streams.requestQuery
-          .doc(donarsModel.donationId)
-          .update({"units": b.toString(), "donatedUnits": f.toString()});
+      await _streams.requestQuery.doc(donarsModel.donationId).update(
+          {"units": units.toString(), "donatedUnits": donatedUnits.toString()});
 
       await _streams.userQuery
           .doc(donarsModel.userTo)
           .collection(Streams.requestByUser)
           .doc(donarsModel.donationId)
-          .update({"units": b.toString(), " donatedUnits": f.toString()});
-      if (b == 0) {
+          .update({
+        "units": units.toString(),
+        "donatedUnits": donatedUnits.toString()
+      });
+      if (units == 0) {
         await _streams.requestQuery
             .doc(donarsModel.donationId)
             .update({"donationStat": "completed"});
@@ -187,7 +190,7 @@ class ResponseProvider with ChangeNotifier {
     if (await canLaunchUrl(Uri.parse(phoneUrl))) {
       await launchUrl(Uri.parse(phoneUrl));
     } else {
-      throw 'Could not launch $phoneUrl';
+      appToast("some thing went wrong :( ");
     }
   }
 }
