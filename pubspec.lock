@@ -361,13 +361,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.1.0"
-  flutter_staggered_grid_view:
-    dependency: "direct main"
-    description:
-      name: flutter_staggered_grid_view
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.6.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -791,13 +784,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.4"
-  shimmer_animation:
-    dependency: "direct main"
-    description:
-      name: shimmer_animation
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.0+1"
   sky_engine:
     dependency: transitive
     description: flutter

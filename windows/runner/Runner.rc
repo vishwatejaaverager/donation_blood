@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "donation_blood" "\0"
+            VALUE "FileDescription", "Blood Aid" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "donation_blood" "\0"
+            VALUE "InternalName", "Blood Aid" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
             VALUE "OriginalFilename", "donation_blood.exe" "\0"
-            VALUE "ProductName", "donation_blood" "\0"
+            VALUE "ProductName", "Blood Aid" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
