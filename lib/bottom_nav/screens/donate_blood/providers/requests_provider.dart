@@ -140,7 +140,7 @@ class RequestProvider with ChangeNotifier {
     });
     // String id = _preferences.getUserId();
 
-    if (_allRequests.isEmpty) {
+    //if (_allRequests.isEmpty) {
       var allReq = await _streams.requestQuery.get();
       _allRequests = allReq.docs;
       log(_allRequests.length.toString());
@@ -153,7 +153,7 @@ class RequestProvider with ChangeNotifier {
           _completedReq.add(_allRequests[i]);
         }
       }
-    }
+    //}
     _isLoading = false;
 
     log(_isLoading.toString());
