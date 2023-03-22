@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../../../../utils/utils.dart';
 import '../../data/providers/login_provider.dart';
 import 'login_button.dart';
-import 'login_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = AppRoutes.loginScreen;
@@ -51,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
               child: TextFormField(
+                keyboardType: TextInputType.number,
                 controller: phoneController,
                 decoration: const InputDecoration(
                     icon: Text("+91"),
@@ -62,37 +62,37 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Text("OR"),
             ),
             sbh(12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: LoginMethodButton(
-                    widget: Image.asset(
-                      "assets/login/fb_icon.png",
-                      scale: 2,
-                    ),
-                    text: " Continue with Facebook",
-                    onpressed: () {
-                      //fbLogin();
-                    },
-                  ),
-                ),
-                sbh(8),
-                Center(
-                  child: LoginMethodButton(
-                    widget: Image.asset(
-                      "assets/login/google.png",
-                      scale: 25,
-                    ),
-                    text: " Continue with Google",
-                    onpressed: () {
-                      //googlelogin();
-                    },
-                  ),
-                ),
-              ],
-            ),
+            // Column(
+            //   crossAxisAlignment: CrossAxisAlignment.center,
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Center(
+            //       child: LoginMethodButton(
+            //         widget: Image.asset(
+            //           "assets/login/fb_icon.png",
+            //           scale: 2,
+            //         ),
+            //         text: " Continue with Facebook",
+            //         onpressed: () {
+            //           //fbLogin();
+            //         },
+            //       ),
+            //     ),
+            //     sbh(8),
+            //     Center(
+            //       child: LoginMethodButton(
+            //         widget: Image.asset(
+            //           "assets/login/google.png",
+            //           scale: 25,
+            //         ),
+            //         text: " Continue with Google",
+            //         onpressed: () {
+            //           //googlelogin();
+            //         },
+            //       ),
+            //     ),
+            //   ],
+            // ),
             sbh(16),
             Consumer<LoginProvider>(builder: ((_, __, ___) {
               return LoginButton(

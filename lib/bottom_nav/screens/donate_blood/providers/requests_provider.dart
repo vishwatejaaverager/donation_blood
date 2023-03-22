@@ -144,27 +144,27 @@ class RequestProvider with ChangeNotifier {
   final List<QueryDocumentSnapshot<Map<String, dynamic>>> _completedReq = [];
   List<QueryDocumentSnapshot<Map<String, dynamic>>> get completedReq =>
       _completedReq;
-  getAllReuests(UserProfile userProfile) async {
+  Future getAllReuests(UserProfile userProfile) async {
     _isLoading = true;
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       notifyListeners();
     });
     // String id = _preferences.getUserId();
 
-    //if (_allRequests.isEmpty) {
-    var allReq = await _streams.requestQuery.get();
-    _allRequests = allReq.docs;
-    log(_allRequests.length.toString());
-    for (var i = 0; i < _allRequests.length; i++) {
-      if (_allRequests[i].data()['donationStat'] == 'in process') {
-        storeBloodType(_allRequests, userProfile, i);
-        storeEmergencyRequests(_allRequests, i);
-        storeOtherBloodType(_allRequests, userProfile, i);
-      } else if (_allRequests[i].data()['donationStat'] == 'completed') {
-        _completedReq.add(_allRequests[i]);
+    if (_allRequests.isEmpty) {
+      var allReq = await _streams.requestQuery.get();
+      _allRequests = allReq.docs;
+      log(_allRequests.length.toString());
+      for (var i = 0; i < _allRequests.length; i++) {
+        if (_allRequests[i].data()['donationStat'] == 'in process') {
+          storeBloodType(_allRequests, userProfile, i);
+          storeEmergencyRequests(_allRequests, i);
+          storeOtherBloodType(_allRequests, userProfile, i);
+        } else if (_allRequests[i].data()['donationStat'] == 'completed') {
+          _completedReq.add(_allRequests[i]);
+        }
       }
     }
-    //}
     _isLoading = false;
 
     log(_isLoading.toString());
