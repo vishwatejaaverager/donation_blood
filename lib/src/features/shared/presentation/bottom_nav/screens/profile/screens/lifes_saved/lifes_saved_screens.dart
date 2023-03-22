@@ -19,7 +19,7 @@ class LifesSavedScreen extends StatelessWidget {
           backgroundColor: Colors.white,
           elevation: 0,
           title: const Text(
-            "Lifes Saved by Blood Aid :)",
+            "Lifes Saved by Blood Flow :)",
             style: TextStyle(color: Colors.black),
           ),
         ),
