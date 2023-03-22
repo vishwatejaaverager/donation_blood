@@ -9,10 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'src/app.dart';
+import 'src/features/notification/notification_services.dart';
 import 'src/utils/general_providers.dart';
 
 Future<void> _firebaseMessagingHandler(RemoteMessage message) async {
   log("background notification");
+  NotificationService().initInfo();
 }
 
 void main() async {
@@ -26,6 +28,7 @@ void main() async {
 
   //* for catching any unhandled dart exceptions.
   runZonedGuarded(
+    
       () => runApp(
             DevicePreview(
               enabled: false,

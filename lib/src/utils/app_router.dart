@@ -6,6 +6,7 @@ import 'package:donation_blood/src/features/shared/presentation/bottom_nav/scree
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/screens/lifes_saved/lifes_saved_screens.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/profile/screens/reward_screens/reward_screen.dart';
 import 'package:donation_blood/src/features/shared/presentation/create_req/screens/create_request_screen.dart';
+import 'package:donation_blood/src/features/terms_conditions/terms_conditions.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -41,6 +42,8 @@ class AppRouter {
       return pageTransition(const DonateBloodScreen());
     } else if (route.name == LifesSavedScreen.id.path) {
       return pageTransition(const LifesSavedScreen());
+    } else if (route.name == TermsAndConditions.id.path) {
+      return pageTransition(const TermsAndConditions());
     } else if (route.name == BloodDonateReqScreen.id.path) {
       BloodDonationModel bloodDonationModel =
           route.arguments as BloodDonationModel;

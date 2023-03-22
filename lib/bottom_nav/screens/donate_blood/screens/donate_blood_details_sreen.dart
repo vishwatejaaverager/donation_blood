@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/on_boarding_screen.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
+import 'package:donation_blood/src/features/terms_conditions/terms_conditions.dart';
 import 'package:donation_blood/src/utils/routes.dart';
 import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -150,7 +151,6 @@ class BloodDonateReqScreen extends StatelessWidget {
                 ),
               ),
             ),
-            
             Row(
               children: [
                 Checkbox(
@@ -159,9 +159,14 @@ class BloodDonateReqScreen extends StatelessWidget {
                     value: true,
                     onChanged: ((value) {})),
                 const Text("I agree to the", style: TextStyle(fontSize: 12)),
-                const Text(
-                  "Terms and Conditions",
-                  style: TextStyle(color: Colors.blue, fontSize: 16),
+                InkWell(
+                  onTap: () {
+                    Navigation.instance.navigateTo(TermsAndConditions.id.path);
+                  },
+                  child: const Text(
+                    "Terms and Conditions",
+                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
                 )
               ],
             ),
@@ -170,8 +175,8 @@ class BloodDonateReqScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: AnimatedButton(
                 onPress: () async {
-                  Navigation.instance
-                      .navigateTo(DonateOnBoardingScreen.id.path,args: bloodDonationModel);
+                  Navigation.instance.navigateTo(DonateOnBoardingScreen.id.path,
+                      args: bloodDonationModel);
                 },
                 height: 50,
                 //width: 100,
