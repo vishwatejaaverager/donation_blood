@@ -37,10 +37,13 @@ class _SplashScreenState extends State<SplashScreen> {
         NotificationService().requestNotificationPermission();
         NotificationService().initInfo();
         Provider.of<RequestProvider>(context, listen: false)
-            .getAllReuests(value);
-        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-          Navigation.instance.pushAndRemoveUntil(BottomNavScreen.id.path);
+            .getAllReuests(value)
+            .then((value) {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            Navigation.instance.pushAndRemoveUntil(BottomNavScreen.id.path);
+          });
         });
+
         //}
       });
     } else {
@@ -61,7 +64,6 @@ class _SplashScreenState extends State<SplashScreen> {
             Center(
                 child: Image.asset(
               'assets/real_logo.png',
-             
             )),
             const SpinKitPulse(
               color: Colors.black,

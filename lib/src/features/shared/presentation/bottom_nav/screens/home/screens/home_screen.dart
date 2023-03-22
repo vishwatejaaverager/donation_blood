@@ -2,6 +2,7 @@ import 'package:donation_blood/src/features/shared/presentation/bottom_nav/provi
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/bottom_nav_screen.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/home/components/home_tile.dart';
 import 'package:donation_blood/src/features/shared/presentation/create_req/screens/create_request_screen.dart';
+import 'package:donation_blood/src/features/splash_screen/splash_screen.dart';
 import 'package:donation_blood/src/utils/navigation.dart';
 import 'package:donation_blood/src/utils/widget_utils/size_config.dart';
 import 'package:flutter/material.dart';
@@ -37,9 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
     // Provider.of<ProfileProvider>(context, listen: false).getUserInfo();
     // userProfile =
     //     Provider.of<ProfileProvider>(context, listen: false).userProfile!;
-    //     requestProvider = Provider.of<RequestProvider>(context, listen: false);
+    // requestProvider = Provider.of<RequestProvider>(context, listen: false);
 
-    // requestProvider.getAllReuests(userProfile!);
+    // requestProvider.getAllReuests(globalUserProfile!);
 
     super.initState();
   }

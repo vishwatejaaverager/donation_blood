@@ -79,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       style: const TextStyle(fontSize: 24, color: Colors.white),
                     ),
                     Text(
-                      _userProfileProvider.donationDays == 90
+                      _userProfile.isAvailable!
                           ? "Available for donation"
                           : "Unavailable for donation",
                       style: const TextStyle(fontSize: 16, color: Colors.white),
