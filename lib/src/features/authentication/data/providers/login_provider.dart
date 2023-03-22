@@ -101,9 +101,9 @@ class LoginProvider with ChangeNotifier {
           if (value.docs.isNotEmpty) {
             globalUserProfile = UserProfile.fromMap(value.docs[0].data());
             // log("message");
-            Navigation.instance.navigateTo(BottomNavScreen.id.path);
+            Navigation.instance.pushAndRemoveUntil(BottomNavScreen.id.path);
           } else {
-            Navigation.instance.navigateTo(EditProfileScreen.id.path);
+            Navigation.instance.pushAndRemoveUntil(EditProfileScreen.id.path);
           }
         });
       }

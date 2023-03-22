@@ -93,15 +93,26 @@ class RequestProvider with ChangeNotifier {
   ) async {
     try {
       _streams.userQuery
-          .doc(donarsModel.userTo)
-          .collection(Streams.requestByUser)
-          .doc(donarsModel.donationId)
-          .collection(Streams.shownInterestToDonate)
           .doc(donarsModel.userFrom)
-          .set(donarsModel.toMap());
+          .collection(Streams.requestByUser)
+          .where("donationId", isEqualTo: donarsModel.donationId)
+          .get()
+          .then((value) {
+        if (value.docs.isEmpty) {
+          _streams.userQuery
+              .doc(donarsModel.userTo)
+              .collection(Streams.requestByUser)
+              .doc(donarsModel.donationId)
+              .collection(Streams.shownInterestToDonate)
+              .doc(donarsModel.userFrom)
+              .set(donarsModel.toMap());
+          appToast("We will update you soon when user confirms");
+        } else {
+          appToast("You can not donate to ur blood request :)");
+        }
+      });
 
-      Navigation.instance.pushBack();
-      appToast("We will update you soon when user confirms");
+      // Navigation.instance.pushBack();
     } catch (e) {
       log(e.toString());
     }
@@ -141,18 +152,18 @@ class RequestProvider with ChangeNotifier {
     // String id = _preferences.getUserId();
 
     //if (_allRequests.isEmpty) {
-      var allReq = await _streams.requestQuery.get();
-      _allRequests = allReq.docs;
-      log(_allRequests.length.toString());
-      for (var i = 0; i < _allRequests.length; i++) {
-        if (_allRequests[i].data()['donationStat'] == 'in process') {
-          storeBloodType(_allRequests, userProfile, i);
-          storeEmergencyRequests(_allRequests, i);
-          storeOtherBloodType(_allRequests, userProfile, i);
-        } else if (_allRequests[i].data()['donationStat'] == 'completed') {
-          _completedReq.add(_allRequests[i]);
-        }
+    var allReq = await _streams.requestQuery.get();
+    _allRequests = allReq.docs;
+    log(_allRequests.length.toString());
+    for (var i = 0; i < _allRequests.length; i++) {
+      if (_allRequests[i].data()['donationStat'] == 'in process') {
+        storeBloodType(_allRequests, userProfile, i);
+        storeEmergencyRequests(_allRequests, i);
+        storeOtherBloodType(_allRequests, userProfile, i);
+      } else if (_allRequests[i].data()['donationStat'] == 'completed') {
+        _completedReq.add(_allRequests[i]);
       }
+    }
     //}
     _isLoading = false;
 

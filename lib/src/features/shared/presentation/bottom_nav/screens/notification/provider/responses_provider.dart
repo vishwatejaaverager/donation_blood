@@ -193,4 +193,24 @@ class ResponseProvider with ChangeNotifier {
       appToast("some thing went wrong :( ");
     }
   }
+
+  String elgibleDonars(String bloodGrp) {
+    if (bloodGrp == 'A+') {
+      return "A+ AB+";
+    } else if (bloodGrp == 'O+') {
+      return "O+ A+ AB+ B+";
+    } else if (bloodGrp == 'B+') {
+      return "AB+ B+";
+    } else if (bloodGrp == 'AB+') {
+      return "AB+";
+    } else if (bloodGrp == 'A-') {
+      return "A- A+ AB+ AB-";
+    } else if (bloodGrp == 'B-') {
+      return "B+ B- AB+ AB-";
+    } else if (bloodGrp == 'AB-') {
+      return "AB+ AB-";
+    } else {
+      return "All";
+    }
+  }
 }

@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:donation_blood/src/features/profile_det/provider/profile_provider.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/notification/provider/responses_provider.dart';
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/notification/screens/filtered_screens/blood_response_screen.dart';
 import 'package:donation_blood/src/features/splash_screen/splash_screen.dart';
 import 'package:donation_blood/src/utils/streams.dart';
+import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -68,6 +68,18 @@ class _NotificationScreenState extends State<NotificationScreen>
                 ],
                 controller: _tabController,
                 tags: const []),
+            Container(
+              alignment: Alignment.bottomCenter,
+              width: size.width,
+              padding: const EdgeInsets.only(bottom: 16, top: 4),
+              decoration: const BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(12),
+                      bottomLeft: Radius.circular(12))),
+              child: Text(
+                  "You are elgible to donate  ${responseProvider.elgibleDonars(globalUserProfile!.bloodGroup!)} Blood Groups :)"),
+            ),
             Expanded(
                 child: TabBarView(
               controller: _tabController,
