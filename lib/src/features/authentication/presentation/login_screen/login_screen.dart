@@ -63,9 +63,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             sbh(24),
-            const Center(
-              child: Text("OR"),
-            ),
+            // const Center(
+            //   child: Text("OR"),
+            // ),
             sbh(12),
             // Column(
             //   crossAxisAlignment: CrossAxisAlignment.center,
@@ -113,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           __.configTerms(value!);
                         })),
                     const Text("I agree to the",
-                        style: TextStyle(fontSize: 12)),
+                        style: TextStyle(fontSize: 16)),
                     InkWell(
                       onTap: () {
                         Navigation.instance

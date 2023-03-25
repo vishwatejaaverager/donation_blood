@@ -31,26 +31,28 @@ class BloodTypeScreen extends StatelessWidget {
                         bottomRight: Radius.circular(12),
                         bottomLeft: Radius.circular(12))),
                 child: const Text(
-                 "Same Blood requests of your type will be displayed here",
+                  "Same Blood requests of your type will be displayed here",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 )),
-            ListView.builder(
-                itemCount: __.isLoading ? 40 : __.sameType.length,
-                shrinkWrap: true,
-                itemBuilder: ((context, index) {
-                  if (__.sameType.isNotEmpty) {
-                    BloodDonationModel requestData =
-                        BloodDonationModel.fromMap(__.sameType[index].data());
-                    return RequestBloodCard(
-                      bloodDonationModel: requestData,
-                      controller: controller,
-                    );
-                  } else if (__.sameType.isEmpty) {
-                    return const Text("data");
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                }))
+            Expanded(
+              child: ListView.builder(
+                  itemCount: __.isLoading ? 40 : __.sameType.length,
+                  shrinkWrap: true,
+                  itemBuilder: ((context, index) {
+                    if (__.sameType.isNotEmpty) {
+                      BloodDonationModel requestData =
+                          BloodDonationModel.fromMap(__.sameType[index].data());
+                      return RequestBloodCard(
+                        bloodDonationModel: requestData,
+                        controller: controller,
+                      );
+                    } else if (__.sameType.isEmpty) {
+                      return const Text("data");
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  })),
+            )
           ],
         );
       } else {

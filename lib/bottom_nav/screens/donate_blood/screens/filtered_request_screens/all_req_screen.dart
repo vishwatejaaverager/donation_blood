@@ -32,23 +32,25 @@ class AllRequestsScreeen extends StatelessWidget {
                         bottomLeft: Radius.circular(12))),
                 child: const Text(
                   "Other blood requests which arent your blood type",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold),
                 )),
-            ListView.builder(
-            itemCount: __.isLoading ? 40 : __.otherType.length,
-            shrinkWrap: true,
-            itemBuilder: ((context, index) {
-              if (!__.isLoading) {
-                BloodDonationModel requestData =
-                    BloodDonationModel.fromMap(__.otherType[index].data());
-                return RequestBloodCard(
-                  bloodDonationModel: requestData,
-                  controller: controller,
-                );
-              } else {
-                return const CircularProgressIndicator();
-              }
-            }))
+            Expanded(
+              child: ListView.builder(
+              itemCount: __.isLoading ? 40 : __.otherType.length,
+              shrinkWrap: true,
+              itemBuilder: ((context, index) {
+                if (!__.isLoading) {
+                  BloodDonationModel requestData =
+                      BloodDonationModel.fromMap(__.otherType[index].data());
+                  return RequestBloodCard(
+                    bloodDonationModel: requestData,
+                    controller: controller,
+                  );
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              })),
+            )
           ],
         );
       } else {

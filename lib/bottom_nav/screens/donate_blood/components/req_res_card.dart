@@ -88,17 +88,25 @@ class ReqResCard extends StatelessWidget {
                           showDialog(
                               context: context,
                               builder: ((context) {
-                                return BlurryDialog("Donation",
-                                    "Are you sure you want to keep it has not donated ?",
-                                    (() {
-                                  log(donarStat!.toMap().toString());
-                                  Provider.of<ResponseProvider>(context,
-                                          listen: false)
-                                      .actualAcceptAndRejectDonation(
-                                          donarStat!, "donated",
-                                          bloodDonationModel:
-                                              bloodDonationModel);
-                                }));
+                                return BlurryDialog(
+                                  "Donation",
+                                  "Are you sure you want to keep it has  donated ?",
+                                  (() {
+                                    log(bloodDonationModel.units!);
+                                    log(bloodDonationModel.donatedUnits!);
+                                    // log(donarStat!.toMap().toString());
+                                    Provider.of<ResponseProvider>(context,
+                                            listen: false)
+                                        .actualAcceptAndRejectDonation(
+
+                                            donarStat!, "donated",
+                                            bloodDonationModel:
+                                                bloodDonationModel,
+                                              realunits: Provider.of<ProfileProvider>(context,listen: false).unitDrop
+                                                );
+                                  }),
+                                  isUnits: true,
+                                );
                               }));
                         },
                       )

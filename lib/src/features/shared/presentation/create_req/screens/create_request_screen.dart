@@ -72,6 +72,7 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                     ReqTextFiled(
                       controller: _mobileController,
                       sideHeading: "Mobile",
+                      textInputType: TextInputType.number,
                       icon: const Icon(Icons.phone),
                     ),
                     sbh(12),
@@ -341,28 +342,32 @@ class _CreateReqScreenState extends State<CreateReqScreen> {
                                           lat: hospLoc.lat,
                                           isEmergency: __.isEmergency,
                                           long: hospLoc.lng);
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return BlurryDialog("Create Request",
-                                          "Are You Sure Really want to Create Request ?",
-                                          () async {
-                                        __.addBloodRequestToFirebase(
-                                            bloodDonationModel2);
-                                        __.sendReqToOtherDonars(
-                                            userProfile.userId!, a, donar);
+                                  if (_mobileController.text.length == 10) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return BlurryDialog("Create Request",
+                                            "Are You Sure Really want to Create Request ?",
+                                            () async {
+                                          __.addBloodRequestToFirebase(
+                                              bloodDonationModel2);
+                                          __.sendReqToOtherDonars(
+                                              userProfile.userId!, a, donar);
 
-                                        // Provider.of<RequestProvider>(context,
-                                        //         listen: false)
-                                        //     .sendReqToOtherDonars(
-                                        //         userProfile.userId!, a, donar);
+                                          // Provider.of<RequestProvider>(context,
+                                          //         listen: false)
+                                          //     .sendReqToOtherDonars(
+                                          //         userProfile.userId!, a, donar);
 
-                                        // Navigation.instance.pushBack();
-                                      });
-                                    },
-                                  );
+                                          // Navigation.instance.pushBack();
+                                        });
+                                      },
+                                    );
+                                  } else {
+                                    appToast("enter valid number");
+                                  }
                                 } else {
-                                  //appToast("Please Do Fill All The Details :(");
+                                  appToast("Please Do Fill All The Details :(");
                                 }
                               }),
                               text: "Request Donation")
