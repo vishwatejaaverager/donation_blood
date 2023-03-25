@@ -40,6 +40,14 @@ class LoginProvider with ChangeNotifier {
   String _verId = '';
   String get verId => _verId;
 
+  bool _terms = true;
+  bool get terms => _terms;
+
+  configTerms(bool vl) {
+    _terms = vl;
+    notifyListeners();
+  }
+
   setOtpsent() {
     _isOTPsent = true;
   }

@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:donation_blood/bottom_nav/screens/donate_blood/providers/requests_provider.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/on_boarding_screen.dart';
+import 'package:donation_blood/src/features/authentication/data/providers/login_provider.dart';
+import 'package:donation_blood/src/features/authentication/presentation/login_screen/login_button.dart';
 import 'package:donation_blood/src/features/shared/domain/models/blood_donation_model.dart';
 import 'package:donation_blood/src/features/terms_conditions/terms_conditions.dart';
 import 'package:donation_blood/src/utils/routes.dart';
@@ -151,49 +153,70 @@ class BloodDonateReqScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Row(
-              children: [
-                Checkbox(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4)),
-                    value: true,
-                    onChanged: ((value) {})),
-                const Text("I agree to the", style: TextStyle(fontSize: 12)),
-                InkWell(
-                  onTap: () {
-                    Navigation.instance.navigateTo(TermsAndConditions.id.path);
-                  },
-                  child: const Text(
-                    "Terms and Conditions",
-                    style: TextStyle(color: Colors.blue, fontSize: 16),
-                  ),
-                )
-              ],
+            Consumer<LoginProvider>(
+              builder: (context, __, child) {
+                return Row(
+                  children: [
+                    Checkbox(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4)),
+                        value: __.terms,
+                        onChanged: ((value) {
+                          __.configTerms(value!);
+                        })),
+                    const Text("I agree to the",
+                        style: TextStyle(fontSize: 12)),
+                    InkWell(
+                      onTap: () {
+                        Navigation.instance
+                            .navigateTo(TermsAndConditions.id.path);
+                      },
+                      child: const Text(
+                        "Terms and Conditions",
+                        style: TextStyle(color: Colors.blue, fontSize: 16),
+                      ),
+                    )
+                  ],
+                );
+              },
             ),
             const Spacer(),
-            Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: AnimatedButton(
-                onPress: () async {
-                  Navigation.instance.navigateTo(DonateOnBoardingScreen.id.path,
-                      args: bloodDonationModel);
+            LoginButton(
+                onPressed: () {
+                  bool terms =
+                      Provider.of<LoginProvider>(context, listen: false).terms;
+                  if (terms) {
+                    Navigation.instance.navigateTo(
+                        DonateOnBoardingScreen.id.path,
+                        args: bloodDonationModel);
+                  } else {
+                    appToast("Agreee terms and conditions");
+                  }
                 },
-                height: 50,
-                //width: 100,
-                text: 'Donate',
-                isReverse: true,
-                selectedTextColor: Colors.black,
-                transitionType: TransitionType.RIGHT_TO_LEFT,
-                textStyle:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                // textStyle: submitTextStyle,
-                backgroundColor: Colors.white,
-                selectedBackgroundColor: Colors.redAccent,
-                borderColor: Colors.white,
-                borderRadius: 12,
-                borderWidth: 2,
-              ),
-            ),
+                text: "Donate")
+            // Card(
+            //   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            //   child: AnimatedButton(
+            //     onPress: () async {
+            //       Navigation.instance.navigateTo(DonateOnBoardingScreen.id.path,
+            //           args: bloodDonationModel);
+            //     },
+            //     height: 50,
+            //     //width: 100,
+            //     text: 'Donate',
+            //     isReverse: true,
+            //     selectedTextColor: Colors.black,
+            //     transitionType: TransitionType.RIGHT_TO_LEFT,
+            //     textStyle:
+            //         const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            //     // textStyle: submitTextStyle,
+            //     backgroundColor: Colors.white,
+            //     selectedBackgroundColor: Colors.redAccent,
+            //     borderColor: Colors.white,
+            //     borderRadius: 12,
+            //     borderWidth: 2,
+            //   ),
+            // ),
           ],
         ),
       ),
