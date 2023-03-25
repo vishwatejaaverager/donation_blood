@@ -128,9 +128,9 @@ class ResponseProvider with ChangeNotifier {
 
   actualAcceptAndRejectDonation(
       InterestedDonarsModel donarsModel, String response,
-      {BloodDonationModel? bloodDonationModel}) async {
-    log("${donarsModel.userTo} thisss is thi s");
-    log("${donarsModel.userFrom} thisss is thi s");
+      {BloodDonationModel? bloodDonationModel, String? realunits}) async {
+    // log("${donarsModel.userTo} thisss is thi s");
+    // log("${donarsModel.userFrom} thisss is thi s");
     await _streams.userQuery
         .doc(donarsModel.userTo)
         .collection(Streams.requestByUser)
@@ -151,10 +151,17 @@ class ResponseProvider with ChangeNotifier {
             "We want to express our heartfelt gratitude for your recent blood donation at our center. Your selfless act of kindness has brought hope and support to those in need, and we cannot thank you enough for your generosity.");
 
     if (response == 'donated') {
+      int donatedUnits = 0;
+      int units = 0;
+      log("${realunits}this is real units donated");
+      var ru = int.parse(realunits!);
       var a = int.parse(bloodDonationModel!.units!);
       var d = int.parse(bloodDonationModel.donatedUnits!);
-      int donatedUnits = d + 1;
-      int units = a - 1;
+      donatedUnits = d + ru;
+      units = a - ru;
+
+      log("${donatedUnits}donated units ");
+      log("$units this is stat od the units");
 
       _streams.userQuery.doc(donarsModel.userFrom).update(
           {"isAvailable": false, "donatedTime": DateTime.now().toString()});
@@ -171,6 +178,7 @@ class ResponseProvider with ChangeNotifier {
         "donatedUnits": donatedUnits.toString()
       });
       if (units == 0) {
+        log("completed donation ");
         await _streams.requestQuery
             .doc(donarsModel.donationId)
             .update({"donationStat": "completed"});

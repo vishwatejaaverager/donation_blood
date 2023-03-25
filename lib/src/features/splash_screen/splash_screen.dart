@@ -1,4 +1,5 @@
 import 'package:donation_blood/src/features/shared/domain/models/user_profile_model.dart';
+import 'package:donation_blood/src/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -57,18 +58,27 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xfff06c73),
-        body: Column(
+        body: Stack(
           //alignment: Alignment.bottomCenter,
-          mainAxisAlignment: MainAxisAlignment.center,
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Center(
-                child: Image.asset(
-              'assets/real_logo.png',
-            )),
-            const SpinKitPulse(
-              color: Colors.black,
-              size: 100.0,
-            )
+            SizedBox(
+              width: size.width,
+              height: size.height,
+              child: Image.asset(
+                'assets/rbc.png',
+                fit: BoxFit.fill,
+                        
+              ),
+            ),
+             Positioned(
+               child: SpinKitPulse(
+                color: Colors.red,
+                size: size.width,
+                
+                         ),
+             )
           ],
         ));
   }

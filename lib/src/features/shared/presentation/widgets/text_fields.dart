@@ -54,11 +54,13 @@ class ReqTextFiled extends StatelessWidget {
   final String sideHeading, hintText;
   final TextEditingController controller;
   final Widget icon;
+  final TextInputType? textInputType;
   final bool isDisabled;
   const ReqTextFiled({
     required this.sideHeading,
     this.hintText = '',
     required this.controller,
+    this.textInputType,
     required this.icon,
     this.isDisabled = true,
     Key? key,
@@ -79,6 +81,7 @@ class ReqTextFiled extends StatelessWidget {
               // border: Border.all(color: Colors.black)
             ),
             child: TextFormField(
+              keyboardType: textInputType,
               controller: controller,
               decoration: InputDecoration(
                   enabled: isDisabled,

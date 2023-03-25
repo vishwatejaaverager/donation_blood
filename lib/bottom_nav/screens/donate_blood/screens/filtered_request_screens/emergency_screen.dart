@@ -34,26 +34,29 @@ class EmergencyScreen extends StatelessWidget {
                   "Emergency Blood requests will be displayed here ",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 )),
-            ListView.builder(
-                itemCount: __.isLoading ? 40 : __.allEmergency.length,
-                shrinkWrap: true,
-                itemBuilder: ((context, index) {
-                  if (!__.isLoading) {
-                    BloodDonationModel requestData = BloodDonationModel.fromMap(
-                        __.allEmergency[index].data());
-                    return RequestBloodCard(
-                      bloodDonationModel: requestData,
-                      controller: controller,
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                }))
+            Expanded(
+              child: ListView.builder(
+                  itemCount: __.isLoading ? 40 : __.allEmergency.length,
+                  shrinkWrap: true,
+                  itemBuilder: ((context, index) {
+                    if (!__.isLoading) {
+                      BloodDonationModel requestData =
+                          BloodDonationModel.fromMap(
+                              __.allEmergency[index].data());
+                      return RequestBloodCard(
+                        bloodDonationModel: requestData,
+                        controller: controller,
+                      );
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  })),
+            )
           ],
         );
       } else {
         return const WarningWidget(
-          text1:  "Emergency Blood requests will be displayed here ",
+          text1: "Emergency Blood requests will be displayed here ",
           text: "No Emergency Blood Requests :)",
         );
       }
