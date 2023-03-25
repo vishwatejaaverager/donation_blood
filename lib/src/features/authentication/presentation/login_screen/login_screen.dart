@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:donation_blood/src/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../utils/navigation.dart';
 import '../../../../utils/utils.dart';
+import '../../../terms_conditions/terms_conditions.dart';
 import '../../data/providers/login_provider.dart';
 import 'login_button.dart';
 
@@ -25,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    log("message");
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -94,11 +99,44 @@ class _LoginScreenState extends State<LoginScreen> {
             //   ],
             // ),
             sbh(16),
+
+            Consumer<LoginProvider>(
+              builder: (context, __, child) {
+                log("Only this");
+                return Row(
+                  children: [
+                    Checkbox(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4)),
+                        value: __.terms,
+                        onChanged: ((value) {
+                          __.configTerms(value!);
+                        })),
+                    const Text("I agree to the",
+                        style: TextStyle(fontSize: 12)),
+                    InkWell(
+                      onTap: () {
+                        Navigation.instance
+                            .navigateTo(TermsAndConditions.id.path);
+                      },
+                      child: const Text(
+                        "Terms and Conditions",
+                        style: TextStyle(color: Colors.blue, fontSize: 16),
+                      ),
+                    )
+                  ],
+                );
+              },
+            ),
             Consumer<LoginProvider>(builder: ((_, __, ___) {
               return LoginButton(
                 onPressed: () {
-                  FocusScope.of(context).unfocus();
-                  __.regAndLogUser(phoneController.text, context);
+                  if (__.terms) {
+                    FocusScope.of(context).unfocus();
+                    __.regAndLogUser(phoneController.text, context);
+                  } else {
+                    appToast("Please do accept terms and conditions");
+                  }
                   // if (!__.isOTPSent) {
 
                   //   }

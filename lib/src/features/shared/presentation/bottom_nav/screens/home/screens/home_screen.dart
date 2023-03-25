@@ -102,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 image: "assets/home/group.png",
                                 text1: "Lifes saved in ",
-                                text2: " Blood Aid",
+                                text2: " Blood Flow",
                               )),
                         ],
                       )

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:donation_blood/bottom_nav/screens/donate_blood/screens/filtered_request_screens/user_blood_requests.dart';
 import 'package:donation_blood/src/features/splash_screen/splash_screen.dart';
@@ -60,6 +62,7 @@ class _DonateBloodScreenState extends State<DonateBloodScreen>
   @override
   Widget build(BuildContext context) {
     final ssController = ScreenshotController();
+    log("${_tabController.index} this is the index");
     //final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -88,10 +91,13 @@ class _DonateBloodScreenState extends State<DonateBloodScreen>
                 controller: _tabController,
                 tags: const []),
 
+            
+
             Expanded(
                 child: TabBarView(
               controller: _tabController,
               children: [
+                
                 UserBloodRequestsScreen(bloodReqByUsers: _bloodReqByUsers),
                 BloodTypeScreen(
                   controller: ssController,
