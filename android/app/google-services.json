@@ -7,12 +7,28 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1018158797256:android:2845ca99ead20ac52f70fd",
+        "mobilesdk_app_id": "1:1018158797256:android:710919fd50be04892f70fd",
         "android_client_info": {
-          "package_name": "com.example.donation_blood"
+          "package_name": "com.lastbenchers.bloodflow"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1018158797256-50acqsjonlmhle24725o6m6gf2oqu1bc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lastbenchers.bloodflow",
+            "certificate_hash": "ba5f59daffe87a8dd72eba526be195b9d00b002f"
+          }
+        },
+        {
+          "client_id": "1018158797256-otfbrsefpso0501m6ondgnvi2v9phriv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lastbenchers.bloodflow",
+            "certificate_hash": "9b03bbb68533f9048a8f565a7bb88d25085d1195"
+          }
+        },
         {
           "client_id": "1018158797256-t5c0c1atr0s7v8db20mhmatssbb8sff4.apps.googleusercontent.com",
           "client_type": 3
@@ -29,6 +45,13 @@
             {
               "client_id": "1018158797256-t5c0c1atr0s7v8db20mhmatssbb8sff4.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1018158797256-ccqa98ded7lp96siukk9vin6aq3j9dvt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.donationBlood"
+              }
             }
           ]
         }
