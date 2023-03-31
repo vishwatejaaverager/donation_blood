@@ -7,6 +7,7 @@ class Preferences {
 
   static const _didDetails = '_details';
   static const _userId = 'user_id';
+  static const _didFilled = 'did_details';
   static Future init() async {
     return preferences = await SharedPreferences.getInstance();
   }
@@ -21,6 +22,12 @@ class Preferences {
     await preferences.setBool(_userId, det);
   }
 
+  static Future setDet(bool det) async {
+    log("saved user in db");
+    await preferences.setBool(_userId, det);
+  }
+
   String getUserId() => preferences.getString(_userId) ?? "";
   bool getDet() => preferences.getBool(_didDetails) ?? false;
+  bool getFilledDet() => preferences.getBool(_didFilled) ?? false;
 }

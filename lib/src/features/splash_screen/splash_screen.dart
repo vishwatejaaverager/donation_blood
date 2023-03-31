@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    if (preferences.getUserId() != "") {
+    if (preferences.getUserId() != "" && preferences.getFilledDet()) {
       Provider.of<ProfileProvider>(context, listen: false)
           .getUserInfo()
           .then((value) {
@@ -69,16 +69,14 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Image.asset(
                 'assets/rbc.png',
                 fit: BoxFit.fill,
-                        
               ),
             ),
-             Positioned(
-               child: SpinKitPulse(
+            Positioned(
+              child: SpinKitPulse(
                 color: Colors.red,
                 size: size.width,
-                
-                         ),
-             )
+              ),
+            )
           ],
         ));
   }

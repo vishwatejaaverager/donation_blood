@@ -161,8 +161,12 @@ class ProfileProvider with ChangeNotifier {
       Loading().witIndicator(
           context: Navigation.instance.navigationKey.currentState!.context,
           title: "Saving Info :)");
-      await _streams.userQuery.doc(userId).set(userModel.toMap());
-      Navigation.instance.pushAndRemoveUntil(BottomNavScreen.id.path);
+
+      await _streams.userQuery.doc(userId).set(userModel.toMap()).then((value) {
+        Preferences.setDet(true).then((value) {
+          Navigation.instance.pushAndRemoveUntil(BottomNavScreen.id.path);
+        });
+      });
     } catch (e) {
       log(e.toString());
     }
@@ -630,6 +634,4 @@ class ProfileProvider with ChangeNotifier {
         return "";
     }
   }
-
-
 }

@@ -92,7 +92,7 @@ class ReqResCard extends StatelessWidget {
                                   "Donation",
                                   "Are you sure you want to keep it has  donated ?",
                                   (() {
-                                    log(bloodDonationModel.units!);
+                                    log(bloodDonationModel.units!); 
                                     log(bloodDonationModel.donatedUnits!);
                                     // log(donarStat!.toMap().toString());
                                     Provider.of<ResponseProvider>(context,
