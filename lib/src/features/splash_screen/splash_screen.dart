@@ -29,24 +29,45 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    if (preferences.getUserId() != "" && preferences.getFilledDet()) {
+    if (preferences.getUserId() != "") {
       Provider.of<ProfileProvider>(context, listen: false)
-          .getUserInfo()
+          .checkAndGetUser()
           .then((value) {
-        // if (preferences.getUserId() != "") {
-        globalUserProfile = value!;
-        NotificationService().requestNotificationPermission();
-        NotificationService().initInfo();
-        Provider.of<RequestProvider>(context, listen: false)
-            .getAllReuests(value)
-            .then((value) {
-          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            Navigation.instance.pushAndRemoveUntil(BottomNavScreen.id.path);
+        if (value != null) {
+          globalUserProfile = value;
+          NotificationService().requestNotificationPermission();
+          NotificationService().initInfo();
+          Provider.of<RequestProvider>(context, listen: false)
+              .getAllReuests(value)
+              .then((value) {
+            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+              Navigation.instance.pushAndRemoveUntil(BottomNavScreen.id.path);
+            });
           });
-        });
-
-        //}
+        } else {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            Navigation.instance.pushAndRemoveUntil(LoginScreen.id.path);
+          });
+        }
       });
+
+      // Provider.of<ProfileProvider>(context, listen: false)
+      //     .getUserInfo()
+      //     .then((value) {
+      //   // if (preferences.getUserId() != "") {
+      //   globalUserProfile = value!;
+      //   NotificationService().requestNotificationPermission();
+      //   NotificationService().initInfo();
+      //   Provider.of<RequestProvider>(context, listen: false)
+      //       .getAllReuests(value)
+      //       .then((value) {
+      //     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      //       Navigation.instance.pushAndRemoveUntil(BottomNavScreen.id.path);
+      //     });
+      //   });
+
+      //   //}
+      // });
     } else {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         Navigation.instance.pushAndRemoveUntil(LoginScreen.id.path);

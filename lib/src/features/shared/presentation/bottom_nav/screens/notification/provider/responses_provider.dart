@@ -126,7 +126,7 @@ class ResponseProvider with ChangeNotifier {
     }
   }
 
-  actualAcceptAndRejectDonation(
+  Future actualAcceptAndRejectDonation(
       InterestedDonarsModel donarsModel, String response,
       {BloodDonationModel? bloodDonationModel, String? realunits}) async {
     // log("${donarsModel.userTo} thisss is thi s");
@@ -190,6 +190,8 @@ class ResponseProvider with ChangeNotifier {
             .update({"donationStat": "completed"});
       }
     }
+
+    Navigation.instance.pushBack();
     Navigation.instance.pushBack();
   }
 
