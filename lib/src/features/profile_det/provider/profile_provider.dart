@@ -161,12 +161,10 @@ class ProfileProvider with ChangeNotifier {
       Loading().witIndicator(
           context: Navigation.instance.navigationKey.currentState!.context,
           title: "Saving Info :)");
-
       await _streams.userQuery.doc(userId).set(userModel.toMap()).then((value) {
-        Preferences.setDet(true).then((value) {
-          Navigation.instance.pushAndRemoveUntil(BottomNavScreen.id.path);
-        });
+        Preferences.setUserID(userModel.userId!);
       });
+      Navigation.instance.pushAndRemoveUntil(BottomNavScreen.id.path);
     } catch (e) {
       log(e.toString());
     }
@@ -605,6 +603,33 @@ class ProfileProvider with ChangeNotifier {
     return _userProfile;
     // notifyListeners();
   }
+
+  Future<UserProfile?> checkAndGetUser() async {
+    String id = _preferences.getUserId();
+    await Streams()
+        .userQuery
+        .where("userId", isEqualTo: id)
+        .get()
+        .then((value) {
+      if (value.docs.isEmpty) {
+        return _userProfile = null;
+      } else {
+        var a = value.docs;
+        _userProfile = UserProfile.fromMap(a.first.data());
+        return _userProfile;
+      }
+    });
+    if (_userProfile != null) {
+      return _userProfile;
+    } else {
+      return null;
+    }
+//    return null;
+  }
+
+  // Future<bool> checkUser(){
+
+  // }
 
   setUserInfo(UserProfile userProfile) {
     _userProfile = userProfile;

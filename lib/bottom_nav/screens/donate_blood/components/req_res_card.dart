@@ -13,6 +13,7 @@ import '../../../../src/features/shared/domain/models/user_profile_model.dart';
 import '../../../../src/services/dist_util.dart';
 import '../../../../src/utils/utils.dart';
 import '../../../../src/utils/widget_utils/cache_image.dart';
+import '../providers/requests_provider.dart';
 
 class ReqResCard extends StatelessWidget {
   const ReqResCard(
@@ -92,18 +93,25 @@ class ReqResCard extends StatelessWidget {
                                   "Donation",
                                   "Are you sure you want to keep it has  donated ?",
                                   (() {
-                                    log(bloodDonationModel.units!); 
+                                    log(bloodDonationModel.units!);
                                     log(bloodDonationModel.donatedUnits!);
                                     // log(donarStat!.toMap().toString());
                                     Provider.of<ResponseProvider>(context,
                                             listen: false)
                                         .actualAcceptAndRejectDonation(
-
                                             donarStat!, "donated",
                                             bloodDonationModel:
                                                 bloodDonationModel,
-                                              realunits: Provider.of<ProfileProvider>(context,listen: false).unitDrop
-                                                );
+                                            realunits:
+                                                Provider.of<ProfileProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .unitDrop)
+                                        .then((value) {
+                                      Provider.of<RequestProvider>(context,
+                                              listen: false)
+                                          .getAllReuests(value);
+                                    });
                                   }),
                                   isUnits: true,
                                 );

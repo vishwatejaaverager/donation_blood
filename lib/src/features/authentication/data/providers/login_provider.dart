@@ -4,11 +4,11 @@ import 'package:donation_blood/src/features/shared/domain/models/user_profile_mo
 import 'package:donation_blood/src/features/shared/presentation/bottom_nav/screens/bottom_nav_screen.dart';
 import 'package:donation_blood/src/features/splash_screen/splash_screen.dart';
 import 'package:donation_blood/src/utils/streams.dart';
+import 'package:donation_blood/src/utils/user_pref/user_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../../utils/navigation.dart';
-import '../../../../utils/user_pref/user_preferences.dart';
 import '../../../../utils/utils.dart';
 import '../../../../utils/widget_utils/loading.dart';
 import '../../../profile_det/screens/profile_detail_screen.dart';
@@ -26,6 +26,7 @@ class LoginProvider with ChangeNotifier {
 
   bool _isOTPsent = false;
   bool get isOTPSent => _isOTPsent;
+
   // Future RegorLogUser(
   //   String phone,
   // ) async {
@@ -98,9 +99,9 @@ class LoginProvider with ChangeNotifier {
       if (a.user != null) {
         appToast("succesfully verified :)");
         log(a.user.toString());
-        Preferences.setUserID(a.user!.uid);
         setUserId(a.user!.uid);
         setPhone(a.user!.phoneNumber!);
+        Preferences.setUserID(a.user!.uid);
 
         await _streams.userQuery
             .where("userId", isEqualTo: a.user!.uid.toString())
